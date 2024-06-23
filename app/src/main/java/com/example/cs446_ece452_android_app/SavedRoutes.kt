@@ -98,17 +98,18 @@ fun SavedRoutes(navController: NavController) {
                 .fillMaxWidth()
         ){
             IconButton(
-                onClick = {}
+                onClick = {},
+                modifier = Modifier.size(100.dp).padding(start = 30.dp)
             ) {
                 Icon(
                     imageVector = Icons.Default.Home,
                     contentDescription = "All Routes",
-                    tint = DarkBlue,
-                    modifier = Modifier.size(100.dp)
+                    tint = DarkBlue
                 )
             }
             IconButton(
-                onClick = {}
+                onClick = {},
+                modifier = Modifier.size(100.dp)
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
@@ -117,7 +118,8 @@ fun SavedRoutes(navController: NavController) {
                 )
             }
             IconButton(
-                onClick = {}
+                onClick = {},
+                modifier = Modifier.size(100.dp).padding(end = 30.dp)
             ) {
                 Icon(imageVector = Icons.Default.Person,
                     contentDescription = "Profile",
