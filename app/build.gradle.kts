@@ -61,6 +61,10 @@ dependencies {
     implementation(libs.androidx.material3)
     // google maps SDK
     implementation(libs.google.android.gms.playservicesmaps)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
+    implementation(libs.androidx.activity)
+    implementation(libs.androidx.constraintlayout)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
