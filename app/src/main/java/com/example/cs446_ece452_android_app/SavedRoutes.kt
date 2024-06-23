@@ -32,8 +32,8 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.cs446_ece452_android_app.ui.theme.BackgroundBlue
-import com.example.cs446_ece452_android_app.ui.theme.TitleBlue
+import com.example.cs446_ece452_android_app.ui.theme.Blue2
+import com.example.cs446_ece452_android_app.ui.theme.DarkBlue
 
 @Composable
 fun Screens(){
@@ -52,12 +52,12 @@ fun SavedRoutes(navController: NavController) {
         verticalArrangement = Arrangement.Top,
         modifier = Modifier
             .fillMaxSize()
-            .background(BackgroundBlue)
+            .background(Blue2)
     ) {
         Spacer(modifier = Modifier.size(30.dp))
         Text(
             text = "Trailblazer",
-            color = TitleBlue,
+            color = DarkBlue,
             fontFamily = FontFamily.Monospace,
             fontWeight = FontWeight.Bold,
             fontSize = 50.sp
@@ -65,7 +65,7 @@ fun SavedRoutes(navController: NavController) {
         Spacer(modifier = Modifier.size(30.dp))
         Button(
             onClick = {},
-            colors = ButtonDefaults.buttonColors(TitleBlue),
+            colors = ButtonDefaults.buttonColors(DarkBlue),
             shape = RectangleShape,
             modifier = Modifier.size(width = 360.dp, height = 50.dp)
         ) {
@@ -74,7 +74,7 @@ fun SavedRoutes(navController: NavController) {
         Spacer(modifier = Modifier.size(30.dp))
         Button(
             onClick = {},
-            colors = ButtonDefaults.buttonColors(TitleBlue),
+            colors = ButtonDefaults.buttonColors(DarkBlue),
             shape = RectangleShape,
             modifier = Modifier.size(width = 360.dp, height = 160.dp)
         ) {
@@ -84,7 +84,7 @@ fun SavedRoutes(navController: NavController) {
         Button(
             onClick = {},
             shape = RectangleShape,
-            colors = ButtonDefaults.buttonColors(TitleBlue),
+            colors = ButtonDefaults.buttonColors(DarkBlue),
             modifier = Modifier.size(width = 360.dp, height = 160.dp)
         ) {
             Text(text = "Route 2")
@@ -103,7 +103,7 @@ fun SavedRoutes(navController: NavController) {
                 Icon(
                     imageVector = Icons.Default.Home,
                     contentDescription = "All Routes",
-                    tint = TitleBlue,
+                    tint = DarkBlue,
                     modifier = Modifier.size(100.dp)
                 )
             }
@@ -113,7 +113,7 @@ fun SavedRoutes(navController: NavController) {
                 Icon(
                     imageVector = Icons.Default.Add,
                     contentDescription = "New Route",
-                    tint = TitleBlue
+                    tint = DarkBlue
                 )
             }
             IconButton(
@@ -121,7 +121,7 @@ fun SavedRoutes(navController: NavController) {
             ) {
                 Icon(imageVector = Icons.Default.Person,
                     contentDescription = "Profile",
-                    tint = TitleBlue
+                    tint = DarkBlue
                 )
             }
         }
