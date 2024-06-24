@@ -14,7 +14,12 @@ import androidx.compose.material3.Button
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.cs446_ece452_android_app.ui.theme.CS446ECE452_Android_appTheme
+import com.example.cs446_ece452_android_app.ui.screens.LoginScreen
+import com.example.cs446_ece452_android_app.ui.screens.SignupScreen
 import androidx.compose.ui.unit.dp
 
 class MainActivity : ComponentActivity() {
@@ -25,6 +30,25 @@ class MainActivity : ComponentActivity() {
             Screens()
             /*
             CS446ECE452_Android_appTheme {
+                val navController = rememberNavController()
+
+                NavHost(
+                    navController = navController,
+                    startDestination = "Login"
+                ) {
+                    composable(route = "Login") {
+                        LoginScreen(navController)
+                    }
+                    composable(route = "Signup") {
+                        SignupScreen(
+                            navController
+                        )
+                    }
+                    composable(route = "NewScreen") { // Add New Screens here
+                        Greeting(
+                            name = "Martin"
+                        )
+                    }
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Greeting(
                             name = "AndroidTEST",
