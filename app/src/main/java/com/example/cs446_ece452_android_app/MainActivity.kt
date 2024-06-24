@@ -27,8 +27,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             window.statusBarColor = getColor(R.color.black)
-            Screens()
-            /*
+//            Screens()
             CS446ECE452_Android_appTheme {
                 val navController = rememberNavController()
 
@@ -49,18 +48,8 @@ class MainActivity : ComponentActivity() {
                             name = "Martin"
                         )
                     }
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                            name = "AndroidTEST",
-                            modifier = Modifier.padding(innerPadding)
-                    )
-                    Spacer(modifier = Modifier.width(16.dp))
-                    CustomButton(onClick = {
-                        // Handle button click action here
-                    })
                 }
             }
-            */
         }
     }
 }
