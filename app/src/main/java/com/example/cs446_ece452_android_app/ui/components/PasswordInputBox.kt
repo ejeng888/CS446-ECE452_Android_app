@@ -23,18 +23,18 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
-fun PasswordInputBox() {
+fun PasswordInputBox(labelVal : String) {
     var password by remember {
         mutableStateOf("")
     }
-    var isShowPassword by remember {
+    val isShowPassword by remember {
         mutableStateOf(false)
     }
     OutlinedTextField(
         value = password,
         onValueChange = { password = it },
         textStyle = TextStyle(color = DarkBlue),
-        label = { Text("Password", color = DarkBlue) },
+        label = { Text(labelVal, color = DarkBlue) },
         colors = TextFieldDefaults.colors(
             focusedContainerColor = Blue3,
             unfocusedContainerColor = Blue2,
@@ -57,6 +57,6 @@ fun PasswordInputBox() {
 @Preview
 @Composable
 fun PasswordOutlineBoxPreview() {
-    PasswordInputBox()
+    PasswordInputBox(labelVal = "Password")
 }
 
