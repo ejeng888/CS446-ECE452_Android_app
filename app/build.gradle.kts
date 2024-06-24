@@ -59,7 +59,6 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    // google maps SDK
     implementation(libs.google.android.gms.playservicesmaps)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

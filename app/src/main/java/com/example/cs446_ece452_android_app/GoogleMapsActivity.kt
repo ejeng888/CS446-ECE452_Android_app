@@ -1,5 +1,6 @@
 package com.example.cs446_ece452_android_app
 
+import android.graphics.Color
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -9,16 +10,14 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.AdvancedMarkerOptions
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.PinConfig
 import com.google.android.gms.maps.model.PolylineOptions
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.Response
 
 class GoogleMapsActivity : AppCompatActivity(), OnMapReadyCallback {
-
-//    private val client = OkHttpClient()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,20 +29,60 @@ class GoogleMapsActivity : AppCompatActivity(), OnMapReadyCallback {
             insets
         }
 
-        // Get the SupportMapFragment and request notification when the map is ready to be used.
         val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as? SupportMapFragment
         mapFragment?.getMapAsync(this)
     }
 
     override fun onMapReady(map: GoogleMap) {
-        val encodedPolyline = "gvqtEw{t{XlDXzFv@_@zHeIYcH_@iAIo@xHQjAOxB?rAg@dKYpNOnMAvJG~MCT@`J?tHMzN?`DLpLLxQBrGFhE?nJFhWAnHMnEQvE?Zmq@n@iQD_eAHm@DyFCsFBkJXiKVgGNii@@qAUsWsFGjA?~JaHkGi@Ko@GBvAPpC?z@Md@I|@GPGZm@Po@AEG?_@?`@HFp@Ah@QHg@BGLgAHW?{@SkDA}@C?DgA\\eFfe@xJlVA~IADa@\\_KCi@Ic@cDsKe@Nm@?MTc@F{EIu@C@c@nEFrCJXCVKeGoSOw@EeCCuC_@_HD{@QgEIsILiNHyKHcSB}IxBoMAgLrBAPIva@FvX?zEEHANURq@Cen@]aP?kPDwHXcVBwX\\wJdBiSPqGAaIE{AnBKpDa@j@Dh@Xh@j@Ba@B{AEyCGk@EQCsG}ANeBLyDL}BNz@bGHfALbET?F`E?zEQpGeB~S]`JAzVfVHvJGlXzAvP`AvB\\fBl@nCVHAzDcAnFYnGn@tJ`A|PbC`@HVNBYQkA_AaDqA{BY{@e@mBiAmDQ_AtCc@uCb@\\zAhAlDd@pBXn@jArB|@bDJp@HEJm@r@qAd@sAd@iB`@yCCg@y@aBKs@OuB?Q]}BOk@Gi@Dk@G[a@eAIUZ|@Tl@@ZE^N~@Nh@TpBLjBHv@L`@p@rA@f@g@bDk@vBi@lAc@v@GXETGB?\\AF`Ap@PPWbAcAdI_A|FIP[|ClEPd@D"
+        val encodedPolyline = "gvqtEw{t{XlDXzFv@h@FpDGnGJEx@KpH?nGxCQ|CO|CBf@HvNsAdFU^@pB\\x@Ad@BtCl@lAL~@?vGi@hBIzBBnCLtCf@fCl@l@LvAJ|A@|AS`Bq@n@[RUVMpAK|AA`d@FvRBR@TyOaI@wEHa@?WGUBi@PuBDC_CBYCy@RCCuAYBDtAB?B|@Eh@DjBsE?mG?eDEoCLiB@}BD}HLiIAgC?gC?{L^oANkCHiBL}@BKyBS}ABEFAa@y@gGqIy@m@[MeHk@iKSaJo@aIYeRgAo@WgFoDe@a@m@a@BYQkA_AaDqA{BY{@e@mBiAmDQ_AtCc@uCb@\\zAhAlDd@pBXn@jArB|@bDJp@HEJm@r@qAd@sAd@iB`@yCCg@y@aBKs@OuB?Q]}BOk@Gi@Dk@G[a@eAIUZ|@Tl@@ZE^N~@Nh@TpBLjBHv@L`@p@rA@f@g@bDk@vBi@lAc@v@GXETGB?\\AFWOq@OmP}BuJaAoGo@oFX{DbAc@?uBUkBo@oC_@wZeBE_EP}DXcGDwEo@iNK{CN_F`@cJNcBHc@Ik@KKECoDtBwDnCUNUk@eA?kB?_@M[Wa@c@aA_AmAqAaBmBoB}AY_@Ba@B{AEyCGk@EQCsG}ANeBLyDL}BNz@bGHfALbET?F`E?zEQpGeB~S]`JCvX]r[AdP?rDHdDkNkAsCAqEVmCR_SGsEOeIc@iAIyB_@iBOoB@cEb@YAQEYQqEjCkLxGuNpIwBlAMDEFqAt@qCbBoLrGoBdAcEnBw@NGNgAj@\\h\\Dj@Rp@tChGfHjOdAvBTl@Lz@?vDE~CBbMDjIAtAe@pFg@dF_@xE@jAbAnSvAnYL|@N`@ZZ^NpBd@z@P]dFEfAB?BvAPpC?z@Md@I|@GPGZm@Po@AEG?_@?`@HFp@Ah@QHg@BGLgAHW?{@SkDA}@C?DgA\\eFD?l@oJDQdIgL~BsGzAcFHe@CWKi@dEiBlA]jVwElASbDSD{@QgEIsILiNHyKHcSB}IxBoMAgLrBAPIva@FvX?zEEr@Wr@GvMM~FIfICxG@lJBvRC~ICCgU?mCgG@?qA?gBdGACeMIgLKuN?q@jALzA^tBp@xCnAvDbBbJjDbLpDbF~ARkDdAiNhFPt@F"
         val decoded = decodePolyline(encodedPolyline)
         val polylineOptions = PolylineOptions()
         for (item in decoded)
             polylineOptions.add((item))
         map.addPolyline(polylineOptions)
 
-        val center = LatLng(35.0140, 135.7483)
+        val start = LatLng(34.9939, 135.7714)
+        map.addMarker(
+            MarkerOptions()
+                .position(start)
+        )
+
+        val stops = ArrayList<Pair<String, LatLng>>()
+        stops.add(Pair("Fushimi Inari Shrine", LatLng(34.9672, 135.7727)))
+        stops.add(Pair("Kiyomizu-dera", LatLng(34.9953, 135.7811)))
+        stops.add(Pair("Eikando Temple", LatLng(35.0147, 135.7939)))
+        stops.add(Pair("Kinkaku-ji", LatLng(35.0391, 135.7297)))
+        stops.add(Pair("Nishiki Market", LatLng(35.0050, 135.7648)))
+
+        val pinConfigBuilder = PinConfig.builder()
+        pinConfigBuilder.setBackgroundColor(Color.MAGENTA)
+            .setBorderColor(Color.MAGENTA)
+
+        val advancedMarkerAvailable = map.mapCapabilities.isAdvancedMarkersAvailable
+        if (advancedMarkerAvailable) {
+            for (i in stops.indices) {
+                pinConfigBuilder.setGlyph(PinConfig.Glyph(i.toString(), Color.WHITE))
+                val pinConfig = pinConfigBuilder.build()
+
+                map.addMarker(
+                    AdvancedMarkerOptions()
+                        .position(stops[i].second)
+                        .title(stops[i].first)
+                        .icon(BitmapDescriptorFactory.fromPinConfig(pinConfig))
+                )
+            }
+        }
+        else {
+            for (stop in stops) {
+                map.addMarker(
+                    MarkerOptions()
+                        .position(stop.second)
+                        .title(stop.first)
+                )
+            }
+        }
+
+        val center = LatLng(35.0048, 135.7685)
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(center, 12f))
     }
 
@@ -83,15 +122,4 @@ class GoogleMapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         return poly
     }
-
-
-//    fun getResponse(url: String) : String? {
-//        val request = Request.Builder()
-//            .url(url)
-//            .build()
-//
-//        val response = client.newCall(request).execute()
-//
-//        return response.body()?.string()
-//    }
 }
