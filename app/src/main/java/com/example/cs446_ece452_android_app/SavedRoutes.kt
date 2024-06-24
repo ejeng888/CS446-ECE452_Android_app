@@ -43,9 +43,6 @@ fun Screens() {
         composable("Routes") {
             SavedRoutes(navController = navController)
         }
-        composable("Map") {
-            MapScreen(navController = navController)
-        }
         composable(route = "Profile") {
             ProfileScreen(navController = navController)
         }

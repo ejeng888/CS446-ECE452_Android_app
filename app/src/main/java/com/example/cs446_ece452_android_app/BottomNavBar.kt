@@ -1,5 +1,8 @@
 package com.example.cs446_ece452_android_app
 
+import android.content.Intent
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -25,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -38,6 +42,13 @@ import com.example.cs446_ece452_android_app.ui.theme.Blue2
 import com.example.cs446_ece452_android_app.ui.theme.DarkBlue
 @Composable
 fun BottomNavigationBar(navController: NavController) {
+    val context = LocalContext.current
+    val startGoogleMapsActivity = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        // Handle result if needed
+    }
+
     BottomAppBar {
         IconButton(
             onClick = { navController.navigate("routes") },
@@ -50,7 +61,10 @@ fun BottomNavigationBar(navController: NavController) {
             )
         }
         IconButton(
-            onClick = { navController.navigate("Map") },
+            onClick = {
+                val intent = Intent(context, GoogleMapsActivity::class.java)
+                startGoogleMapsActivity.launch(intent)
+            },
             modifier = Modifier.weight(1f)
         ) {
             Icon(
