@@ -1,5 +1,6 @@
 package com.example.cs446_ece452_android_app
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -7,7 +8,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.Button
@@ -27,7 +28,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             window.statusBarColor = getColor(R.color.black)
-//            Screens()
+
             CS446ECE452_Android_appTheme {
                 val navController = rememberNavController()
 
@@ -43,10 +44,8 @@ class MainActivity : ComponentActivity() {
                             navController
                         )
                     }
-                    composable(route = "NewScreen") { // Add New Screens here
-                        Greeting(
-                            name = "Martin"
-                        )
+                    composable(route = "SavedRoutes") { // Add New Screens here
+                        Screens()
                     }
                 }
             }
@@ -67,8 +66,8 @@ fun CustomButton(onClick: () -> Unit) {
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
     Text(
-            text = "Hello $name!",
-            modifier = modifier
+        text = "Hello $name!",
+        modifier = modifier
     )
 }
 

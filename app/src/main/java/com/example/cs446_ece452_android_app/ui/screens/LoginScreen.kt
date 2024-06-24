@@ -56,21 +56,11 @@ fun LoginScreen(navController : NavHostController) {
             PasswordInputBox(labelVal = "Password")
 
             Spacer(modifier = Modifier.height(30.dp))
-            FilledButton(labelVal = "Login", navController = navController, destination = "NewScreen") // CHANGE TO NEXT SCREEN
+            FilledButton(labelVal = "Login", navController = navController, destination = "SavedRoutes") // CHANGE TO NEXT SCREEN
             Spacer(modifier = Modifier.height(10.dp))
             OutlinedButton(labelVal = "Create Account", navController = navController, destination = "Signup")
 
-
-
             TextDivider(text="or")
-
-
-
-
-
-
-
-
         }
     }
 }
