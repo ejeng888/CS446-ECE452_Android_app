@@ -27,7 +27,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             window.statusBarColor = getColor(R.color.black)
-            Screens()
+            DestinationInputScreen()
+            //Screens()
             /*
             CS446ECE452_Android_appTheme {
                 val navController = rememberNavController()
