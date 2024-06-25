@@ -80,7 +80,9 @@ fun SavedRoutes(navController: NavController) {
             }
             Spacer(modifier = Modifier.size(30.dp))
             Button(
-                onClick = {},
+                onClick = {
+                    navController.navigate("Map")
+                },
                 colors = ButtonDefaults.buttonColors(DarkBlue),
                 shape = RectangleShape,
                 modifier = Modifier.size(width = 360.dp, height = 160.dp)
