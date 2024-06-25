@@ -19,6 +19,9 @@ navigationCompose = "2.7.7"
 playServiceMaps = "18.2.0"
 mapsPlatformGradlePlugin = "2.0.1"
 nav_version = "2.7.7"
+uiViewbinding = "1.6.8"
+mapsKtx = "5.0.0"
+mapsCompose = "4.4.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -46,6 +49,12 @@ androidx-activity = { group = "androidx.activity", name = "activity", version.re
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 google-android-gms-playservicesmaps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServiceMaps" }
 google-android-libraries-mapsplatform-secretsgradleplugin = { group = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", name = "secrets-gradle-plugin", version.ref = "mapsPlatformGradlePlugin" }
+androidx-ui-viewbinding = { group = "androidx.compose.ui", name = "ui-viewbinding", version.ref = "uiViewbinding" }
+google-maps-android-mapsktx = { group = "com.google.maps.android", name = "maps-ktx", version.ref = "mapsKtx" }
+google-maps-android-mapsutilsktx = { group = "com.google.maps.android", name = "maps-ktx", version.ref = "mapsKtx" }
+google-maps-android-mapscompose = { group = "com.google.maps.android", name = "maps-compose", version.ref = "mapsCompose" }
+google-maps-android-mapscomposeutils = { group = "com.google.maps.android", name = "maps-compose-utils", version.ref = "mapsCompose" }
+google-maps-android-mapscomposewidgets = { group = "com.google.maps.android", name = "maps-compose-widgets", version.ref = "mapsCompose" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

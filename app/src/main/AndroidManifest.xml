@@ -18,12 +18,8 @@
             android:value="@integer/google_play_services_version" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyC2E4JsKZl3y3fV0nDUGeZOWfCjrwb5ISw"/>
+            android:value="AIzaSyC2E4JsKZl3y3fV0nDUGeZOWfCjrwb5ISw" />
 
-        <activity
-            android:name=".GoogleMapsActivity"
-            android:exported="false"
-            android:theme="@style/Theme.AppCompat" />
         <activity
             android:name=".ui.login.LoginActivity"
             android:exported="false"

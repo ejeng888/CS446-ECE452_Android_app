@@ -36,6 +36,12 @@ fun Screens() {
         composable(route = "Profile") {
             ProfileScreen(navController = navController)
         }
+        composable(route = "DestinationInput") {
+            DestinationInputScreen(navController = navController)
+        }
+        composable(route = "Map") {
+            MapScreen(navController = navController)
+        }
     }
 }
 
