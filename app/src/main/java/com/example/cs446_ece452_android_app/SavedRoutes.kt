@@ -27,25 +27,6 @@ import com.example.cs446_ece452_android_app.ui.theme.Blue2
 import com.example.cs446_ece452_android_app.ui.theme.DarkBlue
 
 @Composable
-fun Screens() {
-    val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = "Routes") {
-        composable("Routes") {
-            SavedRoutes(navController = navController)
-        }
-        composable(route = "Profile") {
-            ProfileScreen(navController = navController)
-        }
-        composable(route = "DestinationInput") {
-            DestinationInputScreen(navController = navController)
-        }
-        composable(route = "Map") {
-            MapScreen(navController = navController)
-        }
-    }
-}
-
-@Composable
 fun SavedRoutes(navController: NavController) {
     Scaffold(
         bottomBar = {
