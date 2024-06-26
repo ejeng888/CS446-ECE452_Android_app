@@ -31,8 +31,17 @@ class MainActivity : ComponentActivity() {
                             navController
                         )
                     }
-                    composable(route = "SavedRoutes") { // Add New Screens here
-                        Screens()
+                    composable(route = "routes") { // Add New Screens here
+                        SavedRoutes(navController = navController)
+                    }
+                    composable(route = "Profile") {
+                        ProfileScreen(navController = navController)
+                    }
+                    composable(route = "DestinationInput") {
+                        DestinationInputScreen(navController = navController)
+                    }
+                    composable(route = "Map") {
+                        MapScreen(navController = navController)
                     }
                 }
             }

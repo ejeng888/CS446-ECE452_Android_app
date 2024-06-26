@@ -20,6 +20,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -88,6 +89,17 @@ fun ProfileScreen(navController: NavController) {
                 text = "Address",
                 style = MaterialTheme.typography.bodyLarge
             )
+            Spacer(modifier = Modifier.height(8.dp))
+            TextButton(
+                onClick = {
+                    navController.navigate("login") {
+                        popUpTo("home") { inclusive = true }
+                    }
+                },
+                modifier = Modifier.padding(top = 16.dp)
+            ) {
+                Text(text = "Logout")
+            }
         }
     }
 }
