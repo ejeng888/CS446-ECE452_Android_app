@@ -1,4 +1,4 @@
-package com.example.cs446_ece452_android_app
+package com.example.cs446_ece452_android_app.ui.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.cs446_ece452_android_app.ui.components.BottomNavigationBar
 
 @Composable
 fun DestinationInputScreen(navController: NavController) {
