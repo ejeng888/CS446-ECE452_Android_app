@@ -1,4 +1,4 @@
-package com.example.cs446_ece452_android_app
+package com.example.cs446_ece452_android_app.ui.components
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -49,3 +49,4 @@ fun BottomNavigationBar(navController: NavController) {
         }
     }
 }
+

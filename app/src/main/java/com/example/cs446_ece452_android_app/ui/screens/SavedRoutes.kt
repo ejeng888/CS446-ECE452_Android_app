@@ -1,4 +1,4 @@
-package com.example.cs446_ece452_android_app
+package com.example.cs446_ece452_android_app.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -20,9 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
+import com.example.cs446_ece452_android_app.ui.components.BottomNavigationBar
 import com.example.cs446_ece452_android_app.ui.theme.Blue2
 import com.example.cs446_ece452_android_app.ui.theme.DarkBlue
 

@@ -1,4 +1,4 @@
-package com.example.cs446_ece452_android_app
+package com.example.cs446_ece452_android_app.ui.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -13,6 +13,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.cs446_ece452_android_app.ui.components.BottomNavigationBar
+import com.google.firebase.Firebase
+import com.google.firebase.firestore.firestore
 
 @Composable
 fun DestinationInputScreen(navController: NavController) {
@@ -70,9 +73,29 @@ fun Destination(navController: NavController) {
         }
 
         Button(onClick = {
+            addAlanTuring()
             navController.navigate("Map")
         }) {
             Text("Calculate Route")
         }
     }
+}
+
+
+// COPIED STRAIGHT FROM TUTORIAL
+private fun addAlanTuring() {
+    val db = Firebase.firestore
+    // [START add_alan_turing]
+    // Create a new user with a first, middle, and last name
+    val user = hashMapOf(
+        "first" to "Alan",
+        "middle" to "Mathison",
+        "last" to "Turing",
+        "born" to 1912,
+    )
+
+    // Add a new document with a generated ID
+    db.collection("users")
+        .add(user)
+    // [END add_alan_turing]
 }
