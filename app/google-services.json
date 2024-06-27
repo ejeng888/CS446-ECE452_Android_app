@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "578296487396",
+    "project_id": "trailblazer-427022",
+    "storage_bucket": "trailblazer-427022.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:578296487396:android:632e4567867128474e3bf1",
+        "android_client_info": {
+          "package_name": "com.example.cs446_ece452_android_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDVHlGluFlAJHIi6XT6g9JZG_Qsj_rjFGE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
