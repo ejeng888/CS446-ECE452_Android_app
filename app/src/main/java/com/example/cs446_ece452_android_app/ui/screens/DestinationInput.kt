@@ -81,6 +81,8 @@ fun Destination(navController: NavController) {
     }
 }
 
+
+// COPIED STRAIGHT FROM TUTORIAL
 private fun addAlanTuring() {
     val db = Firebase.firestore
     // [START add_alan_turing]
