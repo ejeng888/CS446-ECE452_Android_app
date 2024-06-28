@@ -11,8 +11,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.cs446_ece452_android_app.ui.components.BottomNavigationBar
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
@@ -98,4 +100,10 @@ private fun addAlanTuring() {
     db.collection("users")
         .add(user)
     // [END add_alan_turing]
+}
+
+@Preview
+@Composable
+fun BottomNavigationBarPreview() {
+    BottomNavigationBar(rememberNavController())
 }
