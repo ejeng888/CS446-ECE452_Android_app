@@ -12,12 +12,13 @@ import com.example.cs446_ece452_android_app.ui.theme.Blue1
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 
 @Composable
-fun OutlinedButton(labelVal: String, navController: NavHostController, destination : String = "") {
+fun OutlinedButton(labelVal: String, navController: NavController, destination : String = "") {
     OutlinedButton(
-        onClick = { /*TODO*/ },
+        onClick = { if (destination != "") navController.navigate(destination) },
         colors = ButtonDefaults.buttonColors(
             containerColor = Blue1,
             contentColor = DarkBlue
@@ -28,12 +29,7 @@ fun OutlinedButton(labelVal: String, navController: NavHostController, destinati
     ) {
         Text(
             text = labelVal,
-            color = DarkBlue,
-            modifier = Modifier.clickable {
-                if (destination != "") {
-                    navController.navigate(destination)
-                }
-            }
+            color = DarkBlue
         )
     }
 }

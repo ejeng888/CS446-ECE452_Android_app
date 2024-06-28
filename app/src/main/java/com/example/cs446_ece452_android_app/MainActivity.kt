@@ -31,11 +31,9 @@ class MainActivity : ComponentActivity() {
                         LoginScreen(navController)
                     }
                     composable(route = "Signup") {
-                        SignupScreen(
-                            navController
-                        )
+                        SignupScreen(navController)
                     }
-                    composable(route = "routes") { // Add New Screens here
+                    composable(route = "routes") {
                         SavedRoutes(navController = navController)
                     }
                     composable(route = "Profile") {

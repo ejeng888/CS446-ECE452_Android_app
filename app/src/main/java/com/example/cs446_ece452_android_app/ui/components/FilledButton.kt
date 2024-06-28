@@ -12,12 +12,13 @@ import com.example.cs446_ece452_android_app.ui.theme.White
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 
 @Composable
-fun FilledButton(labelVal: String, navController: NavHostController, destination : String = "") {
+fun FilledButton(labelVal: String, navController: NavController, destination : String = "") {
     Button(
-        onClick = { /*TODO*/ },
+        onClick = { navController.navigate(destination) },
         colors = ButtonDefaults.buttonColors(
             containerColor = DarkBlue
         ),
@@ -27,10 +28,7 @@ fun FilledButton(labelVal: String, navController: NavHostController, destination
     ) {
         Text(
             text = labelVal,
-            color = White,
-            modifier = Modifier.clickable {
-                navController.navigate(destination)
-            }
+            color = White
         )
     }
 }
