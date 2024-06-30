@@ -19,7 +19,7 @@ import com.example.cs446_ece452_android_app.ui.theme.Blue4
 import com.example.cs446_ece452_android_app.ui.theme.DarkBlue
 
 @Composable
-fun InputBox(labelVal: String, placeHolder: String, valueChanged: (String) -> Unit) {
+fun InputBox(labelVal: String, placeHolder: String = "", valueChanged: (String) -> Unit) {
     var textVal by remember {
         mutableStateOf("")
     }
