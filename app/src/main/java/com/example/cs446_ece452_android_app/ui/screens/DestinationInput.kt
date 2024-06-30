@@ -22,6 +22,7 @@ import com.example.cs446_ece452_android_app.ui.components.InputBox
 import com.example.cs446_ece452_android_app.ui.theme.Blue1
 import com.example.cs446_ece452_android_app.ui.theme.DarkBlue
 import com.example.cs446_ece452_android_app.data.addRouteEntry
+import com.example.cs446_ece452_android_app.ui.components.CarSwitch
 import com.example.cs446_ece452_android_app.ui.components.DestinationEntry
 import com.example.cs446_ece452_android_app.ui.components.OutlinedButton
 
@@ -51,6 +52,7 @@ fun DestinationInputScreen(navController: NavController) {
             var routeName by remember { mutableStateOf("") }
             var location by remember { mutableStateOf("") }
             var maxCost by remember { mutableStateOf("") }
+            var accessToCar by remember { mutableStateOf(false) }
             var startDate by remember { mutableStateOf("") }
             var endDate by remember { mutableStateOf("") }
             val destinations = remember { mutableStateListOf<DestinationEntryStruct>(DestinationEntryStruct(), DestinationEntryStruct())}
@@ -61,7 +63,13 @@ fun DestinationInputScreen(navController: NavController) {
             ) {
                 InputBox(labelVal = "Route Name", placeHolder = "NY Grad Trip", valueChanged = {newValue -> routeName = newValue})
                 InputBox(labelVal = "Location", placeHolder = "New York City, NY, US", valueChanged = {newValue -> location = newValue})
-                InputBox(labelVal = "Max Cost", placeHolder = "$0.00", valueChanged = {newValue -> maxCost = newValue})
+                Row {
+                    Box(modifier = Modifier.fillMaxWidth(0.5f)) {
+                        InputBox(labelVal = "Max Cost", placeHolder = "$0.00", valueChanged = { newValue -> maxCost = newValue })
+                    }
+                        CarSwitch(Switched = { newValue -> accessToCar = newValue })
+                }
+
                 InputBox(labelVal = "Start Date", valueChanged = {newValue -> startDate = newValue})
                 InputBox(labelVal = "End Date", valueChanged = {newValue -> endDate = newValue})
             }
@@ -76,7 +84,9 @@ fun DestinationInputScreen(navController: NavController) {
                             destinations[index] = updatedEntry},
                         destinationChanged = {newValue ->
                             val updatedEntry = destinations[index].copy(destination = newValue)
-                            destinations[index] = updatedEntry}
+                            destinations[index] = updatedEntry},
+                        start = (index == 0),
+                        end = (index == destinations.size - 1)
                         )
                 }
             }
@@ -91,7 +101,7 @@ fun DestinationInputScreen(navController: NavController) {
                 labelVal = "Calculate Route",
                 navController = navController,
                 destination = "Map",
-                function = {addRouteEntry(routeName, location, maxCost, startDate, endDate, destinations)}
+                function = {addRouteEntry(routeName, location, maxCost, accessToCar, startDate, endDate, destinations)}
             )
 
         }

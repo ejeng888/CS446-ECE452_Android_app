@@ -18,12 +18,13 @@ data class DestinationEntryStruct(
     val destinations : Array<DestinationEntryStruct> = arrayOf<DestinationEntryStruct>()
 ) */
 
-fun addRouteEntry(routeName : String, location : String, maxCost : String, startDate : String, endDate : String, destinations : SnapshotStateList<DestinationEntryStruct>) {
+fun addRouteEntry(routeName : String, location : String, maxCost : String, accessToCar : Boolean, startDate : String, endDate : String, destinations : SnapshotStateList<DestinationEntryStruct>) {
     val db = Firebase.firestore
     val dbEntry = hashMapOf(
         "routeName" to routeName,
         "location" to location,
         "maxCost" to maxCost,
+        "accessToCar" to accessToCar,
         "startDate" to startDate,
         "endDate" to endDate,
         "destinations" to destinations

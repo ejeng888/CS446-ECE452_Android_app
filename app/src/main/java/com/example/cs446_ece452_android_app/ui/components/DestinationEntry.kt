@@ -15,6 +15,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Flag
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -39,18 +41,28 @@ import com.example.cs446_ece452_android_app.ui.theme.Blue4
 import com.example.cs446_ece452_android_app.ui.theme.DarkBlue
 
 @Composable
-fun DestinationEntry(timeChanged: (String) -> Unit, destinationChanged: (String) -> Unit) {
+fun DestinationEntry(timeChanged: (String) -> Unit, destinationChanged: (String) -> Unit, start: Boolean = false, end: Boolean = false) {
     var destination by remember {
         mutableStateOf("")
     }
     var timeSpent by remember {
         mutableStateOf("02:00")
     }
+    var icon = Icons.Default.Schedule
+    var placeholder = "Add Stop"
+    if (start) {
+        icon = Icons.Default.LocationOn
+        placeholder = "Enter Starting Location"
+    } else if (end) {
+        icon = Icons.Default.Flag
+        placeholder = "Enter Ending Location"
+    }
+
     Row(
         horizontalArrangement = Arrangement.spacedBy(5.dp)
     ) {
         Column {
-            VerticalLine()
+            VerticalLine(dontShow = start)
             Row(
                 modifier = Modifier
                     .clip(shape = RoundedCornerShape(14.dp))
@@ -58,19 +70,21 @@ fun DestinationEntry(timeChanged: (String) -> Unit, destinationChanged: (String)
                     .padding(2.dp),
                 horizontalArrangement = Arrangement.spacedBy(5.dp)
             ) {
-                Icon(imageVector = Icons.Default.Schedule, contentDescription = "clock", tint= DarkBlue)
-                BasicTextField(
-                    value = timeSpent,
-                    onValueChange = {
-                        timeSpent = it
-                        timeChanged(timeSpent)
-                    },
-                    modifier = Modifier.width(55.dp),
-                    textStyle = TextStyle(color = DarkBlue, fontSize = 20.sp),
-                    singleLine = true
-                )
+                Icon(imageVector = icon, contentDescription = "clock", tint= DarkBlue)
+                if (!start && !end) {
+                    BasicTextField(
+                        value = timeSpent,
+                        onValueChange = {
+                            timeSpent = it
+                            timeChanged(timeSpent)
+                        },
+                        modifier = Modifier.width(55.dp),
+                        textStyle = TextStyle(color = DarkBlue, fontSize = 20.sp),
+                        singleLine = true
+                    )
+                }
             }
-            VerticalLine()
+            VerticalLine(dontShow = end)
 
         }
 
@@ -84,7 +98,7 @@ fun DestinationEntry(timeChanged: (String) -> Unit, destinationChanged: (String)
             textStyle = TextStyle(color = DarkBlue, fontSize = 20.sp),
             singleLine = true,
             placeholder = {
-                Text(text = "Add Stop", color = Blue4)
+                Text(text = placeholder, color = Blue4)
             },
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = Blue3,
@@ -105,9 +119,10 @@ fun DestinationEntry(timeChanged: (String) -> Unit, destinationChanged: (String)
 }
 
 @Composable
-fun VerticalLine() {
+fun VerticalLine(dontShow : Boolean = false) {
     Row {
-        Spacer(modifier = Modifier.width(12.dp))
+        Spacer(modifier = Modifier.width(12.dp).height(15.dp))
+        if (dontShow) return
         Box(
             modifier = Modifier
                 .height(15.dp)
@@ -122,5 +137,10 @@ fun VerticalLine() {
 @Preview
 @Composable
 fun DestinationEntryPreview() {
-    DestinationEntry({}, {})
+    Column {
+        DestinationEntry({}, {}, start = true)
+        DestinationEntry({}, {})
+        DestinationEntry({}, {}, end = true)
+    }
+
 }

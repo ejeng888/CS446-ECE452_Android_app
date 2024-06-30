@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import com.example.cs446_ece452_android_app.ui.theme.Blue1
 import com.example.cs446_ece452_android_app.ui.theme.Blue3
 import com.example.cs446_ece452_android_app.ui.theme.Blue4
+import com.example.cs446_ece452_android_app.ui.theme.Blue5
 import com.example.cs446_ece452_android_app.ui.theme.DarkBlue
 
 @Composable
@@ -30,7 +31,7 @@ fun InputBox(labelVal: String, placeHolder: String = "", valueChanged: (String) 
             textVal = it
             valueChanged(textVal)
                         },
-        label = { Text(labelVal) },
+        label = { Text(labelVal, color = Blue5) },
         textStyle = TextStyle(color = DarkBlue, fontSize = 20.sp),
         placeholder = {
             Text(text = placeHolder, color = Blue4)
