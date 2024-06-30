@@ -1,5 +1,6 @@
 package com.example.cs446_ece452_android_app.ui.screens
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -11,13 +12,18 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.cs446_ece452_android_app.ui.components.BottomNavigationBar
-import com.google.firebase.Firebase
-import com.google.firebase.firestore.firestore
+import com.example.cs446_ece452_android_app.ui.components.FilledButton
+import com.example.cs446_ece452_android_app.ui.components.InputBox
+import com.example.cs446_ece452_android_app.ui.theme.Blue1
+import com.example.cs446_ece452_android_app.ui.theme.DarkBlue
+import com.example.cs446_ece452_android_app.data.addRouteEntry
 
 @Composable
 fun DestinationInputScreen(navController: NavController) {
@@ -25,15 +31,41 @@ fun DestinationInputScreen(navController: NavController) {
         bottomBar = {
             BottomNavigationBar(navController = navController)
         }
+
     ) { paddingValues ->
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Top,
+            verticalArrangement = Arrangement.spacedBy(10.dp),
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues) // Use the provided padding values
+                .background(color = Blue1)
+                .padding(paddingValues)
+                .padding(horizontal = 25.dp)
         ) {
+            Spacer(modifier = Modifier.height(10.dp))
+            Text(
+                text = "New Route",
+                fontSize = 32.sp,
+                textAlign = TextAlign.Center,
+                color = DarkBlue
+            )
+
+            var routeName by remember { mutableStateOf("") }
+            var location by remember { mutableStateOf("") }
+            var maxCost by remember { mutableStateOf("") }
+
+            InputBox(labelVal = "Route Name", placeHolder = "NY Grad Trip", valueChanged = {newValue -> routeName = newValue})
+            InputBox(labelVal = "Location", placeHolder = "New York City, NY, US", valueChanged = {newValue -> location = newValue})
+            InputBox(labelVal = "Max Cost", placeHolder = "$0.00", valueChanged = {newValue -> maxCost = newValue})
             Destination(navController)
+
+            FilledButton(
+                labelVal = "Calculate Route",
+                navController = navController,
+                destination = "Map",
+                function = {addRouteEntry(routeName, location, maxCost)}
+            )
+
         }
     }
 }
@@ -44,7 +76,6 @@ fun Destination(navController: NavController) {
 
     Column(
         modifier = Modifier
-            .fillMaxSize()
             .padding(16.dp),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -75,7 +106,6 @@ fun Destination(navController: NavController) {
         }
 
         Button(onClick = {
-            addAlanTuring()
             navController.navigate("Map")
         }) {
             Text("Calculate Route")
@@ -83,27 +113,8 @@ fun Destination(navController: NavController) {
     }
 }
 
-
-// COPIED STRAIGHT FROM TUTORIAL
-private fun addAlanTuring() {
-    val db = Firebase.firestore
-    // [START add_alan_turing]
-    // Create a new user with a first, middle, and last name
-    val user = hashMapOf(
-        "first" to "Alan",
-        "middle" to "Mathison",
-        "last" to "Turing",
-        "born" to 1912,
-    )
-
-    // Add a new document with a generated ID
-    db.collection("users")
-        .add(user)
-    // [END add_alan_turing]
-}
-
 @Preview
 @Composable
-fun BottomNavigationBarPreview() {
-    BottomNavigationBar(rememberNavController())
+fun DestinationInputScreenPreview() {
+    DestinationInputScreen(rememberNavController())
 }
