@@ -1,21 +1,30 @@
 package com.example.cs446_ece452_android_app.ui.screens
 
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.getValue
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.example.cs446_ece452_android_app.data.DestinationEntryStruct
 import com.example.cs446_ece452_android_app.ui.components.BottomNavigationBar
-import com.google.firebase.Firebase
-import com.google.firebase.firestore.firestore
+import com.example.cs446_ece452_android_app.ui.components.FilledButton
+import com.example.cs446_ece452_android_app.ui.components.InputBox
+import com.example.cs446_ece452_android_app.ui.theme.Blue1
+import com.example.cs446_ece452_android_app.ui.theme.DarkBlue
+import com.example.cs446_ece452_android_app.data.addRouteEntry
+import com.example.cs446_ece452_android_app.ui.components.CarSwitch
+import com.example.cs446_ece452_android_app.ui.components.DestinationEntry
+import com.example.cs446_ece452_android_app.ui.components.OutlinedButton
 
 @Composable
 fun DestinationInputScreen(navController: NavController) {
@@ -23,79 +32,84 @@ fun DestinationInputScreen(navController: NavController) {
         bottomBar = {
             BottomNavigationBar(navController = navController)
         }
+
     ) { paddingValues ->
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Top,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues) // Use the provided padding values
+                .background(color = Blue1)
+                .padding(paddingValues)
         ) {
-            Destination(navController)
-        }
-    }
-}
-
-@Composable
-fun Destination(navController: NavController) {
-    var numDestinations by remember { mutableIntStateOf(1) }
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        repeat(numDestinations) {
-            var text by remember { mutableStateOf("") }
-            TextField(
-                value = text,
-                onValueChange = { newText ->
-                    text = newText
-                },
-                label = { Text("Enter Destination") },
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(50.dp),
-                colors = TextFieldDefaults.colors(
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent
-                )
+            Spacer(modifier = Modifier.height(10.dp))
+            Text(
+                text = "New Route",
+                fontSize = 32.sp,
+                textAlign = TextAlign.Center,
+                color = DarkBlue
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
-        }
+            var routeName by remember { mutableStateOf("") }
+            var location by remember { mutableStateOf("") }
+            var maxCost by remember { mutableStateOf("") }
+            var accessToCar by remember { mutableStateOf(false) }
+            var startDate by remember { mutableStateOf("") }
+            var endDate by remember { mutableStateOf("") }
+            val destinations = remember { mutableStateListOf<DestinationEntryStruct>(DestinationEntryStruct(), DestinationEntryStruct())}
 
-        Button(onClick = {
-            numDestinations++
-        }) {
-            Text("Add Destination +")
-        }
+            Column(
+                verticalArrangement = Arrangement.spacedBy(10.dp),
+                modifier = Modifier.padding(horizontal = 25.dp)
+            ) {
+                InputBox(labelVal = "Route Name", placeHolder = "NY Grad Trip", valueChanged = {newValue -> routeName = newValue})
+                InputBox(labelVal = "Location", placeHolder = "New York City, NY, US", valueChanged = {newValue -> location = newValue})
+                Row {
+                    Box(modifier = Modifier.fillMaxWidth(0.5f)) {
+                        InputBox(labelVal = "Max Cost", placeHolder = "$0.00", valueChanged = { newValue -> maxCost = newValue })
+                    }
+                        CarSwitch(Switched = { newValue -> accessToCar = newValue })
+                }
 
-        Button(onClick = {
-            addAlanTuring()
-            navController.navigate("Map")
-        }) {
-            Text("Calculate Route")
+                InputBox(labelVal = "Start Date", valueChanged = {newValue -> startDate = newValue})
+                InputBox(labelVal = "End Date", valueChanged = {newValue -> endDate = newValue})
+            }
+
+            Column(
+                modifier = Modifier.padding(start = 10.dp, end=25.dp, top=25.dp, bottom=25.dp)
+            ) {
+                repeat(destinations.size) { index ->
+                    DestinationEntry(
+                        timeChanged = {newValue ->
+                            val updatedEntry = destinations[index].copy(timeSpent = newValue)
+                            destinations[index] = updatedEntry},
+                        destinationChanged = {newValue ->
+                            val updatedEntry = destinations[index].copy(destination = newValue)
+                            destinations[index] = updatedEntry},
+                        start = (index == 0),
+                        end = (index == destinations.size - 1)
+                        )
+                }
+            }
+
+            OutlinedButton(
+                labelVal = "Add Destination",
+                navController = navController,
+                function = {destinations.add(DestinationEntryStruct())}
+            )
+
+            FilledButton(
+                labelVal = "Calculate Route",
+                navController = navController,
+                destination = "Map",
+                function = {addRouteEntry(routeName, location, maxCost, accessToCar, startDate, endDate, destinations)}
+            )
+
         }
     }
 }
 
-
-// COPIED STRAIGHT FROM TUTORIAL
-private fun addAlanTuring() {
-    val db = Firebase.firestore
-    // [START add_alan_turing]
-    // Create a new user with a first, middle, and last name
-    val user = hashMapOf(
-        "first" to "Alan",
-        "middle" to "Mathison",
-        "last" to "Turing",
-        "born" to 1912,
-    )
-
-    // Add a new document with a generated ID
-    db.collection("users")
-        .add(user)
-    // [END add_alan_turing]
+@Preview
+@Composable
+fun DestinationInputScreenPreview() {
+    DestinationInputScreen(rememberNavController())
 }

@@ -20,6 +20,7 @@ import com.example.cs446_ece452_android_app.ui.theme.Blue1
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
+import androidx.navigation.NavController
 import com.example.cs446_ece452_android_app.ui.components.OutlinedInputBox
 import com.example.cs446_ece452_android_app.ui.components.PasswordInputBox
 import com.example.cs446_ece452_android_app.ui.components.TextDivider
@@ -29,7 +30,7 @@ import com.example.cs446_ece452_android_app.ui.components.FilledButton
 import com.example.cs446_ece452_android_app.ui.components.OutlinedButton
 
 @Composable
-fun LoginScreen(navController : NavHostController) {
+fun LoginScreen(navController : NavController) {
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = Blue1
