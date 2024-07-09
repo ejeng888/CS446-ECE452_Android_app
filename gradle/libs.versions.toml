@@ -22,6 +22,7 @@ nav_version = "2.7.7"
 uiViewbinding = "1.6.8"
 mapsKtx = "5.0.0"
 mapsCompose = "4.4.1"
+firebaseCommonKtx = "21.0.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -55,6 +56,7 @@ google-maps-android-mapsutilsktx = { group = "com.google.maps.android", name = "
 google-maps-android-mapscompose = { group = "com.google.maps.android", name = "maps-compose", version.ref = "mapsCompose" }
 google-maps-android-mapscomposeutils = { group = "com.google.maps.android", name = "maps-compose-utils", version.ref = "mapsCompose" }
 google-maps-android-mapscomposewidgets = { group = "com.google.maps.android", name = "maps-compose-widgets", version.ref = "mapsCompose" }
+firebase-common-ktx = { group = "com.google.firebase", name = "firebase-common-ktx", version.ref = "firebaseCommonKtx" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
