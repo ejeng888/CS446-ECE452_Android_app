@@ -28,6 +28,7 @@ import com.example.cs446_ece452_android_app.ui.components.InputBox
 import com.example.cs446_ece452_android_app.ui.theme.Blue1
 import com.example.cs446_ece452_android_app.ui.theme.DarkBlue
 import com.example.cs446_ece452_android_app.data.addRouteEntry
+import com.example.cs446_ece452_android_app.data.calculatePath
 import com.example.cs446_ece452_android_app.ui.components.CarSwitch
 import com.example.cs446_ece452_android_app.ui.components.DestinationEntry
 import com.example.cs446_ece452_android_app.ui.components.OutlinedButton
@@ -120,7 +121,10 @@ fun DestinationInputScreen(navController: NavController) {
                 labelVal = "Calculate Route",
                 navController = navController,
                 destination = "Map",
-                function = {addRouteEntry(routeName, location, maxCost, accessToCar, startDate, endDate, destinations)}
+                function = {
+                    val optimizedPathList = calculatePath(destinations)
+                    addRouteEntry(routeName, location, maxCost, accessToCar, startDate, endDate, destinations)
+                }
             )
 
         }
@@ -172,7 +176,7 @@ fun DateTimePickerButton(label: String, onDateTimeSelected: (String) -> Unit) {
                 calendar.set(Calendar.MINUTE, minute)
 
                 // Format selected date and time
-                val dateTime = String.format("%02d/%02d/%04d %02d:%02d",
+                val dateTime = String.format(Locale.US, "%02d/%02d/%04d %02d:%02d",
                     calendar.get(Calendar.DAY_OF_MONTH),
                     calendar.get(Calendar.MONTH) + 1,
                     calendar.get(Calendar.YEAR),
