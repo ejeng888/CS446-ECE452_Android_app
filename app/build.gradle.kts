@@ -96,4 +96,6 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-firestore")
 
+    implementation("com.squareup.okhttp3:okhttp:4.9.1")
+
 }

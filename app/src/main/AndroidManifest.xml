@@ -12,6 +12,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CS446ECE452_Android_app"
         tools:targetApi="31">
+        <service
+            android:name=".data.MapsService"
+            android:enabled="true"
+            android:exported="true"></service>
 
         <meta-data
             android:name="com.google.android.gms.version"
@@ -31,10 +35,10 @@
             android:theme="@style/Theme.CS446ECE452_Android_app">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
     </application>
 
 </manifest>
