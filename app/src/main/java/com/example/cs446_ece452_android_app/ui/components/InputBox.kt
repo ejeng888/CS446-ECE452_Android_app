@@ -20,9 +20,9 @@ import com.example.cs446_ece452_android_app.ui.theme.Blue5
 import com.example.cs446_ece452_android_app.ui.theme.DarkBlue
 
 @Composable
-fun InputBox(labelVal: String, placeHolder: String = "", valueChanged: (String) -> Unit) {
+fun InputBox(labelVal: String, placeHolder: String = "", valueChanged: (String) -> Unit = {}, enabled : Boolean = true) {
     var textVal by remember {
-        mutableStateOf("")
+        mutableStateOf(placeHolder)
     }
     TextField(
         modifier = Modifier.fillMaxWidth(),
@@ -32,6 +32,7 @@ fun InputBox(labelVal: String, placeHolder: String = "", valueChanged: (String) 
             valueChanged(textVal)
                         },
         label = { Text(labelVal, color = Blue5) },
+        enabled = enabled,
         textStyle = TextStyle(color = DarkBlue, fontSize = 20.sp),
         placeholder = {
             Text(text = placeHolder, color = Blue4)

@@ -23,7 +23,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
-fun PasswordInputBox(labelVal : String) {
+fun PasswordInputBox(labelVal : String, valueChanged : (String) -> Unit = {}) {
     var password by remember {
         mutableStateOf("")
     }
@@ -32,7 +32,10 @@ fun PasswordInputBox(labelVal : String) {
     }
     OutlinedTextField(
         value = password,
-        onValueChange = { password = it },
+        onValueChange = {
+            password = it
+            valueChanged(password)
+                        },
         textStyle = TextStyle(color = DarkBlue),
         label = { Text(labelVal, color = DarkBlue) },
         colors = TextFieldDefaults.colors(
