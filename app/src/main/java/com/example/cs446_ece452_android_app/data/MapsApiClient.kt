@@ -63,10 +63,11 @@ class MapsApiClient {
         }
     }
 
-    fun getRoute(start: Destination, end: Destination, stops: ArrayList<Destination>, travelMode: String): CompletableFuture<Route> {
+    fun getRoute(start: Destination, end: Destination, stops: ArrayList<Destination>?, travelMode: String): CompletableFuture<Route> {
         var stopsFormatted = ""
-        for (dest in stops) {
-            stopsFormatted += """
+        if (stops != null) {
+            for (dest in stops) {
+                stopsFormatted += """
                 {
                     "location": {
                         "latLng": {
@@ -75,6 +76,12 @@ class MapsApiClient {
                         }
                     }
                 },
+            """
+            }
+            stopsFormatted = """
+                "intermediates": [
+                    $stopsFormatted
+                ],
             """
         }
 
@@ -96,9 +103,7 @@ class MapsApiClient {
                         }
                     }
                 },
-                "intermediates": [
                 $stopsFormatted
-                ],
                 "optimizeWaypointOrder": "true",
                 "travelMode": "$travelMode"
             }"""
