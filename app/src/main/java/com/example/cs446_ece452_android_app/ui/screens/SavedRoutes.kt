@@ -1,6 +1,5 @@
 package com.example.cs446_ece452_android_app.ui.screens
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -30,9 +29,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -43,6 +40,8 @@ import com.example.cs446_ece452_android_app.ui.components.Logo
 import com.example.cs446_ece452_android_app.ui.theme.Blue2
 import com.example.cs446_ece452_android_app.ui.theme.DarkBlue
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.rememberNavController
 
 @Composable
 fun SavedRoutes(navController: NavController) {
@@ -53,6 +52,7 @@ fun SavedRoutes(navController: NavController) {
     }
     var routeToDelete by remember { mutableStateOf<String?>(null) }
     var showDialog by remember { mutableStateOf(false) }
+
     Scaffold(
         bottomBar = {
             BottomNavigationBar(navController = navController)
@@ -87,7 +87,9 @@ fun SavedRoutes(navController: NavController) {
                     unfocusedContainerColor = Color.White,
                     cursorColor = DarkBlue
                 ),
-                modifier = Modifier.fillMaxWidth().height(50.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp)
             )
             Spacer(modifier = Modifier.size(30.dp))
             LazyColumn(
@@ -105,7 +107,9 @@ fun SavedRoutes(navController: NavController) {
                             },
                             colors = ButtonDefaults.buttonColors(Blue2),
                             shape = RectangleShape,
-                            modifier = Modifier.size(width = 360.dp, height = 120.dp).padding(end = 10.dp)// Adjust height as needed
+                            modifier = Modifier
+                                .size(width = 360.dp, height = 120.dp)
+                                .padding(end = 10.dp)// Adjust height as needed
                         ) {
                             Text(
                                 text = "Map",
@@ -190,4 +194,11 @@ fun SavedRoutes(navController: NavController) {
             }
         }
     }
+}
+
+
+@Preview
+@Composable
+fun SavedRoutesPreview() {
+    SavedRoutes(rememberNavController())
 }
