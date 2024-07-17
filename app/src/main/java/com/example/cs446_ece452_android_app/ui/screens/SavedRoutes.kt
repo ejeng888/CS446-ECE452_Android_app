@@ -198,6 +198,7 @@ fun SavedRoutes(navController: NavController) {
                         Text(text = "Delete Route")
                     },
                     text = {
+                        // routeNameId is a required field
                         Text("Are you sure you want to delete $routeNameId?")
                     },
                     confirmButton = {
