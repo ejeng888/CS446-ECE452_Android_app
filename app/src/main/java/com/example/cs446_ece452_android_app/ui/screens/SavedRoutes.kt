@@ -114,7 +114,7 @@ fun SavedRoutes(navController: NavController) {
                             Text(
                                 text = "Map",
                                 color = DarkBlue,
-                                fontSize = 16.sp, // Adjust text size as needed
+                                fontSize = 15.sp, // Adjust text size as needed
                                 fontWeight = FontWeight.Bold
                             )
                             Column(
