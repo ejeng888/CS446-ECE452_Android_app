@@ -1,5 +1,8 @@
 package com.example.cs446_ece452_android_app.ui.screens
 
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
+import android.icu.util.Calendar
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
 import androidx.compose.foundation.background
@@ -14,6 +17,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import android.widget.Toast
+import androidx.compose.foundation.gestures.ScrollableState
+import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.rememberNavController
 import com.example.cs446_ece452_android_app.data.DestinationEntryStruct
 import com.example.cs446_ece452_android_app.ui.components.BottomNavigationBar
@@ -22,9 +32,13 @@ import com.example.cs446_ece452_android_app.ui.components.InputBox
 import com.example.cs446_ece452_android_app.ui.theme.Blue1
 import com.example.cs446_ece452_android_app.ui.theme.DarkBlue
 import com.example.cs446_ece452_android_app.data.addRouteEntry
+import com.example.cs446_ece452_android_app.data.calculatePath
 import com.example.cs446_ece452_android_app.ui.components.CarSwitch
 import com.example.cs446_ece452_android_app.ui.components.DestinationEntry
 import com.example.cs446_ece452_android_app.ui.components.OutlinedButton
+import com.google.accompanist.insets.ProvideWindowInsets
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 @Composable
 fun DestinationInputScreen(navController: NavController) {
@@ -40,7 +54,14 @@ fun DestinationInputScreen(navController: NavController) {
                 .fillMaxSize()
                 .background(color = Blue1)
                 .padding(paddingValues)
+                .verticalScroll(rememberScrollState())
         ) {
+            val currentDateTime = remember {
+                val calendar = Calendar.getInstance()
+                val sdf = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
+                sdf.format(calendar.time)
+            }
+
             Spacer(modifier = Modifier.height(10.dp))
             Text(
                 text = "New Route",
@@ -53,43 +74,53 @@ fun DestinationInputScreen(navController: NavController) {
             var location by remember { mutableStateOf("") }
             var maxCost by remember { mutableStateOf("") }
             var accessToCar by remember { mutableStateOf(false) }
-            var startDate by remember { mutableStateOf("") }
-            var endDate by remember { mutableStateOf("") }
-            val destinations = remember { mutableStateListOf<DestinationEntryStruct>(DestinationEntryStruct(), DestinationEntryStruct())}
+            var startDate by remember { mutableStateOf(currentDateTime) }
+            var endDate by remember { mutableStateOf(currentDateTime) }
+            val destinations = remember { mutableStateListOf<DestinationEntryStruct>(DestinationEntryStruct(), DestinationEntryStruct()) }
 
             Column(
                 verticalArrangement = Arrangement.spacedBy(10.dp),
                 modifier = Modifier.padding(horizontal = 25.dp)
             ) {
-                InputBox(labelVal = "Route Name", placeHolder = "NY Grad Trip", valueChanged = {newValue -> routeName = newValue})
-                InputBox(labelVal = "Location", placeHolder = "New York City, NY, US", valueChanged = {newValue -> location = newValue})
+                InputBox(labelVal = "Route Name", placeHolder = "NY Grad Trip", valueChanged = { newValue -> routeName = newValue })
+                InputBox(labelVal = "Location", placeHolder = "New York City, NY, US", valueChanged = { newValue -> location = newValue })
                 Row {
                     Box(modifier = Modifier.fillMaxWidth(0.5f)) {
                         InputBox(labelVal = "Max Cost", placeHolder = "$0.00", valueChanged = { newValue -> maxCost = newValue })
                     }
-                        CarSwitch(Switched = { newValue -> accessToCar = newValue })
+                    CarSwitch(Switched = { newValue -> accessToCar = newValue })
                 }
 
-                InputBox(labelVal = "Start Date", valueChanged = {newValue -> startDate = newValue})
-                InputBox(labelVal = "End Date", valueChanged = {newValue -> endDate = newValue})
-            }
+                DateTimeInputField(label = "Start", dateTime = startDate) { selectedDateTime ->
+                    startDate = selectedDateTime
+                }
 
-            Column(
-                modifier = Modifier.padding(start = 10.dp, end=25.dp, top=25.dp, bottom=25.dp)
-            ) {
-                repeat(destinations.size) { index ->
-                    DestinationEntry(
-                        timeChanged = {newValue ->
-                            val updatedEntry = destinations[index].copy(timeSpent = newValue)
-                            destinations[index] = updatedEntry},
-                        destinationChanged = {newValue ->
-                            val updatedEntry = destinations[index].copy(destination = newValue)
-                            destinations[index] = updatedEntry},
-                        start = (index == 0),
-                        end = (index == destinations.size - 1)
+                DateTimeInputField(label = "End", dateTime = endDate) { selectedDateTime ->
+                    endDate = selectedDateTime
+                }
+            }
+            ProvideWindowInsets {
+                Column(
+                    modifier = Modifier.padding(start = 10.dp, end = 25.dp, top = 25.dp, bottom = 25.dp)
+                ) {
+                    repeat(destinations.size) { index ->
+
+                        DestinationEntry(
+                            timeChanged = { newValue ->
+                                val updatedEntry = destinations[index].copy(timeSpent = newValue)
+                                destinations[index] = updatedEntry
+                            },
+                            destinationChanged = { newValue ->
+                                val updatedEntry = destinations[index].copy(destination = newValue)
+                                destinations[index] = updatedEntry
+                            },
+                            start = (index == 0),
+                            end = (index == destinations.size - 1),
                         )
+                    }
                 }
             }
+
 
             OutlinedButton(
                 labelVal = "Add Destination",
@@ -101,7 +132,10 @@ fun DestinationInputScreen(navController: NavController) {
                 labelVal = "Calculate Route",
                 navController = navController,
                 destination = "Map",
-                function = {addRouteEntry(routeName, location, maxCost, accessToCar, startDate, endDate, destinations)}
+                function = {
+                    val optimizedPathList = calculatePath(destinations)
+                    addRouteEntry(routeName, location, maxCost, accessToCar, startDate, endDate, destinations)
+                }
             )
 
         }
@@ -112,4 +146,60 @@ fun DestinationInputScreen(navController: NavController) {
 @Composable
 fun DestinationInputScreenPreview() {
     DestinationInputScreen(rememberNavController())
+}
+
+@Composable
+fun DateTimeInputField(label: String, dateTime: String, onDateTimeSelected: (String) -> Unit) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp)
+    ) {
+        Text(
+            text = label
+        )
+        Text(
+            text = dateTime
+        )
+        DateTimePickerButton(label = "Pick") { selectedDateTime ->
+            onDateTimeSelected(selectedDateTime)
+        }
+    }
+}
+
+@Composable
+fun DateTimePickerButton(label: String, onDateTimeSelected: (String) -> Unit) {
+    val context = LocalContext.current
+    val calendar = Calendar.getInstance()
+
+    Button(onClick = {
+        // Date Picker Dialog
+        DatePickerDialog(context, { _, year, month, dayOfMonth ->
+            calendar.set(Calendar.YEAR, year)
+            calendar.set(Calendar.MONTH, month)
+            calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+
+            // Time Picker Dialog
+            TimePickerDialog(context, { _, hourOfDay, minute ->
+                calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
+                calendar.set(Calendar.MINUTE, minute)
+
+                // Format selected date and time
+                val dateTime = String.format(Locale.US, "%02d/%02d/%04d %02d:%02d",
+                    calendar.get(Calendar.DAY_OF_MONTH),
+                    calendar.get(Calendar.MONTH) + 1,
+                    calendar.get(Calendar.YEAR),
+                    calendar.get(Calendar.HOUR_OF_DAY),
+                    calendar.get(Calendar.MINUTE)
+                )
+                onDateTimeSelected(dateTime)
+                Toast.makeText(context, "Selected Date and Time: $dateTime", Toast.LENGTH_SHORT).show()
+            }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true).show()
+
+        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show()
+    }) {
+        Text(label)
+    }
 }
