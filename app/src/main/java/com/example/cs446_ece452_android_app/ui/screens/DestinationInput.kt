@@ -18,6 +18,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import android.widget.Toast
+import androidx.compose.foundation.gestures.ScrollableState
+import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.rememberNavController
@@ -32,6 +36,7 @@ import com.example.cs446_ece452_android_app.data.calculatePath
 import com.example.cs446_ece452_android_app.ui.components.CarSwitch
 import com.example.cs446_ece452_android_app.ui.components.DestinationEntry
 import com.example.cs446_ece452_android_app.ui.components.OutlinedButton
+import com.google.accompanist.insets.ProvideWindowInsets
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -49,6 +54,7 @@ fun DestinationInputScreen(navController: NavController) {
                 .fillMaxSize()
                 .background(color = Blue1)
                 .padding(paddingValues)
+                .verticalScroll(rememberScrollState())
         ) {
             val currentDateTime = remember {
                 val calendar = Calendar.getInstance()
@@ -70,14 +76,14 @@ fun DestinationInputScreen(navController: NavController) {
             var accessToCar by remember { mutableStateOf(false) }
             var startDate by remember { mutableStateOf(currentDateTime) }
             var endDate by remember { mutableStateOf(currentDateTime) }
-            val destinations = remember { mutableStateListOf<DestinationEntryStruct>(DestinationEntryStruct(), DestinationEntryStruct())}
+            val destinations = remember { mutableStateListOf<DestinationEntryStruct>(DestinationEntryStruct(), DestinationEntryStruct()) }
 
             Column(
                 verticalArrangement = Arrangement.spacedBy(10.dp),
                 modifier = Modifier.padding(horizontal = 25.dp)
             ) {
-                InputBox(labelVal = "Route Name", placeHolder = "NY Grad Trip", valueChanged = {newValue -> routeName = newValue})
-                InputBox(labelVal = "Location", placeHolder = "New York City, NY, US", valueChanged = {newValue -> location = newValue})
+                InputBox(labelVal = "Route Name", placeHolder = "NY Grad Trip", valueChanged = { newValue -> routeName = newValue })
+                InputBox(labelVal = "Location", placeHolder = "New York City, NY, US", valueChanged = { newValue -> location = newValue })
                 Row {
                     Box(modifier = Modifier.fillMaxWidth(0.5f)) {
                         InputBox(labelVal = "Max Cost", placeHolder = "$0.00", valueChanged = { newValue -> maxCost = newValue })
@@ -93,23 +99,28 @@ fun DestinationInputScreen(navController: NavController) {
                     endDate = selectedDateTime
                 }
             }
+            ProvideWindowInsets {
+                Column(
+                    modifier = Modifier.padding(start = 10.dp, end = 25.dp, top = 25.dp, bottom = 25.dp)
+                ) {
+                    repeat(destinations.size) { index ->
 
-            Column(
-                modifier = Modifier.padding(start = 10.dp, end=25.dp, top=25.dp, bottom=25.dp)
-            ) {
-                repeat(destinations.size) { index ->
-                    DestinationEntry(
-                        timeChanged = {newValue ->
-                            val updatedEntry = destinations[index].copy(timeSpent = newValue)
-                            destinations[index] = updatedEntry},
-                        destinationChanged = {newValue ->
-                            val updatedEntry = destinations[index].copy(destination = newValue)
-                            destinations[index] = updatedEntry},
-                        start = (index == 0),
-                        end = (index == destinations.size - 1)
-                    )
+                        DestinationEntry(
+                            timeChanged = { newValue ->
+                                val updatedEntry = destinations[index].copy(timeSpent = newValue)
+                                destinations[index] = updatedEntry
+                            },
+                            destinationChanged = { newValue ->
+                                val updatedEntry = destinations[index].copy(destination = newValue)
+                                destinations[index] = updatedEntry
+                            },
+                            start = (index == 0),
+                            end = (index == destinations.size - 1),
+                        )
+                    }
                 }
             }
+
 
             OutlinedButton(
                 labelVal = "Add Destination",
