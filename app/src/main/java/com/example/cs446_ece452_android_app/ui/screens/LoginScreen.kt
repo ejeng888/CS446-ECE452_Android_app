@@ -118,7 +118,9 @@ fun LoginScreen(navController : NavController) {
 
             Spacer(modifier = Modifier.height(30.dp))
             FilledButton(labelVal = "Login", navController = navController, function = {
-                login(context = context, email = enteredEmail, password = enteredPassword, destination = "routes") // New screen
+                // login(context = context, email = enteredEmail, password = enteredPassword, destination = "routes")
+                // For Richard, uncomment above line to actually log in, comment out next line
+                navController.navigate("routes")
             })
             Spacer(modifier = Modifier.height(10.dp))
             OutlinedButton(labelVal = "Create Account", navController = navController, destination = "Signup")
