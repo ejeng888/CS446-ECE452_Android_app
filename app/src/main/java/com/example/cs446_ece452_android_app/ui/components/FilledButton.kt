@@ -17,7 +17,9 @@ import androidx.navigation.compose.rememberNavController
 fun FilledButton(labelVal: String, navController: NavController, destination : String = "", function : () -> Unit = {}) {
     Button(
         onClick = {
-            navController.navigate(destination)
+            if (destination != "") {
+                navController.navigate(destination)
+            }
             function()
                   },
         colors = ButtonDefaults.buttonColors(

@@ -4,7 +4,10 @@ package com.example.cs446_ece452_android_app.ui.components
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.outlined.Visibility
+import androidx.compose.material.icons.outlined.VisibilityOff
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
@@ -23,16 +26,19 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
-fun PasswordInputBox(labelVal : String) {
+fun PasswordInputBox(labelVal : String, valueChanged : (String) -> Unit = {}) {
     var password by remember {
         mutableStateOf("")
     }
-    val isShowPassword by remember {
+    var isShowPassword by remember {
         mutableStateOf(false)
     }
     OutlinedTextField(
         value = password,
-        onValueChange = { password = it },
+        onValueChange = {
+            password = it
+            valueChanged(password)
+                        },
         textStyle = TextStyle(color = DarkBlue),
         label = { Text(labelVal, color = DarkBlue) },
         colors = TextFieldDefaults.colors(
@@ -47,7 +53,16 @@ fun PasswordInputBox(labelVal : String) {
                 contentDescription = "profile"
             )
         },
-        // Can add a trailing Icon in the future that toggles based on shown password
+        trailingIcon = {
+            val iconImage =
+                if (isShowPassword) Icons.Outlined.Visibility else Icons.Outlined.VisibilityOff
+            val description = if (isShowPassword) "Show Password" else "Hide Password"
+            IconButton(onClick = {
+                isShowPassword = !isShowPassword
+            }) {
+                Icon(imageVector = iconImage, contentDescription = description, tint = DarkBlue)
+            }
+        },
 
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
         visualTransformation = if (isShowPassword) VisualTransformation.None else PasswordVisualTransformation(),
