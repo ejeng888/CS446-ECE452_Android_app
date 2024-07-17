@@ -5,7 +5,6 @@ import com.example.cs446_ece452_android_app.data.model.LatLngResponse
 import com.example.cs446_ece452_android_app.data.model.PlaceDetailsResponse
 import com.example.cs446_ece452_android_app.data.model.Route
 import com.example.cs446_ece452_android_app.data.model.RouteResponse
-import com.google.android.gms.maps.model.LatLng
 import com.google.gson.Gson
 import okhttp3.Call
 import okhttp3.MediaType.Companion.toMediaType
@@ -38,8 +37,8 @@ class MapsApiClient {
         return result
     }
 
-    fun getDestination(address: String): CompletableFuture<Destination> {
-        val url = "https://maps.googleapis.com/maps/api/geocode/json?address=${address.replace(' ', '+')}&key=$key"
+    fun getDestination(searchString: String): CompletableFuture<Destination> {
+        val url = "https://maps.googleapis.com/maps/api/geocode/json?address=${searchString.replace(' ', '+')}&key=$key"
         val request: Request = Request.Builder()
             .url(url)
             .build()
@@ -47,7 +46,7 @@ class MapsApiClient {
         return getResponse(request) { response ->
             val parsed = gson.fromJson(response, LatLngResponse::class.java)
             val result = parsed.results[0]
-            Destination(placeId = result.placeId, lat = result.geometry.location.lat, lng = result.geometry.location.lng, address = result.address)
+            Destination(name = searchString, lat = result.geometry.location.lat, lng = result.geometry.location.lng, address = result.address, placeId = result.placeId)
         }
     }
 
@@ -120,42 +119,5 @@ class MapsApiClient {
             val parsed = gson.fromJson(response, RouteResponse::class.java)
             parsed.routes[0]
         }
-    }
-
-    private fun decodePolyline(encoded: String): ArrayList<LatLng> {
-        val poly = ArrayList<LatLng>()
-        var index = 0
-        val len = encoded.length
-        var lat = 0
-        var lng = 0
-
-        while (index < len) {
-            var b: Int
-            var shift = 0
-            var result = 0
-            do {
-                b = encoded[index++].code - 63
-                result = result or (b and 0x1f shl shift)
-                shift += 5
-            } while (b >= 0x20)
-            val dlat = if (result and 1 != 0) (result shr 1).inv() else result shr 1
-            lat += dlat
-
-            shift = 0
-            result = 0
-            do {
-                b = encoded[index++].code - 63
-                result = result or (b and 0x1f shl shift)
-                shift += 5
-            } while (b >= 0x20)
-            val dlng = if (result and 1 != 0) (result shr 1).inv() else result shr 1
-            lng += dlng
-
-            val finalLat = lat / 1E5
-            val finalLng = lng / 1E5
-            poly.add(LatLng(finalLat, finalLng))
-        }
-
-        return poly
     }
 }
