@@ -5,8 +5,8 @@ import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
 
 data class DestinationEntryStruct(
-    val destination : String = "",
-    val timeSpent : String = "02:00"
+    val destination: String = "",
+    val timeSpent: String = "02:00"
 )
 
 /* data class RouteInformation(
@@ -18,7 +18,17 @@ data class DestinationEntryStruct(
     val destinations : Array<DestinationEntryStruct> = arrayOf<DestinationEntryStruct>()
 ) */
 
-fun addRouteEntry(routeName : String, location : String, maxCost : String, accessToCar : Boolean, startDate : String, endDate : String, destinations : SnapshotStateList<DestinationEntryStruct>) {
+fun addRouteEntry(
+    routeName: String,
+    location: String,
+    maxCost: String,
+    accessToCar: Boolean,
+    startDate: String,
+    endDate: String,
+    startDestination: DestinationEntryStruct,
+    endDestination: DestinationEntryStruct,
+    destinations: List<DestinationEntryStruct>
+) {
     val db = Firebase.firestore
     val dbEntry = hashMapOf(
         "routeName" to routeName,
@@ -27,6 +37,8 @@ fun addRouteEntry(routeName : String, location : String, maxCost : String, acces
         "accessToCar" to accessToCar,
         "startDate" to startDate,
         "endDate" to endDate,
+        "startDestination" to startDestination,
+        "endDestination" to endDestination,
         "destinations" to destinations
     )
     db.collection("routeEntries").add(dbEntry)

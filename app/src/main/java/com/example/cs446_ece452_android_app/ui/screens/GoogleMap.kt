@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -17,6 +18,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.example.cs446_ece452_android_app.ui.components.BottomNavigationBar
 import com.example.cs446_ece452_android_app.R
+import com.example.cs446_ece452_android_app.data.RouteCalculator
+import com.example.cs446_ece452_android_app.data.model.Destination
 import com.google.android.gms.maps.GoogleMapOptions
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
@@ -30,9 +33,18 @@ import com.google.maps.android.compose.rememberCameraPositionState
 import com.google.maps.android.compose.rememberMarkerState
 
 @Composable
-fun MapScreen(navController: NavController) {
+fun MapScreen(navController: NavController, rc: RouteCalculator) {
     var isMapLoaded by remember { mutableStateOf(false) }
     val mapId = stringResource(R.string.map_id)
+
+    var cameraPosition = rememberCameraPositionState {
+        position = CameraPosition.fromLatLngZoom(LatLng(35.0048, 135.7685), 12.5f)
+    }
+    
+    LaunchedEffect(rc.dataLoaded) {
+        if (rc.dataLoaded)
+            cameraPosition.position = CameraPosition.fromLatLngZoom(rc.routeInfo.cameraPos!!, rc.routeInfo.cameraZoom)
+    }
 
     Scaffold(
         bottomBar = {
@@ -48,17 +60,19 @@ fun MapScreen(navController: NavController) {
         ) {
             GoogleMap(
                 modifier = Modifier.fillMaxSize(),
-                cameraPositionState = rememberCameraPositionState {
-                    position = CameraPosition.fromLatLngZoom(LatLng(35.0048, 135.7685), 12.5f)
-                },
-                googleMapOptionsFactory = {
-                    GoogleMapOptions().mapId(mapId)
-                },
+                cameraPositionState = cameraPosition,
+                googleMapOptionsFactory = { GoogleMapOptions().mapId(mapId) },
                 onMapLoaded = { isMapLoaded = true },
                 content = {
-                    StartEndMarker()
-                    StopMarkers()
-                    Route()
+                    if (rc.dataLoaded) {
+                        MapContent(
+                            start = rc.routeInfo.startDest!!,
+                            end = rc.routeInfo.endDest!!,
+                            stops = rc.routeInfo.stopDests,
+                            order = rc.routeInfo.route!!.order,
+                            poly = rc.routeInfo.route!!.polyline.encodedPolyline
+                        )
+                    }
                 }
             )
         }
@@ -67,34 +81,37 @@ fun MapScreen(navController: NavController) {
 
 @Composable
 @GoogleMapComposable
-fun StartEndMarker() {
-    val pos = LatLng(34.9939, 135.7714)
+fun MapContent(start: Destination, end: Destination, stops: ArrayList<Destination>?, order: List<Int>?, poly: String) {
+    StartEndMarker(start)
+    if (start.address != end.address)
+        StartEndMarker(end)
+    if (stops != null && order != null)
+        StopMarkers(stops, order)
+    Route(poly)
+}
 
-    return Marker(
-        state = rememberMarkerState(position = pos),
+@Composable
+@GoogleMapComposable
+fun StartEndMarker(destination: Destination) {
+    Marker(
+        state = rememberMarkerState(position = LatLng(destination.lat, destination.lng)),
+        title = destination.name
     )
 }
 
 @Composable
 @GoogleMapComposable
-fun StopMarkers() {
-    val stops = ArrayList<Pair<String, LatLng>>()
-    stops.add(Pair("Fushimi Inari Shrine", LatLng(34.9672, 135.7727)))
-    stops.add(Pair("Kiyomizu-dera", LatLng(34.9953, 135.7811)))
-    stops.add(Pair("Eikando Temple", LatLng(35.0147, 135.7939)))
-    stops.add(Pair("Kinkaku-ji", LatLng(35.0391, 135.7297)))
-    stops.add(Pair("Nishiki Market", LatLng(35.0050, 135.7648)))
-
-    return stops.forEachIndexed() { i, stop ->
+fun StopMarkers(stops: ArrayList<Destination>, order: List<Int>) {
+    stops.forEachIndexed { i, stop ->
         AdvancedMarker(
-            state = rememberMarkerState(position = stop.second),
-            title = stop.first,
-            pinConfig = configPin((i + 1).toString())
+            state = rememberMarkerState(position = LatLng(stop.lat, stop.lng)),
+            title = stop.name,
+            pinConfig = configPin((order.indexOf(i) + 1).toString())
         )
     }
 }
 
-fun configPin(s: String): PinConfig {
+private fun configPin(s: String): PinConfig {
     return with(PinConfig.builder()) {
         setGlyph(PinConfig.Glyph(s, android.graphics.Color.WHITE))
         setBackgroundColor(android.graphics.Color.MAGENTA)
@@ -105,12 +122,10 @@ fun configPin(s: String): PinConfig {
 
 @Composable
 @GoogleMapComposable
-fun Route() {
-    val encodedPolyline =
-        "gvqtEw{t{XlDXzFv@h@FpDGnGJEx@KpH?nGxCQ|CO|CBf@HvNsAdFU^@pB\\x@Ad@BtCl@lAL~@?vGi@hBIzBBnCLtCf@fCl@l@LvAJ|A@|AS`Bq@n@[RUVMpAK|AA`d@FvRBR@TyOaI@wEHa@?WGUBi@PuBDC_CBYCy@RCCuAYBDtAB?B|@Eh@DjBsE?mG?eDEoCLiB@}BD}HLiIAgC?gC?{L^oANkCHiBL}@BKyBS}ABEFAa@y@gGqIy@m@[MeHk@iKSaJo@aIYeRgAo@WgFoDe@a@m@a@BYQkA_AaDqA{BY{@e@mBiAmDQ_AtCc@uCb@\\zAhAlDd@pBXn@jArB|@bDJp@HEJm@r@qAd@sAd@iB`@yCCg@y@aBKs@OuB?Q]}BOk@Gi@Dk@G[a@eAIUZ|@Tl@@ZE^N~@Nh@TpBLjBHv@L`@p@rA@f@g@bDk@vBi@lAc@v@GXETGB?\\AFWOq@OmP}BuJaAoGo@oFX{DbAc@?uBUkBo@oC_@wZeBE_EP}DXcGDwEo@iNK{CN_F`@cJNcBHc@Ik@KKECoDtBwDnCUNUk@eA?kB?_@M[Wa@c@aA_AmAqAaBmBoB}AY_@Ba@B{AEyCGk@EQCsG}ANeBLyDL}BNz@bGHfALbET?F`E?zEQpGeB~S]`JCvX]r[AdP?rDHdDkNkAsCAqEVmCR_SGsEOeIc@iAIyB_@iBOoB@cEb@YAQEYQqEjCkLxGuNpIwBlAMDEFqAt@qCbBoLrGoBdAcEnBw@NGNgAj@\\h\\Dj@Rp@tChGfHjOdAvBTl@Lz@?vDE~CBbMDjIAtAe@pFg@dF_@xE@jAbAnSvAnYL|@N`@ZZ^NpBd@z@P]dFEfAB?BvAPpC?z@Md@I|@GPGZm@Po@AEG?_@?`@HFp@Ah@QHg@BGLgAHW?{@SkDA}@C?DgA\\eFD?l@oJDQdIgL~BsGzAcFHe@CWKi@dEiBlA]jVwElASbDSD{@QgEIsILiNHyKHcSB}IxBoMAgLrBAPIva@FvX?zEEr@Wr@GvMM~FIfICxG@lJBvRC~ICCgU?mCgG@?qA?gBdGACeMIgLKuN?q@jALzA^tBp@xCnAvDbBbJjDbLpDbF~ARkDdAiNhFPt@F"
-    val decoded = decodePolyline(encodedPolyline)
+fun Route(poly: String) {
+    val decoded = decodePolyline(poly)
 
-    return Polyline(
+    Polyline(
         points = decoded,
         color = Color.Blue
     )
