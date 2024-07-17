@@ -13,6 +13,7 @@ import com.example.cs446_ece452_android_app.ui.screens.DestinationInputScreen
 import com.example.cs446_ece452_android_app.ui.screens.LoginScreen
 import com.example.cs446_ece452_android_app.ui.screens.MapScreen
 import com.example.cs446_ece452_android_app.ui.screens.ProfileScreen
+import com.example.cs446_ece452_android_app.ui.screens.ResetPassword
 import com.example.cs446_ece452_android_app.ui.screens.SavedRoutes
 import com.example.cs446_ece452_android_app.ui.screens.SignupScreen
 import com.example.cs446_ece452_android_app.ui.theme.CS446ECE452_Android_appTheme
@@ -43,6 +44,9 @@ class MainActivity : ComponentActivity() {
                 ) {
                     composable(route = "Login") {
                         LoginScreen(navController)
+                    }
+                    composable(route = "Resetpassword") {
+                        ResetPassword(navController)
                     }
                     composable(route = "Signup") {
                         SignupScreen(navController)

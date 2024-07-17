@@ -20,69 +20,49 @@ import com.example.cs446_ece452_android_app.R
 import com.example.cs446_ece452_android_app.ui.components.Logo
 import com.example.cs446_ece452_android_app.ui.theme.Blue1
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.cs446_ece452_android_app.ui.components.OutlinedInputBox
-import com.example.cs446_ece452_android_app.ui.components.PasswordInputBox
 import androidx.navigation.compose.rememberNavController
 import com.example.cs446_ece452_android_app.ui.components.FilledButton
 import com.example.cs446_ece452_android_app.ui.components.OutlinedButton
 import com.example.cs446_ece452_android_app.ui.components.toastHelper
-import com.example.cs446_ece452_android_app.ui.theme.DarkBlue
 import com.google.firebase.Firebase
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 
 @Composable
-fun LoginScreen(navController : NavController) {
-    val auth: FirebaseAuth = Firebase.auth
+fun ResetPassword(navController : NavController) {
     val context = LocalContext.current
 
     var enteredEmail by remember { mutableStateOf("") }
-    var enteredPassword by remember { mutableStateOf("") }
 
-    fun login(context: Context, email: String, password: String, destination: String) {
-        // Default Toast Message, will only change if Login works
-        var toastMessage = "Username or Password is Incorrect"
+    fun reset(context: Context, email: String, destination: String) {
+        var toastMessage = ""
         val emailRegex = "^[A-Za-z](.*)(@)(.+)(\\.)(.+)"
         if (!emailRegex.toRegex().matches(email)) {
             // Not a valid email
             toastMessage = "Please Enter a Valid Email"
             toastHelper(context, toastMessage)
-        } else if (password == "") {
-            toastMessage = "Please Enter a Password"
-            toastHelper(context, toastMessage)
         }
 
-        if (toastMessage == "Username or Password is Incorrect") {
+        if (toastMessage == "") {
             Log.v("EmailPassword", "Passes Frontend Checks")
-            auth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener() { task ->
+            Firebase.auth.sendPasswordResetEmail(email)
+                .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        // Sign in success, update UI with the signed-in user's information
-                        toastMessage = "Successfully Logged In"
+                        toastMessage = "Check Inbox for Password Reset"
                         toastHelper(context, toastMessage)
-                        Log.d("EmailPassword", "createUserWithEmail:success")
+                        Log.d("ResetPassword", "Email sent.")
                         navController.navigate(destination)
-                    } else {
-                        // If sign in fails, display a message to the user.
-                        Log.w("EmailPassword", "createUserWithEmail:failure", task.exception)
-                        toastMessage = "Username or Password is Incorrect"
-                        toastHelper(context, toastMessage)
                     }
                 }
         }
-
     }
         Surface(
         modifier = Modifier.fillMaxSize(),
@@ -99,36 +79,20 @@ fun LoginScreen(navController : NavController) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .size(250.dp)
-
             )
             Spacer(modifier = Modifier.height(20.dp))
             Logo()
             Spacer(modifier = Modifier.height(30.dp))
 
             OutlinedInputBox(labelVal = "Email", Icons.Default.Email, valueChanged = {newValue -> enteredEmail = newValue})
-            Spacer(modifier = Modifier.height(10.dp))
-            PasswordInputBox(labelVal = "Password", valueChanged = {newValue -> enteredPassword = newValue})
 
-            TextButton(
-                modifier = Modifier.align(Alignment.End).padding(end = 50.dp),
-                onClick = { navController.navigate("Resetpassword") }
-            ) {
-                Text(text = "Forgot Password?", color = DarkBlue, fontSize = 14.sp,)
-            }
 
             Spacer(modifier = Modifier.height(30.dp))
-            FilledButton(labelVal = "Login", navController = navController, function = {
-                // login(context = context, email = enteredEmail, password = enteredPassword, destination = "routes")
-                // For Richard, uncomment above line to actually log in, comment out next line
-                navController.navigate("routes")
+            FilledButton(labelVal = "Reset Password", navController = navController, function = {
+                reset(context = context, email = enteredEmail, destination = "Login") // New screen
             })
             Spacer(modifier = Modifier.height(10.dp))
-            OutlinedButton(labelVal = "Create Account", navController = navController, destination = "Signup")
-
-
-
-            // TextDivider(text="or")
-
+            OutlinedButton(labelVal = "Go Back", navController = navController, destination = "Login")
 
 
         }
@@ -137,7 +101,7 @@ fun LoginScreen(navController : NavController) {
 
 @Preview
 @Composable
-fun LoginScreenPreview() {
-    LoginScreen(rememberNavController())
+fun ResetPasswordPreview() {
+    ResetPassword(rememberNavController())
 }
 

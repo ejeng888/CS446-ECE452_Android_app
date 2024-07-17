@@ -24,7 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.cs446_ece452_android_app.ui.theme.Gray
 
 @Composable
-fun OutlinedInputBox(labelVal: String, icon: ImageVector) {
+fun OutlinedInputBox(labelVal: String, icon: ImageVector, valueChanged : (String) -> Unit = {}) {
     var textVal by remember {
         mutableStateOf("")
     }
@@ -35,7 +35,10 @@ fun OutlinedInputBox(labelVal: String, icon: ImageVector) {
     }
     OutlinedTextField(
         value = textVal,
-        onValueChange = { textVal = it },
+        onValueChange = {
+            textVal = it
+            valueChanged(textVal)
+        },
         placeholder = {
             Text(text = labelVal, color = Gray)
         },

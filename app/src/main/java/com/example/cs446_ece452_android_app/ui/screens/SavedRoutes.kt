@@ -1,5 +1,6 @@
 package com.example.cs446_ece452_android_app.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -22,6 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,15 +44,39 @@ import com.example.cs446_ece452_android_app.ui.theme.DarkBlue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
+import com.google.firebase.Firebase
+import com.google.firebase.firestore.firestore
 
 @Composable
 fun SavedRoutes(navController: NavController) {
     val searchQuery = remember { mutableStateOf("") }
-    var routes by remember { mutableStateOf(listOf("Route 1", "Route 2", "Route 3", "Route 4")) }
+    var routes by remember { mutableStateOf(listOf<String>()) }
+    val db = Firebase.firestore
+    LaunchedEffect(Unit) {
+        db.collection("routeEntries")
+            .get()
+            .addOnSuccessListener { documents ->
+                val routesList = mutableListOf<String>()
+                for (document in documents) {
+                    val routeName = document.getString("routeName") ?: ""
+                    val date = document.getString("startDate") ?: ""
+                    val documentId = document.id
+                    routesList.add("$routeName - $date - $documentId")
+                }
+                // Update the routes state with fetched routes
+                routes = routesList
+            }
+            .addOnFailureListener { exception ->
+                // Handle errors
+                Log.e("Firestore", "Error getting documents: ", exception)
+            }
+        }
     val filteredRoutes = routes.filter {
         it.contains(searchQuery.value, ignoreCase = true)
     }
     var routeToDelete by remember { mutableStateOf<String?>(null) }
+    var routeNameDelete by remember { mutableStateOf<String?>(null) }
+    var routeNameId by remember { mutableStateOf<String?>(null) }
     var showDialog by remember { mutableStateOf(false) }
 
     Scaffold(
@@ -96,6 +122,10 @@ fun SavedRoutes(navController: NavController) {
                 verticalArrangement = Arrangement.spacedBy(20.dp),
             ) {
                 items(filteredRoutes) { route ->
+                    val parts = route.split(" - ")
+                    val routeName = parts[0]
+                    val date = parts[1]
+                    val documentId = parts[2]
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.padding(start = 10.dp, end = 20.dp)
@@ -125,14 +155,14 @@ fun SavedRoutes(navController: NavController) {
                                     .padding(8.dp) // Add padding inside the button
                             ) {
                                 Text(
-                                    text = route,
+                                    text = routeName,
                                     color = DarkBlue,
                                     fontSize = 16.sp, // Adjust text size as needed
                                     fontWeight = FontWeight.Bold
                                 )
                                 Spacer(modifier = Modifier.height(8.dp)) // Space between texts
                                 Text(
-                                    text = "Date",
+                                    text = date,
                                     color = DarkBlue,
                                     fontSize = 14.sp // Adjust text size as needed
                                 )
@@ -140,9 +170,10 @@ fun SavedRoutes(navController: NavController) {
                         }
                         IconButton(
                             onClick = {
-                                routeToDelete = route
+                                routeToDelete = documentId
+                                routeNameDelete = "$routeName - $date - $documentId"
+                                routeNameId = routeName
                                 showDialog = true
-                                //routes = routes.toMutableList().apply { remove(route) }
                             },
                             modifier = Modifier.size(width = 30.dp, height = 30.dp)// Adjust height as needed
                         ) {
@@ -159,22 +190,34 @@ fun SavedRoutes(navController: NavController) {
                 AlertDialog(
                     onDismissRequest = {
                         routeToDelete = null
+                        routeNameDelete = null
+                        routeNameId = null
                         showDialog = false
                     },
                     title = {
                         Text(text = "Delete Route")
                     },
                     text = {
-                        Text("Are you sure you want to delete $routeToDelete?")
+                        // routeNameId is a required field
+                        Text("Are you sure you want to delete $routeNameId?")
                     },
                     confirmButton = {
                         Button(
                             onClick = {
-                                routes = routes.toMutableList().apply {
-                                    remove(routeToDelete)
-                                }
-                                routeToDelete = null
-                                showDialog = false
+                                db.collection("routeEntries").document(routeToDelete!!)
+                                    .delete()
+                                    .addOnSuccessListener {
+                                        // Delete from local state
+                                        routes = routes.filter { it != routeNameDelete }
+                                        routeToDelete = null
+                                        routeNameDelete = null
+                                        routeNameId = null
+                                        showDialog = false
+                                    }
+                                    .addOnFailureListener { e ->
+                                        Log.e("Firestore", "Error deleting document", e)
+                                        // Optionally handle the failure case
+                                    }
                             },
                         ) {
                             Text("Confirm")
@@ -184,6 +227,8 @@ fun SavedRoutes(navController: NavController) {
                         Button(
                             onClick = {
                                 routeToDelete = null
+                                routeNameDelete = null
+                                routeNameId = null
                                 showDialog = false
                             }
                         ) {
