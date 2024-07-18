@@ -46,14 +46,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
+import com.google.firebase.auth.FirebaseAuth
 
 @Composable
 fun SavedRoutes(navController: NavController) {
     val searchQuery = remember { mutableStateOf("") }
     var routes by remember { mutableStateOf(listOf<String>()) }
     val db = Firebase.firestore
+    val auth = FirebaseAuth.getInstance()
+    val currentUserId = auth.currentUser?.uid
     LaunchedEffect(Unit) {
         db.collection("routeEntries")
+            //.whereEqualTo("userId", currentUserId)
             .get()
             .addOnSuccessListener { documents ->
                 val routesList = mutableListOf<String>()
@@ -70,7 +74,7 @@ fun SavedRoutes(navController: NavController) {
                 // Handle errors
                 Log.e("Firestore", "Error getting documents: ", exception)
             }
-        }
+    }
     val filteredRoutes = routes.filter {
         it.contains(searchQuery.value, ignoreCase = true)
     }
