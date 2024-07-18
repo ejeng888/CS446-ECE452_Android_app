@@ -54,26 +54,43 @@ fun SavedRoutes(navController: NavController) {
     var routes by remember { mutableStateOf(listOf<String>()) }
     val db = Firebase.firestore
     val auth = FirebaseAuth.getInstance()
-    val currentUserId = auth.currentUser?.uid
+    val currUser = auth.currentUser?.uid
     LaunchedEffect(Unit) {
+        val routesList = mutableListOf<String>()
         db.collection("routeEntries")
-            //.whereEqualTo("userId", currentUserId)
+            .whereEqualTo("ownerEmail", currUser)
             .get()
             .addOnSuccessListener { documents ->
-                val routesList = mutableListOf<String>()
                 for (document in documents) {
                     val routeName = document.getString("routeName") ?: ""
                     val date = document.getString("startDate") ?: ""
                     val documentId = document.id
                     routesList.add("$routeName - $date - $documentId")
                 }
-                // Update the routes state with fetched routes
-                routes = routesList
             }
             .addOnFailureListener { exception ->
                 // Handle errors
                 Log.e("Firestore", "Error getting documents: ", exception)
             }
+
+        db.collection("routeEntries")
+            .whereNotEqualTo("ownerEmail", currUser)
+            .whereArrayContains("sharedEmails", currUser ?: "")
+            .get()
+            .addOnSuccessListener { documents ->
+                for (document in documents) {
+                    val routeName = document.getString("routeName") ?: ""
+                    val date = document.getString("startDate") ?: ""
+                    val documentId = document.id
+                    routesList.add("$routeName - $date - $documentId")
+                }
+            }
+            .addOnFailureListener { exception ->
+                // Handle errors
+                Log.e("Firestore", "Error getting documents: ", exception)
+            }
+        // Update the routes state with fetched routes
+        routes = routesList
     }
     val filteredRoutes = routes.filter {
         it.contains(searchQuery.value, ignoreCase = true)
