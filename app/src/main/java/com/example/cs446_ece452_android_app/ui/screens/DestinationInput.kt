@@ -2,7 +2,9 @@ package com.example.cs446_ece452_android_app.ui.screens
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.Context
 import android.icu.util.Calendar
+import android.util.Log
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
 import androidx.compose.foundation.background
@@ -34,12 +36,56 @@ import com.example.cs446_ece452_android_app.ui.theme.DarkBlue
 import com.example.cs446_ece452_android_app.ui.components.CarSwitch
 import com.example.cs446_ece452_android_app.ui.components.DestinationEntry
 import com.example.cs446_ece452_android_app.ui.components.OutlinedButton
+import com.example.cs446_ece452_android_app.ui.components.toastHelper
 import com.google.accompanist.insets.ProvideWindowInsets
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 @Composable
 fun DestinationInputScreen(navController: NavController, rc: RouteCalculator) {
+    val context = LocalContext.current
+    fun addRoute(
+        context: Context,
+        routeName: String,
+        location: String,
+        maxCost: String,
+        accessToCar: Boolean,
+        startDate: String,
+        endDate: String,
+        startDest: DestinationEntryStruct,
+        endDest: DestinationEntryStruct,
+        destinations: List<DestinationEntryStruct>,
+        creatorEmail : String?,
+        sharedEmails : List<String>
+    ) {
+        var emptyDestination = false
+        for (destinationEntry in destinations) {
+            if (destinationEntry.destination == "") {
+                emptyDestination = true
+                break
+            }
+        }
+
+        if (creatorEmail == null) {
+            toastHelper(context, "User not logged in")
+        } else if (routeName == "") {
+            toastHelper(context, "Please enter a Route Name")
+        } else if (startDest.destination == "") {
+            toastHelper(context, "Please enter a Starting Destination")
+        } else if (endDest.destination == "") {
+            toastHelper(context, "Please enter a Ending Destination")
+        } else if (emptyDestination) {
+            toastHelper(context, "Please fill in all the Stops")
+        } else {
+            Log.v("DestinationInput", "Passed Checks")
+
+            rc.getRoute(routeName, location, maxCost, accessToCar, startDate, endDate, startDest, endDest, destinations, creatorEmail, sharedEmails)
+            toastHelper(context, "Route Created")
+            navController.navigate("Map")
+        }
+    }
     Scaffold(
         bottomBar = {
             BottomNavigationBar(navController = navController)
@@ -70,6 +116,9 @@ fun DestinationInputScreen(navController: NavController, rc: RouteCalculator) {
             var endDest by remember { mutableStateOf(DestinationEntryStruct()) }
             val destinations = remember { mutableStateListOf<DestinationEntryStruct>() }
 
+            val creatorEmail = Firebase.auth.currentUser!!.email
+            val sharedEmails : List<String> = emptyList()
+
             Spacer(modifier = Modifier.height(10.dp))
             Text(
                 text = "New Route",
@@ -81,11 +130,11 @@ fun DestinationInputScreen(navController: NavController, rc: RouteCalculator) {
                 verticalArrangement = Arrangement.spacedBy(10.dp),
                 modifier = Modifier.padding(horizontal = 25.dp)
             ) {
-                InputBox(labelVal = "Route Name", placeHolder = "NY Grad Trip", valueChanged = { newValue -> routeName = newValue })
-                InputBox(labelVal = "Location", placeHolder = "New York City, NY, US", valueChanged = { newValue -> location = newValue })
+                InputBox(labelVal = "Route Name*", placeHolder = "NY Grad Trip", routeName, valueChanged = { newValue -> routeName = newValue })
+                InputBox(labelVal = "Location", placeHolder = "New York City, NY, US", location, valueChanged = { newValue -> location = newValue })
                 Row {
                     Box(modifier = Modifier.fillMaxWidth(0.5f)) {
-                        InputBox(labelVal = "Max Cost", placeHolder = "$0.00", valueChanged = { newValue -> maxCost = newValue })
+                        InputBox(labelVal = "Max Cost", placeHolder = "$0.00", maxCost, valueChanged = { newValue -> maxCost = newValue })
                     }
                     CarSwitch(Switched = { newValue -> accessToCar = newValue })
                 }
@@ -140,9 +189,8 @@ fun DestinationInputScreen(navController: NavController, rc: RouteCalculator) {
             FilledButton(
                 labelVal = "Calculate Route",
                 navController = navController,
-                destination = "Map",
                 function = {
-                    rc.getRoute(routeName, location, maxCost, accessToCar, startDate, endDate, startDest, endDest, destinations)
+                    addRoute(context, routeName, location, maxCost, accessToCar, startDate, endDate, startDest, endDest, destinations, creatorEmail, sharedEmails)
                 }
             )
         }

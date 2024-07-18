@@ -52,14 +52,12 @@ fun ProfileScreen(navController: NavController) {
             val user = Firebase.auth.currentUser
             val context = LocalContext.current
             user?.let {
-                val name = it.displayName
-                val email = it.email
                 // val photoUrl = it.photoUrl
 
                 Logo()
 
-                InputBox(labelVal = "Display Name", placeHolder = (if (name != null) name else ""), valueChanged = { newValue -> givenDisplayName = newValue })
-                InputBox(labelVal = "Email", placeHolder = (if (email != null) email else ""), enabled = false)
+                InputBox(labelVal = "Display Name", placeHolder = "", givenDisplayName, valueChanged = { newValue -> givenDisplayName = newValue })
+                InputBox(labelVal = "Email", placeHolder = "", (it.email ?: ""), enabled = false)
 
 
                 FilledButton(labelVal = "Update Personal Information", navController = navController, function = {

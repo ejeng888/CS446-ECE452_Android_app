@@ -17,6 +17,8 @@ class RouteCalculator(private val client: MapsApiClient) : ViewModel() {
     private lateinit var startDest: DestinationEntryStruct
     private lateinit var endDest: DestinationEntryStruct
     private var destinations: List<DestinationEntryStruct>? = null
+    private lateinit var creatorEmail: String
+    private var sharedEmails: List<String> = emptyList()
 
     var routeInfo: GoogleRouteInfo = GoogleRouteInfo()
         private set
@@ -32,7 +34,9 @@ class RouteCalculator(private val client: MapsApiClient) : ViewModel() {
         endDate: String,
         startDest: DestinationEntryStruct,
         endDest: DestinationEntryStruct,
-        destinations: List<DestinationEntryStruct>
+        destinations: List<DestinationEntryStruct>,
+        creatorEmail : String,
+        sharedEmails : List<String>
     ) {
         dataLoaded = false
 
@@ -45,13 +49,15 @@ class RouteCalculator(private val client: MapsApiClient) : ViewModel() {
         this.startDest = startDest
         this.endDest = endDest
         this.destinations = destinations
+        this.creatorEmail = creatorEmail
+        this.sharedEmails = sharedEmails
 
         saveRouteEntry()
         calculateRoute()
     }
 
     private fun saveRouteEntry() {
-        addRouteEntry(routeName, location, maxCost, accessToCar, startDate, endDate, startDest, endDest, destinations!!)
+        addRouteEntry(routeName, location, maxCost, accessToCar, startDate, endDate, startDest, endDest, destinations!!, creatorEmail, sharedEmails)
     }
 
     fun calculateRoute() {
