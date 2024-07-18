@@ -8,7 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.cs446_ece452_android_app.data.MapsApiClient
-import com.example.cs446_ece452_android_app.data.RouteCalculator
+import com.example.cs446_ece452_android_app.data.RouteController
 import com.example.cs446_ece452_android_app.ui.screens.DestinationInputScreen
 import com.example.cs446_ece452_android_app.ui.screens.LoginScreen
 import com.example.cs446_ece452_android_app.ui.screens.MapScreen
@@ -24,7 +24,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         val mapsClient = MapsApiClient()
-        val rc = RouteCalculator(mapsClient)
+        val rc = RouteController(mapsClient)
 
         val apiKey = getString(R.string.google_maps_key)
         if (!Places.isInitialized()) {

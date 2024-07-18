@@ -4,10 +4,9 @@ import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import com.example.cs446_ece452_android_app.data.model.GoogleRouteInfo
 import com.example.cs446_ece452_android_app.data.model.TravelMode
-import com.google.android.gms.maps.model.LatLng
 import java.util.concurrent.CompletableFuture
 
-class RouteCalculator(private val client: MapsApiClient) : ViewModel() {
+class RouteController(private val client: MapsApiClient) : ViewModel() {
     private lateinit var routeName: String
     private lateinit var location: String
     private lateinit var maxCost: String
@@ -74,10 +73,6 @@ class RouteCalculator(private val client: MapsApiClient) : ViewModel() {
 
             routeInfo.route = client.getRoute(routeInfo.startDest!!, routeInfo.endDest!!, routeInfo.stopDests, TravelMode.CAR).join()
         }.thenRun{
-            val lat = (routeInfo.route!!.viewport.high.lat + routeInfo.route!!.viewport.low.lat) / 2
-            val lng = (routeInfo.route!!.viewport.high.lng + routeInfo.route!!.viewport.low.lng) / 2
-            routeInfo.cameraPos = LatLng(lat, lng)
-            routeInfo.cameraZoom = 12.5f
             dataLoaded = true
         }
     }
