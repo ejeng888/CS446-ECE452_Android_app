@@ -25,7 +25,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.rememberNavController
 import com.example.cs446_ece452_android_app.data.DestinationEntryStruct
 import com.example.cs446_ece452_android_app.data.MapsApiClient
-import com.example.cs446_ece452_android_app.data.RouteCalculator
+import com.example.cs446_ece452_android_app.data.RouteController
 import com.example.cs446_ece452_android_app.ui.components.BottomNavigationBar
 import com.example.cs446_ece452_android_app.ui.components.FilledButton
 import com.example.cs446_ece452_android_app.ui.components.InputBox
@@ -39,7 +39,7 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 @Composable
-fun DestinationInputScreen(navController: NavController, rc: RouteCalculator) {
+fun DestinationInputScreen(navController: NavController, rc: RouteController) {
     Scaffold(
         bottomBar = {
             BottomNavigationBar(navController = navController)
@@ -152,7 +152,7 @@ fun DestinationInputScreen(navController: NavController, rc: RouteCalculator) {
 @Preview
 @Composable
 fun DestinationInputScreenPreview() {
-    DestinationInputScreen(rememberNavController(), RouteCalculator(MapsApiClient()))
+    DestinationInputScreen(rememberNavController(), RouteController(MapsApiClient()))
 }
 
 @Composable
