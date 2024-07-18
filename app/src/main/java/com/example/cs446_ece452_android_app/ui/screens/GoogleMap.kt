@@ -18,11 +18,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.example.cs446_ece452_android_app.ui.components.BottomNavigationBar
 import com.example.cs446_ece452_android_app.R
-import com.example.cs446_ece452_android_app.data.RouteCalculator
+import com.example.cs446_ece452_android_app.data.RouteController
 import com.example.cs446_ece452_android_app.data.model.Destination
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMapOptions
-import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.PinConfig
 import com.google.maps.android.compose.AdvancedMarker
 import com.google.maps.android.compose.GoogleMap
@@ -33,17 +34,23 @@ import com.google.maps.android.compose.rememberCameraPositionState
 import com.google.maps.android.compose.rememberMarkerState
 
 @Composable
-fun MapScreen(navController: NavController, rc: RouteCalculator) {
+fun MapScreen(navController: NavController, rc: RouteController) {
     var isMapLoaded by remember { mutableStateOf(false) }
     val mapId = stringResource(R.string.map_id)
 
-    var cameraPosition = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(LatLng(35.0048, 135.7685), 12.5f)
-    }
-    
+    val cameraPosition = rememberCameraPositionState()
+
     LaunchedEffect(rc.dataLoaded) {
-        if (rc.dataLoaded)
-            cameraPosition.position = CameraPosition.fromLatLngZoom(rc.routeInfo.cameraPos!!, rc.routeInfo.cameraZoom)
+        if (rc.dataLoaded) {
+            val low = rc.routeInfo.route!!.viewport.low
+            val high = rc.routeInfo.route!!.viewport.high
+            val boundsBuilder = LatLngBounds.builder()
+            boundsBuilder.include(LatLng(low.lat, low.lng))
+            boundsBuilder.include((LatLng(high.lat, high.lng)))
+            val bounds = boundsBuilder.build()
+            val cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 100)
+            cameraPosition.move(cameraUpdate)
+        }
     }
 
     Scaffold(
