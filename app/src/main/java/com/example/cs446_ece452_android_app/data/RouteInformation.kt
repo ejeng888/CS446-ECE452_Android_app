@@ -28,7 +28,9 @@ fun addRouteEntry(
     endDest: DestinationEntryStruct,
     destinations: List<DestinationEntryStruct>,
     creatorEmail : String,
-    sharedEmails : List<String>
+    sharedEmails : List<String>,
+    createdDate : String,
+    lastModifiedDate : String
 ) {
     val db = Firebase.firestore
     val dbEntry = hashMapOf(
@@ -42,7 +44,9 @@ fun addRouteEntry(
         "endDest" to endDest,
         "destinations" to destinations,
         "creatorEmail" to creatorEmail,
-        "sharedEmails" to sharedEmails
+        "sharedEmails" to sharedEmails,
+        "createdDate" to createdDate,
+        "lastModifiedDate" to lastModifiedDate
     )
     db.collection("routeEntries").add(dbEntry)
 }
