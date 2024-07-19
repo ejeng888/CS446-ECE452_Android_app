@@ -36,6 +36,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.Box
+import com.example.cs446_ece452_android_app.data.model.Route
 
 @Composable
 fun MapScreen(navController: NavController, rc: RouteController) {
@@ -75,13 +76,19 @@ fun MapScreen(navController: NavController, rc: RouteController) {
                 content = {
                     if (rc.dataLoaded) {
                         //if public transit, do other map content
-                        MapContent(
-                            start = rc.routeInfo.startDest!!,
-                            end = rc.routeInfo.endDest!!,
-                            stops = rc.routeInfo.stopDests,
-                            order = rc.routeInfo.route!!.order,
-                            poly = rc.routeInfo.route!!.polyline.encodedPolyline
-                        )
+                        if(rc.routeInfo.accessToCar){
+                            MapContent(
+                                start = rc.routeInfo.startDest!!,
+                                end = rc.routeInfo.endDest!!,
+                                stops = rc.routeInfo.stopDests,
+                                order = rc.routeInfo.route!!.order,
+                                poly = rc.routeInfo.route!!.polyline.encodedPolyline
+                            )
+                        }
+                        else{
+                            //Draw every leg stored in rc.transitRouteInfo
+                            TransitRouteContent(rc.transitRouteInfo)
+                        }
                     }
                 }
             )
@@ -147,6 +154,20 @@ fun Route(poly: String) {
         points = decoded,
         color = Color.Blue
     )
+}
+
+@Composable
+@GoogleMapComposable
+fun TransitRouteContent(transitRoutes: List<Route>) {
+    transitRoutes.forEach { route ->
+        route.legs.forEach { leg ->
+            val decoded = decodePolyline(leg.polyline.encodedPolyline)
+            Polyline(
+                points = decoded,
+                color = Color.Red // or any other color you prefer
+            )
+        }
+    }
 }
 
 private fun decodePolyline(encoded: String): List<LatLng> {

@@ -20,8 +20,12 @@ class RouteController(private val client: MapsApiClient) : ViewModel() {
     private lateinit var endDest: DestinationEntryStruct
     private var destinations: List<DestinationEntryStruct>? = null
 
+    var transitRouteInfo: MutableList<Route> = mutableListOf()
+        private set
+
     var routeInfo: GoogleRouteInfo = GoogleRouteInfo()
         private set
+
     var dataLoaded by mutableStateOf(false)
         private set
 
@@ -89,6 +93,7 @@ class RouteController(private val client: MapsApiClient) : ViewModel() {
             routeInfo.endDest = endFuture.join()
 
             routeInfo.stopDests = destsFuture.mapTo(arrayListOf()) { it.join() }
+            routeInfo.accessToCar = carAccess
             if(carAccess){
                 routeInfo.route = client.getRoute(routeInfo.startDest!!, routeInfo.endDest!!, routeInfo.stopDests, TravelMode.CAR).join()
             }
@@ -97,7 +102,8 @@ class RouteController(private val client: MapsApiClient) : ViewModel() {
                 //Might need to wait for this function to finish
                 //At this point, routeInfo.route will contain the optimized car drive route between stops
                 //Now I look at every 2 stops in routeInfo, and get response, then combine the response
-                val routesList = mutableListOf<Route>()
+
+                //val routesList = mutableListOf<Route>()
                 for (leg in routeInfo.route?.legs?: listOf()){
                     val startLat = leg.start.latLng.lat
                     val startLng = leg.start.latLng.lng
@@ -125,11 +131,12 @@ class RouteController(private val client: MapsApiClient) : ViewModel() {
                             "travelMode": "TRANSIT"
                         }"""
                     val tempRouteInfo = client.transitRequestString(requestString).join()
-                    routesList.add(tempRouteInfo)
+                    //val leg = tempRouteInfo.legs[0] //since there will always be only 1 leg
+                    transitRouteInfo.add(tempRouteInfo)
                 }
 
-                val combinedRoute = combineRoutes(routesList)
-                routeInfo.route = combinedRoute
+                //val combinedRoute = combineRoutes(routesList)
+                //routeInfo.route = combinedRoute
             }
 
         }.thenRun{
