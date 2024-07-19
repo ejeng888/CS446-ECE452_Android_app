@@ -32,6 +32,10 @@ import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.Polyline
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.google.maps.android.compose.rememberMarkerState
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
+import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.layout.Box
 
 @Composable
 fun MapScreen(navController: NavController, rc: RouteController) {
@@ -58,12 +62,10 @@ fun MapScreen(navController: NavController, rc: RouteController) {
             BottomNavigationBar(navController = navController)
         }
     ) { paddingValues ->
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues), // Use the provided padding values
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+                .padding(paddingValues) // Use the provided padding values
         ) {
             GoogleMap(
                 modifier = Modifier.fillMaxSize(),
@@ -72,6 +74,7 @@ fun MapScreen(navController: NavController, rc: RouteController) {
                 onMapLoaded = { isMapLoaded = true },
                 content = {
                     if (rc.dataLoaded) {
+                        //if public transit, do other map content
                         MapContent(
                             start = rc.routeInfo.startDest!!,
                             end = rc.routeInfo.endDest!!,
@@ -82,6 +85,14 @@ fun MapScreen(navController: NavController, rc: RouteController) {
                     }
                 }
             )
+            Button(
+                onClick = { navController.navigate("destinationScreen") },
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .padding(16.dp)
+            ) {
+                Text("Display Destination")
+            }
         }
     }
 }
