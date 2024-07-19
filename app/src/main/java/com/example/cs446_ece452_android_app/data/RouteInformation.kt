@@ -1,6 +1,5 @@
 package com.example.cs446_ece452_android_app.data
 
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
 
@@ -25,9 +24,13 @@ fun addRouteEntry(
     accessToCar: Boolean,
     startDate: String,
     endDate: String,
-    startDestination: DestinationEntryStruct,
-    endDestination: DestinationEntryStruct,
-    destinations: List<DestinationEntryStruct>
+    startDest: DestinationEntryStruct,
+    endDest: DestinationEntryStruct,
+    destinations: List<DestinationEntryStruct>,
+    creatorEmail : String,
+    sharedEmails : List<String>,
+    createdDate : String,
+    lastModifiedDate : String
 ) {
     val db = Firebase.firestore
     val dbEntry = hashMapOf(
@@ -37,9 +40,13 @@ fun addRouteEntry(
         "accessToCar" to accessToCar,
         "startDate" to startDate,
         "endDate" to endDate,
-        "startDestination" to startDestination,
-        "endDestination" to endDestination,
-        "destinations" to destinations
+        "startDest" to startDest,
+        "endDest" to endDest,
+        "destinations" to destinations,
+        "creatorEmail" to creatorEmail,
+        "sharedEmails" to sharedEmails,
+        "createdDate" to createdDate,
+        "lastModifiedDate" to lastModifiedDate
     )
     db.collection("routeEntries").add(dbEntry)
 }
