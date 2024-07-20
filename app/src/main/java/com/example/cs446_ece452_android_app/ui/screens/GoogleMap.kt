@@ -92,13 +92,16 @@ fun MapScreen(navController: NavController, rc: RouteController) {
                     }
                 }
             )
-            Button(
-                onClick = { navController.navigate("destinationScreen") },
-                modifier = Modifier
-                    .align(Alignment.TopStart)
-                    .padding(16.dp)
-            ) {
-                Text("Display Destination")
+            if(rc.routeInfo.accessToCar == false){
+                Button(
+                    //Need to pass in rc.transitRouteInfo
+                    onClick = { navController.navigate("Directions") },
+                    modifier = Modifier
+                        .align(Alignment.TopStart)
+                        .padding(16.dp)
+                ) {
+                    Text("Transit Directions")
+                }
             }
         }
     }

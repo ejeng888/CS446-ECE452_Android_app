@@ -60,27 +60,6 @@ class RouteController(private val client: MapsApiClient) : ViewModel() {
         addRouteEntry(routeName, location, maxCost, accessToCar, startDate, endDate, startDest, endDest, destinations!!)
     }
 
-    fun combineRoutes(routeResponses: List<Route>): Route{
-
-        val combinedLegs = mutableListOf<Leg>()
-        var totalDistance = 0
-        //var totalDuration = 0
-        for (route in routeResponses) {
-            combinedLegs.addAll(route.legs)
-            totalDistance += route.distance
-        }
-        val firstLeg = routeResponses[0]
-        val combinedRoute = Route(
-            legs = combinedLegs,
-            distance = totalDistance,
-            duration = firstLeg.duration,
-            polyline = firstLeg.polyline,
-            viewport = firstLeg.viewport,
-            order = firstLeg.order
-        )
-        return combinedRoute
-    }
-
     fun calculateRoute() {
         val carAccess = accessToCar
         val startFuture = client.getDestination(startDest.destination)
