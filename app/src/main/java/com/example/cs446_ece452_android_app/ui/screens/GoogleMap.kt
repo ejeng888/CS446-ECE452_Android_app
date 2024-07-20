@@ -87,7 +87,7 @@ fun MapScreen(navController: NavController, rc: RouteController) {
                         }
                         else{
                             //Draw every leg stored in rc.transitRouteInfo
-                            TransitRouteContent(rc.transitRouteInfo)
+                            TransitRouteContent(rc.transitRouteInfo, rc.routeInfo.startDest!!, rc.routeInfo.endDest!!, rc.routeInfo.stopDests, rc.routeInfo.route!!.order)
                         }
                     }
                 }
@@ -158,7 +158,12 @@ fun Route(poly: String) {
 
 @Composable
 @GoogleMapComposable
-fun TransitRouteContent(transitRoutes: List<Route>) {
+fun TransitRouteContent(transitRoutes: List<Route>, start: Destination, end: Destination, stops: ArrayList<Destination>?, order: List<Int>?) {
+    StartEndMarker(destination = start)
+    if (start.address != end.address)
+        StartEndMarker(end)
+    if (stops != null && order != null)
+        StopMarkers(stops, order)
     transitRoutes.forEach { route ->
         route.legs.forEach { leg ->
             val decoded = decodePolyline(leg.polyline.encodedPolyline)

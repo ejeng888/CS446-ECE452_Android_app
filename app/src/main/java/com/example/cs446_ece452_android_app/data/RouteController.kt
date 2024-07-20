@@ -134,9 +134,6 @@ class RouteController(private val client: MapsApiClient) : ViewModel() {
                     //val leg = tempRouteInfo.legs[0] //since there will always be only 1 leg
                     transitRouteInfo.add(tempRouteInfo)
                 }
-
-                //val combinedRoute = combineRoutes(routesList)
-                //routeInfo.route = combinedRoute
             }
 
         }.thenRun{
