@@ -102,12 +102,31 @@ class MapsApiClient {
                         }
                     }
                 },
+                
                 $stopsFormatted
                 "optimizeWaypointOrder": "true",
-                "travelMode": "$travelMode"
+                "travelMode": "DRIVE"
             }"""
 
+
         val body = requestString.toRequestBody("application/json".toMediaType())
+
+        val request: Request = Request.Builder()
+            .url("https://routes.googleapis.com/directions/v2:computeRoutes")
+            .post(body)
+            .header("X-Goog-Api-Key", key)
+            .header("X-Goog-FieldMask", "routes.legs,routes.distanceMeters,routes.staticDuration,routes.polyline.encodedPolyline,routes.viewport,routes.optimizedIntermediateWaypointIndex")
+            .build()
+
+        return getResponse(request) { response ->
+            val parsed = gson.fromJson(response, RouteResponse::class.java)
+            parsed.routes[0]
+        }
+    }
+
+    fun transitRequestString(requestString: String): CompletableFuture<Route>{
+        val body = requestString.toRequestBody("application/json".toMediaType())
+
         val request: Request = Request.Builder()
             .url("https://routes.googleapis.com/directions/v2:computeRoutes")
             .post(body)
