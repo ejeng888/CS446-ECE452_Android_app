@@ -28,6 +28,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.cs446_ece452_android_app.data.DestinationEntryStruct
 import com.example.cs446_ece452_android_app.data.MapsApiClient
 import com.example.cs446_ece452_android_app.data.RouteController
+import com.example.cs446_ece452_android_app.data.addRouteEntry
 import com.example.cs446_ece452_android_app.ui.components.BottomNavigationBar
 import com.example.cs446_ece452_android_app.ui.components.FilledButton
 import com.example.cs446_ece452_android_app.ui.components.InputBox
@@ -84,6 +85,7 @@ fun DestinationInputScreen(navController: NavController, rc: RouteController) {
         } else {
             Log.v("DestinationInput", "Passed Checks")
 
+            addRouteEntry(routeName, location, maxCost, accessToCar, startDate, endDate, startDest, endDest, destinations, creatorEmail, sharedEmails, createdDate, lastModifiedDate)
             rc.getRoute(routeName, location, maxCost, accessToCar, startDate, endDate, startDest, endDest, destinations, creatorEmail, sharedEmails, createdDate, lastModifiedDate)
             toastHelper(context, "Route Created")
             navController.navigate("Map")
