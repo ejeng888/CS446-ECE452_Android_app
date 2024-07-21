@@ -85,7 +85,7 @@ fun DestinationInputScreen(navController: NavController, rc: RouteController) {
         } else {
             Log.v("DestinationInput", "Passed Checks")
 
-            addRouteEntry(routeName, location, maxCost, accessToCar, startDate, endDate, startDest, endDest, destinations, creatorEmail, sharedEmails, createdDate, lastModifiedDate)
+            // addRouteEntry(routeName, location, maxCost, accessToCar, startDate, endDate, startDest, endDest, destinations, creatorEmail, sharedEmails, createdDate, lastModifiedDate)
             rc.getRoute(routeName, location, maxCost, accessToCar, startDate, endDate, startDest, endDest, destinations, creatorEmail, sharedEmails, createdDate, lastModifiedDate)
             toastHelper(context, "Route Created")
             navController.navigate("Map")

@@ -24,12 +24,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.cs446_ece452_android_app.ui.screens.HomePageRoute
+import com.example.cs446_ece452_android_app.ui.screens.RouteInformation
 import com.example.cs446_ece452_android_app.ui.theme.Blue1
 import com.example.cs446_ece452_android_app.ui.theme.DarkBlue
 
 @Composable
-fun HomePageEntry(route : HomePageRoute, function : () -> Unit = {}) {
+fun HomePageEntry(route : RouteInformation, function : () -> Unit = {}) {
     val routeName = route.routeName
     val lastModifiedDate = route.lastModifiedDate
     // val documentId = route.documentID
@@ -96,5 +96,5 @@ fun HomePageEntry(route : HomePageRoute, function : () -> Unit = {}) {
 @Preview
 @Composable
 fun HomePageEntryPreview() {
-    HomePageEntry(HomePageRoute("documentId", "RouteName", "lastModifiedDate"))
+    HomePageEntry(RouteInformation("documentId", "RouteName", "lastModifiedDate"))
 }
