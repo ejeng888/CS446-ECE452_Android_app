@@ -25,9 +25,9 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.rememberNavController
-import com.example.cs446_ece452_android_app.data.DestinationEntryStruct
 import com.example.cs446_ece452_android_app.data.MapsApiClient
 import com.example.cs446_ece452_android_app.data.RouteController
+import com.example.cs446_ece452_android_app.data.model.DestinationEntryStruct
 import com.example.cs446_ece452_android_app.ui.components.BottomNavigationBar
 import com.example.cs446_ece452_android_app.ui.components.FilledButton
 import com.example.cs446_ece452_android_app.ui.components.InputBox
@@ -58,10 +58,10 @@ fun DestinationInputScreen(navController: NavController, rc: RouteController) {
         startDest: DestinationEntryStruct,
         endDest: DestinationEntryStruct,
         destinations: List<DestinationEntryStruct>,
-        creatorEmail : String?,
-        sharedEmails : List<String>,
-        createdDate : String,
-        lastModifiedDate : String
+        creatorEmail: String?,
+        sharedEmails: List<String>,
+        createdDate: String,
+        lastModifiedDate: String
     ) {
         var emptyDestination = false
         for (destinationEntry in destinations) {
@@ -121,7 +121,7 @@ fun DestinationInputScreen(navController: NavController, rc: RouteController) {
             val destinations = remember { mutableStateListOf<DestinationEntryStruct>() }
 
             val creatorEmail = Firebase.auth.currentUser!!.email
-            val sharedEmails : List<String> = emptyList()
+            val sharedEmails: List<String> = emptyList()
             val createdDate = currentDateTime
             val lastModifiedDate = currentDateTime
 
@@ -197,7 +197,8 @@ fun DestinationInputScreen(navController: NavController, rc: RouteController) {
                 navController = navController,
                 destination = "Map",
                 function = {
-                    addRoute(context, routeName, location, maxCost, accessToCar, startDate, endDate, startDest, endDest, destinations, creatorEmail, sharedEmails, createdDate, lastModifiedDate)                }
+                    addRoute(context, routeName, location, maxCost, accessToCar, startDate, endDate, startDest, endDest, destinations, creatorEmail, sharedEmails, createdDate, lastModifiedDate)
+                }
             )
         }
     }

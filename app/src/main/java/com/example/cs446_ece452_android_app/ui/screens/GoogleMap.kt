@@ -1,7 +1,5 @@
 package com.example.cs446_ece452_android_app.ui.screens
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -45,10 +43,10 @@ fun MapScreen(navController: NavController, rc: RouteController) {
 
     val cameraPosition = rememberCameraPositionState()
 
-    LaunchedEffect(rc.dataLoaded) {
-        if (rc.dataLoaded) {
-            val low = rc.routeInfo.route!!.viewport.low
-            val high = rc.routeInfo.route!!.viewport.high
+    LaunchedEffect(rc.routeInfoLoaded) {
+        if (rc.routeInfoLoaded) {
+            val low = rc.routeInfo.route!!.viewport!!.low!!
+            val high = rc.routeInfo.route!!.viewport!!.high!!
             val boundsBuilder = LatLngBounds.builder()
             boundsBuilder.include(LatLng(low.lat, low.lng))
             boundsBuilder.include((LatLng(high.lat, high.lng)))
@@ -74,19 +72,16 @@ fun MapScreen(navController: NavController, rc: RouteController) {
                 googleMapOptionsFactory = { GoogleMapOptions().mapId(mapId) },
                 onMapLoaded = { isMapLoaded = true },
                 content = {
-                    if (rc.dataLoaded) {
-                        //if public transit, do other map content
-                        if(rc.routeInfo.accessToCar){
+                    if (rc.routeInfoLoaded) {
+                        if (rc.hasCarAccess()) {
                             MapContent(
                                 start = rc.routeInfo.startDest!!,
                                 end = rc.routeInfo.endDest!!,
                                 stops = rc.routeInfo.stopDests,
                                 order = rc.routeInfo.route!!.order,
-                                poly = rc.routeInfo.route!!.polyline.encodedPolyline
+                                poly = rc.routeInfo.route!!.polyline!!.encodedPolyline
                             )
-                        }
-                        else{
-                            //Draw every leg stored in rc.transitRouteInfo
+                        } else {
                             TransitRouteContent(rc.transitRouteInfo, rc.routeInfo.startDest!!, rc.routeInfo.endDest!!, rc.routeInfo.stopDests, rc.routeInfo.route!!.order)
                         }
                     }
@@ -131,7 +126,7 @@ fun StopMarkers(stops: ArrayList<Destination>, order: List<Int>) {
         AdvancedMarker(
             state = rememberMarkerState(position = LatLng(stop.lat, stop.lng)),
             title = stop.name,
-            pinConfig = configPin((order.indexOf(i) + 1).toString())
+            pinConfig = configPin((if (order.size == 1) 1 else order.indexOf(i) + 1).toString())
         )
     }
 }
@@ -165,8 +160,8 @@ fun TransitRouteContent(transitRoutes: List<Route>, start: Destination, end: Des
     if (stops != null && order != null)
         StopMarkers(stops, order)
     transitRoutes.forEach { route ->
-        route.legs.forEach { leg ->
-            val decoded = decodePolyline(leg.polyline.encodedPolyline)
+        route.legs!!.forEach { leg ->
+            val decoded = decodePolyline(leg.polyline!!.encodedPolyline)
             Polyline(
                 points = decoded,
                 color = Color.Red // or any other color you prefer

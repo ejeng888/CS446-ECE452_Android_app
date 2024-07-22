@@ -45,8 +45,8 @@ class MapsApiClient {
 
         return getResponse(request) { response ->
             val parsed = gson.fromJson(response, LatLngResponse::class.java)
-            val result = parsed.results[0]
-            Destination(name = searchString, lat = result.geometry.location.lat, lng = result.geometry.location.lng, address = result.address, placeId = result.placeId)
+            val result = parsed.results!![0]
+            Destination(name = searchString, lat = result.geometry!!.location!!.lat, lng = result.geometry.location!!.lng, address = result.address, placeId = result.placeId)
         }
     }
 
@@ -58,7 +58,7 @@ class MapsApiClient {
 
         return getResponse(request) { response ->
             val parsed = gson.fromJson(response, PlaceDetailsResponse::class.java)
-            parsed.result.name
+            parsed.result!!.name
         }
     }
 
@@ -81,6 +81,7 @@ class MapsApiClient {
                 "intermediates": [
                     $stopsFormatted
                 ],
+                "optimizeWaypointOrder": "true",
             """
         }
 
@@ -102,31 +103,15 @@ class MapsApiClient {
                         }
                     }
                 },
-                
                 $stopsFormatted
-                "optimizeWaypointOrder": "true",
-                "travelMode": "DRIVE"
+                "travelMode": "$travelMode"
             }"""
 
-
-        val body = requestString.toRequestBody("application/json".toMediaType())
-
-        val request: Request = Request.Builder()
-            .url("https://routes.googleapis.com/directions/v2:computeRoutes")
-            .post(body)
-            .header("X-Goog-Api-Key", key)
-            .header("X-Goog-FieldMask", "routes.legs,routes.distanceMeters,routes.staticDuration,routes.polyline.encodedPolyline,routes.viewport,routes.optimizedIntermediateWaypointIndex")
-            .build()
-
-        return getResponse(request) { response ->
-            val parsed = gson.fromJson(response, RouteResponse::class.java)
-            parsed.routes[0]
-        }
+        return getRoute(requestString)
     }
 
-    fun transitRequestString(requestString: String): CompletableFuture<Route>{
+    fun getRoute(requestString: String): CompletableFuture<Route> {
         val body = requestString.toRequestBody("application/json".toMediaType())
-
         val request: Request = Request.Builder()
             .url("https://routes.googleapis.com/directions/v2:computeRoutes")
             .post(body)
@@ -136,7 +121,7 @@ class MapsApiClient {
 
         return getResponse(request) { response ->
             val parsed = gson.fromJson(response, RouteResponse::class.java)
-            parsed.routes[0]
+            parsed.routes!![0]
         }
     }
 }
