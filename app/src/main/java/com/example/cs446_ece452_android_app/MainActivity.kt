@@ -23,14 +23,16 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val mapsClient = MapsApiClient()
-        val rc = RouteController(mapsClient)
-
         val apiKey = getString(R.string.google_maps_key)
         if (!Places.isInitialized()) {
             Places.initialize(applicationContext, apiKey)
         }
-        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+
+        val placesClient = Places.createClient(this)
+        val mapsClient = MapsApiClient(apiKey)
+        val rc = RouteController(mapsClient)
+
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
 
         setContent {
             window.statusBarColor = getColor(R.color.black)
@@ -58,7 +60,7 @@ class MainActivity : ComponentActivity() {
                         ProfileScreen(navController = navController)
                     }
                     composable(route = "DestinationInput") {
-                        DestinationInputScreen(navController = navController, rc = rc)
+                        DestinationInputScreen(navController = navController, rc = rc, placesClient = placesClient)
                     }
                     composable(route = "Map") {
                         MapScreen(navController = navController, rc = rc)
