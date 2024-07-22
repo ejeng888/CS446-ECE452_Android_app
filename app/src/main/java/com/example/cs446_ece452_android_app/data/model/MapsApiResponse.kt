@@ -2,6 +2,10 @@ package com.example.cs446_ece452_android_app.data.model
 
 import com.google.gson.annotations.SerializedName
 
+data class LatLngResponse(
+    @SerializedName("results") val results: List<LatLngResult>? = null
+)
+
 data class LatLngResult(
     @SerializedName("formatted_address") val address: String = "",
     @SerializedName("geometry") val geometry: Geometry? = null,
@@ -17,17 +21,6 @@ data class LatLong(
     @SerializedName(value = "lng", alternate = ["longitude"]) val lng: Double = 0.0
 )
 
-data class LatLngResponse(
-    @SerializedName("results") val results: List<LatLngResult>? = null
-)
-
-data class PlaceDetailsResponse(
-    @SerializedName("result") val result: PlaceResult? = null
-)
-
-data class PlaceResult(
-    @SerializedName("name") val name: String = ""
-)
 
 data class RouteResponse(
     @SerializedName("routes") val routes: List<Route>? = null
@@ -71,10 +64,41 @@ data class Step(
     @SerializedName("startLocation") val start: Location? = null,
     @SerializedName("endLocation") val end: Location? = null,
     @SerializedName("navigationInstruction") val navInstruction: NavigationInstruction? = null,
+    @SerializedName("transitDetails") val transitDetails: TransitDetails? = null,
     @SerializedName("travelMode") val mode: String = ""
 )
 
 data class NavigationInstruction(
     @SerializedName("maneuver") val maneuver: String = "",
     @SerializedName("instructions") val instruction: String = ""
+)
+
+data class TransitDetails(
+    @SerializedName("stopDetails") val stopDetails: StopDetails? = null,
+    @SerializedName("transitLine") val transitLine: TransitLine? = null,
+    @SerializedName("stopCount") val stopCount: Int = 0
+)
+
+data class StopDetails(
+    @SerializedName("arrivalStop") val arrivalStop: Stop? = null,
+    @SerializedName("departureStop") val departureStop: Stop? = null
+)
+
+data class Stop(
+    @SerializedName("name") val name: String = ""
+)
+
+data class TransitLine(
+    @SerializedName("agencies") val agencies: List<Agency>? = null,
+    @SerializedName("name") val name: String = "",
+    @SerializedName("nameShort") val nameShort: String = "",
+    @SerializedName("vehicle") val vehicle: Vehicle? = null
+)
+
+data class Agency(
+    @SerializedName("name") val name: String = ""
+)
+
+data class Vehicle(
+    @SerializedName("type") val type: String = ""
 )
