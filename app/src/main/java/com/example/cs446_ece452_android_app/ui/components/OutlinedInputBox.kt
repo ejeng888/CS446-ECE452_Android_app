@@ -23,12 +23,12 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
-fun OutlinedInputBox(labelVal: String, icon: ImageVector, valueChanged : (String) -> Unit = {}) {
+fun OutlinedInputBox(labelVal: String, icon: ImageVector, valueChanged: (String) -> Unit = {}) {
     var textVal by remember {
         mutableStateOf("")
     }
     val typeOfKeyboard: KeyboardType = when (labelVal) {
-        "email ID" -> KeyboardType.Email    
+        "email ID" -> KeyboardType.Email
         "mobile" -> KeyboardType.Phone
         else -> KeyboardType.Text
     }
@@ -61,6 +61,7 @@ fun OutlinedInputBox(labelVal: String, icon: ImageVector, valueChanged : (String
         singleLine = true
     )
 }
+
 @Preview
 @Composable
 fun OutlinedInputBoxPreview() {

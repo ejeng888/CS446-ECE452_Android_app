@@ -37,12 +37,10 @@ import com.example.cs446_ece452_android_app.ui.components.SearchBar
 import com.example.cs446_ece452_android_app.ui.theme.Blue1
 
 data class RouteInformation(
-    val documentID : String,
-    val routeName : String,
-    val lastModifiedDate : String,
-
+    val documentID: String,
+    val routeName: String,
+    val lastModifiedDate: String,
 )
-
 
 @Composable
 fun SavedRoutes(navController: NavController, rc: RouteController) {
@@ -122,7 +120,8 @@ fun SavedRoutes(navController: NavController, rc: RouteController) {
                 items(filteredRoutes) { route ->
                     HomePageEntry(route = route, function = {
                         rc.getRoute(route.documentID)
-                        navController.navigate("Map")}
+                        navController.navigate("Map")
+                    }
                     )
                 }
             }

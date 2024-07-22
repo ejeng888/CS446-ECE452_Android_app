@@ -1,7 +1,7 @@
 package com.example.cs446_ece452_android_app.ui.screens
+
 import android.util.Log
 import androidx.compose.runtime.Composable
-
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.unit.dp
@@ -31,8 +31,6 @@ import com.google.firebase.auth.userProfileChangeRequest
 
 @Composable
 fun ProfileScreen(navController: NavController) {
-
-
     Scaffold(
         bottomBar = {
             BottomNavigationBar(navController = navController)
@@ -95,7 +93,6 @@ fun ProfileScreen(navController: NavController) {
                                 navController.navigate("Login")
                             }
                         }
-
                 })
             }
         }

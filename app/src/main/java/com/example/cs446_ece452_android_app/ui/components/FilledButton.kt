@@ -14,14 +14,14 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 
 @Composable
-fun FilledButton(labelVal: String, navController: NavController, destination : String = "", function : () -> Unit = {}) {
+fun FilledButton(labelVal: String, navController: NavController, destination: String = "", function: () -> Unit = {}) {
     Button(
         onClick = {
             if (destination != "") {
                 navController.navigate(destination)
             }
             function()
-                  },
+        },
         colors = ButtonDefaults.buttonColors(
             containerColor = DarkBlue
         ),
@@ -39,6 +39,6 @@ fun FilledButton(labelVal: String, navController: NavController, destination : S
 @Preview
 @Composable
 fun FilledButtonPreview() {
-        FilledButton(labelVal = "Click me please!", rememberNavController())
+    FilledButton(labelVal = "Click me please!", rememberNavController())
 }
 

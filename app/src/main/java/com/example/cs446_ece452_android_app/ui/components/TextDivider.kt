@@ -3,6 +3,7 @@ package com.example.cs446_ece452_android_app.ui.components
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -15,9 +16,11 @@ import com.example.cs446_ece452_android_app.ui.theme.Gray
 fun TextDivider(text: String) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.fillMaxWidth().padding(30.dp)
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(10.dp)
     ) {
-        androidx.compose.material3.Divider(
+        HorizontalDivider(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f),
@@ -30,7 +33,7 @@ fun TextDivider(text: String) {
             color = Gray,
             fontSize = 12.sp
         )
-        androidx.compose.material3.Divider(
+        HorizontalDivider(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f),

@@ -29,7 +29,7 @@ import com.example.cs446_ece452_android_app.ui.theme.Blue1
 import com.example.cs446_ece452_android_app.ui.theme.DarkBlue
 
 @Composable
-fun HomePageEntry(route : RouteInformation, function : () -> Unit = {}) {
+fun HomePageEntry(route: RouteInformation, function: () -> Unit = {}) {
     val routeName = route.routeName
     val lastModifiedDate = route.lastModifiedDate
     // val documentId = route.documentID
