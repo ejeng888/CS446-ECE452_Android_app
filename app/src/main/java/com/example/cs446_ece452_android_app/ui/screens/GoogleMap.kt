@@ -34,6 +34,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material3.CircularProgressIndicator
 import com.example.cs446_ece452_android_app.data.model.Route
 
 @Composable
@@ -74,7 +76,7 @@ fun MapScreen(navController: NavController, rc: RouteController) {
                 content = {
                     if (rc.routeInfoLoaded) {
                         if (rc.hasCarAccess()) {
-                            MapContent(
+                            CarRouteContent(
                                 start = rc.routeInfo.startDest!!,
                                 end = rc.routeInfo.endDest!!,
                                 stops = rc.routeInfo.stopDests,
@@ -82,7 +84,13 @@ fun MapScreen(navController: NavController, rc: RouteController) {
                                 poly = rc.routeInfo.route!!.polyline!!.encodedPolyline
                             )
                         } else {
-                            TransitRouteContent(rc.transitRouteInfo, rc.routeInfo.startDest!!, rc.routeInfo.endDest!!, rc.routeInfo.stopDests, rc.routeInfo.route!!.order)
+                            TransitRouteContent(
+                                transitRoutes = rc.transitRouteInfo,
+                                start = rc.routeInfo.startDest!!,
+                                end = rc.routeInfo.endDest!!,
+                                stops = rc.routeInfo.stopDests,
+                                order = rc.routeInfo.route!!.order
+                            )
                         }
                     }
                 }
@@ -96,18 +104,49 @@ fun MapScreen(navController: NavController, rc: RouteController) {
                 Text("Display Destination")
             }
         }
+
+        if (!isMapLoaded) {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier.fillMaxSize()
+            ) {
+                Column {
+                    CircularProgressIndicator()
+                    Text(text = "Loading Map")
+                }
+            }
+        }
     }
 }
 
 @Composable
 @GoogleMapComposable
-fun MapContent(start: Destination, end: Destination, stops: ArrayList<Destination>?, order: List<Int>?, poly: String) {
+fun CarRouteContent(start: Destination, end: Destination, stops: ArrayList<Destination>?, order: List<Int>?, poly: String) {
     StartEndMarker(start)
     if (start.address != end.address)
         StartEndMarker(end)
     if (stops != null && order != null)
         StopMarkers(stops, order)
     Route(poly)
+}
+
+@Composable
+@GoogleMapComposable
+fun TransitRouteContent(transitRoutes: List<Route>, start: Destination, end: Destination, stops: ArrayList<Destination>?, order: List<Int>?) {
+    StartEndMarker(destination = start)
+    if (start.address != end.address)
+        StartEndMarker(end)
+    if (stops != null && order != null)
+        StopMarkers(stops, order)
+    transitRoutes.forEach { route ->
+        route.legs!!.forEach { leg ->
+            val decoded = decodePolyline(leg.polyline!!.encodedPolyline)
+            Polyline(
+                points = decoded,
+                color = Color.Red // or any other color you prefer
+            )
+        }
+    }
 }
 
 @Composable
@@ -149,25 +188,6 @@ fun Route(poly: String) {
         points = decoded,
         color = Color.Blue
     )
-}
-
-@Composable
-@GoogleMapComposable
-fun TransitRouteContent(transitRoutes: List<Route>, start: Destination, end: Destination, stops: ArrayList<Destination>?, order: List<Int>?) {
-    StartEndMarker(destination = start)
-    if (start.address != end.address)
-        StartEndMarker(end)
-    if (stops != null && order != null)
-        StopMarkers(stops, order)
-    transitRoutes.forEach { route ->
-        route.legs!!.forEach { leg ->
-            val decoded = decodePolyline(leg.polyline!!.encodedPolyline)
-            Polyline(
-                points = decoded,
-                color = Color.Red // or any other color you prefer
-            )
-        }
-    }
 }
 
 private fun decodePolyline(encoded: String): List<LatLng> {
