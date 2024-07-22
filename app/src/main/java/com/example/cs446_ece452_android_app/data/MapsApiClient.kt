@@ -14,9 +14,8 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.IOException
 import java.util.concurrent.CompletableFuture
 
-class MapsApiClient {
+class MapsApiClient (private val key: String) {
     private val client: OkHttpClient = OkHttpClient()
-    private val key = "AIzaSyC2E4JsKZl3y3fV0nDUGeZOWfCjrwb5ISw"
     private val gson = Gson()
 
     private fun <T> getResponse(request: Request, callback: (String?) -> T): CompletableFuture<T> {

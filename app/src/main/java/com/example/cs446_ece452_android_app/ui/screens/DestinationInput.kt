@@ -15,7 +15,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -24,8 +23,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.ui.platform.LocalContext
-import androidx.navigation.compose.rememberNavController
-import com.example.cs446_ece452_android_app.data.MapsApiClient
 import com.example.cs446_ece452_android_app.data.RouteController
 import com.example.cs446_ece452_android_app.data.model.DestinationEntryStruct
 import com.example.cs446_ece452_android_app.ui.components.BottomNavigationBar
@@ -38,13 +35,14 @@ import com.example.cs446_ece452_android_app.ui.components.DestinationEntry
 import com.example.cs446_ece452_android_app.ui.components.OutlinedButton
 import com.example.cs446_ece452_android_app.ui.components.toastHelper
 import com.google.accompanist.insets.ProvideWindowInsets
+import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 @Composable
-fun DestinationInputScreen(navController: NavController, rc: RouteController) {
+fun DestinationInputScreen(navController: NavController, rc: RouteController, placesClient: PlacesClient) {
 
     val context = LocalContext.current
     fun addRoute(
@@ -156,6 +154,7 @@ fun DestinationInputScreen(navController: NavController, rc: RouteController) {
                     modifier = Modifier.padding(start = 10.dp, end = 25.dp, top = 25.dp, bottom = 25.dp)
                 ) {
                     DestinationEntry(
+                        placesClient = placesClient,
                         timeChanged = {},
                         destinationChanged = { newValue ->
                             val updatedEntry = startDest.copy(destination = newValue)
@@ -165,6 +164,7 @@ fun DestinationInputScreen(navController: NavController, rc: RouteController) {
                     )
                     repeat(destinations.size) { index ->
                         DestinationEntry(
+                            placesClient = placesClient,
                             timeChanged = { newValue ->
                                 val updatedEntry = destinations[index].copy(timeSpent = newValue)
                                 destinations[index] = updatedEntry
@@ -176,6 +176,7 @@ fun DestinationInputScreen(navController: NavController, rc: RouteController) {
                         )
                     }
                     DestinationEntry(
+                        placesClient = placesClient,
                         timeChanged = {},
                         destinationChanged = { newValue ->
                             val updatedEntry = endDest.copy(destination = newValue)
@@ -195,19 +196,12 @@ fun DestinationInputScreen(navController: NavController, rc: RouteController) {
             FilledButton(
                 labelVal = "Calculate Route",
                 navController = navController,
-                destination = "Map",
                 function = {
                     addRoute(context, routeName, location, maxCost, accessToCar, startDate, endDate, startDest, endDest, destinations, creatorEmail, sharedEmails, createdDate, lastModifiedDate)
                 }
             )
         }
     }
-}
-
-@Preview
-@Composable
-fun DestinationInputScreenPreview() {
-    DestinationInputScreen(rememberNavController(), RouteController(MapsApiClient()))
 }
 
 @Composable
