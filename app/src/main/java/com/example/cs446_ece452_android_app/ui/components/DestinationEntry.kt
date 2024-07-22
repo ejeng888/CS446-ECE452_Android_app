@@ -57,10 +57,10 @@ fun DestinationEntry(placesClient: PlacesClient, timeChanged: (String) -> Unit, 
 
     if (start) {
         icon = Icons.Default.LocationOn
-        placeholder = "Enter Starting Location"
+        placeholder = "Enter Starting Location*"
     } else if (end) {
         icon = Icons.Default.Flag
-        placeholder = "Enter Ending Location"
+        placeholder = "Enter Ending Location*"
     }
 
     Row(
