@@ -35,6 +35,8 @@ import androidx.compose.material3.Text
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.material3.CircularProgressIndicator
 import com.example.cs446_ece452_android_app.data.model.Route
 
@@ -110,8 +112,9 @@ fun MapScreen(navController: NavController, rc: RouteController) {
                 contentAlignment = Alignment.Center,
                 modifier = Modifier.fillMaxSize()
             ) {
-                Column {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     CircularProgressIndicator()
+                    Spacer(modifier = Modifier.height(10.dp))
                     Text(text = "Loading Map")
                 }
             }
