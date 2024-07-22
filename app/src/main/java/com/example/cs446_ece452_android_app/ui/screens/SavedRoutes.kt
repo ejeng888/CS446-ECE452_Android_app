@@ -26,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.cs446_ece452_android_app.data.RouteController
 import com.example.cs446_ece452_android_app.ui.components.BottomNavigationBar
 import com.example.cs446_ece452_android_app.ui.components.Logo
 import com.google.firebase.Firebase
@@ -44,7 +45,7 @@ data class RouteInformation(
 
 
 @Composable
-fun SavedRoutes(navController: NavController) {
+fun SavedRoutes(navController: NavController, rc: RouteController) {
 
     var searchQuery = remember { mutableStateOf("") }
     val routes = remember { mutableStateListOf<RouteInformation>() }
@@ -120,7 +121,7 @@ fun SavedRoutes(navController: NavController) {
             ) {
                 items(filteredRoutes) { route ->
                     HomePageEntry(route = route, function = {
-                        // Add RC Calculation here
+                        rc.getRoute(route.documentID)
                         navController.navigate("Map")}
                     )
                 }

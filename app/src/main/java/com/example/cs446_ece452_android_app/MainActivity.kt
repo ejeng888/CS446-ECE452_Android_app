@@ -54,7 +54,7 @@ class MainActivity : ComponentActivity() {
                         SignupScreen(navController)
                     }
                     composable(route = "routes") {
-                        SavedRoutes(navController = navController)
+                        SavedRoutes(navController = navController, rc = rc)
                     }
                     composable(route = "Profile") {
                         ProfileScreen(navController = navController)

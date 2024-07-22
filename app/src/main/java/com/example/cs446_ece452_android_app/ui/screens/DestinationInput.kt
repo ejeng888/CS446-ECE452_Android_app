@@ -22,6 +22,7 @@ import android.widget.Toast
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.ui.platform.LocalContext
 import com.example.cs446_ece452_android_app.data.RouteController
 import com.example.cs446_ece452_android_app.data.model.DestinationEntryStruct
@@ -34,6 +35,8 @@ import com.example.cs446_ece452_android_app.ui.components.CarSwitch
 import com.example.cs446_ece452_android_app.ui.components.DestinationEntry
 import com.example.cs446_ece452_android_app.ui.components.OutlinedButton
 import com.example.cs446_ece452_android_app.ui.components.toastHelper
+import com.example.cs446_ece452_android_app.ui.theme.Blue2
+import com.example.cs446_ece452_android_app.ui.theme.Blue5
 import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.firebase.Firebase
@@ -142,10 +145,10 @@ fun DestinationInputScreen(navController: NavController, rc: RouteController, pl
                     }
                     CarSwitch(Switched = { newValue -> accessToCar = newValue })
                 }
-                DateTimeInputField(label = "Start", dateTime = startDate) { selectedDateTime ->
+                DateTimeInputField(label = "Start Date", dateTime = startDate) { selectedDateTime ->
                     startDate = selectedDateTime
                 }
-                DateTimeInputField(label = "End", dateTime = endDate) { selectedDateTime ->
+                DateTimeInputField(label = "End Date ", dateTime = endDate) { selectedDateTime ->
                     endDate = selectedDateTime
                 }
             }
@@ -192,7 +195,13 @@ fun DestinationInputScreen(navController: NavController, rc: RouteController, pl
                 navController = navController,
                 function = { destinations.add(DestinationEntryStruct()) }
             )
-
+            Spacer(modifier = Modifier.height(10.dp))
+            OutlinedButton(
+                labelVal = "Remove Destination",
+                navController = navController,
+                function = { if (destinations.size > 0) destinations.removeLast() }
+            )
+            Spacer(modifier = Modifier.height(30.dp))
             FilledButton(
                 labelVal = "Calculate Route",
                 navController = navController,
@@ -214,10 +223,12 @@ fun DateTimeInputField(label: String, dateTime: String, onDateTimeSelected: (Str
             .padding(vertical = 8.dp)
     ) {
         Text(
-            text = label
+            text = label,
+            color = Blue5
         )
         Text(
-            text = dateTime
+            text = dateTime,
+            color = DarkBlue
         )
         DateTimePickerButton(label = "Pick") { selectedDateTime ->
             onDateTimeSelected(selectedDateTime)
@@ -256,7 +267,11 @@ fun DateTimePickerButton(label: String, onDateTimeSelected: (String) -> Unit) {
             }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true).show()
 
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show()
-    }) {
-        Text(label)
+    },
+        colors = ButtonDefaults.buttonColors(containerColor = Blue2)
+    ) {
+        Text(
+            text = label,
+            color = Blue5)
     }
 }
