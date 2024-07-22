@@ -14,9 +14,8 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.IOException
 import java.util.concurrent.CompletableFuture
 
-class MapsApiClient {
+class MapsApiClient (private val key: String) {
     private val client: OkHttpClient = OkHttpClient()
-    private val key = "AIzaSyC2E4JsKZl3y3fV0nDUGeZOWfCjrwb5ISw"
     private val gson = Gson()
 
     private fun <T> getResponse(request: Request, callback: (String?) -> T): CompletableFuture<T> {
@@ -45,8 +44,8 @@ class MapsApiClient {
 
         return getResponse(request) { response ->
             val parsed = gson.fromJson(response, LatLngResponse::class.java)
-            val result = parsed.results[0]
-            Destination(name = searchString, lat = result.geometry.location.lat, lng = result.geometry.location.lng, address = result.address, placeId = result.placeId)
+            val result = parsed.results!![0]
+            Destination(name = searchString, lat = result.geometry!!.location!!.lat, lng = result.geometry.location!!.lng, address = result.address, placeId = result.placeId)
         }
     }
 
@@ -58,7 +57,7 @@ class MapsApiClient {
 
         return getResponse(request) { response ->
             val parsed = gson.fromJson(response, PlaceDetailsResponse::class.java)
-            parsed.result.name
+            parsed.result!!.name
         }
     }
 
@@ -81,6 +80,7 @@ class MapsApiClient {
                 "intermediates": [
                     $stopsFormatted
                 ],
+                "optimizeWaypointOrder": "true",
             """
         }
 
@@ -103,10 +103,13 @@ class MapsApiClient {
                     }
                 },
                 $stopsFormatted
-                "optimizeWaypointOrder": "true",
                 "travelMode": "$travelMode"
             }"""
 
+        return getRoute(requestString)
+    }
+
+    fun getRoute(requestString: String): CompletableFuture<Route> {
         val body = requestString.toRequestBody("application/json".toMediaType())
         val request: Request = Request.Builder()
             .url("https://routes.googleapis.com/directions/v2:computeRoutes")
@@ -117,7 +120,7 @@ class MapsApiClient {
 
         return getResponse(request) { response ->
             val parsed = gson.fromJson(response, RouteResponse::class.java)
-            parsed.routes[0]
+            parsed.routes!![0]
         }
     }
 }
