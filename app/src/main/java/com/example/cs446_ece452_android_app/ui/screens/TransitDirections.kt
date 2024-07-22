@@ -53,6 +53,7 @@ fun TransitScreen(navController: NavController, rc: RouteController) {
             }
         }
         //Reached a stop
+
     }
 
     Scaffold(
