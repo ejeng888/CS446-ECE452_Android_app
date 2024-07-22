@@ -24,8 +24,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.cs446_ece452_android_app.data.RouteController
 import com.example.cs446_ece452_android_app.ui.components.BottomNavigationBar
 import com.example.cs446_ece452_android_app.ui.components.Logo
@@ -35,6 +37,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.example.cs446_ece452_android_app.ui.components.HomePageEntry
 import com.example.cs446_ece452_android_app.ui.components.SearchBar
 import com.example.cs446_ece452_android_app.ui.theme.Blue1
+import com.google.firebase.firestore.DocumentSnapshot
+import androidx.navigation.compose.rememberNavController
 
 data class RouteInformation(
     val documentID : String,
@@ -91,7 +95,7 @@ fun SavedRoutes(navController: NavController, rc: RouteController) {
         it.routeName.contains(searchQuery.value, ignoreCase = true)
     }
     var routeToDelete by remember { mutableStateOf<String?>(null) }
-    var routeNameDelete by remember { mutableStateOf<String?>(null) }
+    var routeNameDelete by remember { mutableStateOf<List<String>?>(null) }
     var routeNameId by remember { mutableStateOf<String?>(null) }
     var showDialog by remember { mutableStateOf(false) }
 
