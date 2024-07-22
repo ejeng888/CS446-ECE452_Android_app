@@ -74,8 +74,7 @@ fun TransitScreen(navController: NavController, rc: RouteController) {
                     .padding(16.dp)
             ){
                 Text(
-                    //text = "Start at ${rc.transitRouteInfo[0].legs[0].start!!.latLng!!.lat}, ${rc.transitRouteInfo[0].legs[0].start.latLng.lng}",
-                    text = "Start here",
+                    text = "Start here at ${rc.transitRouteInfo[0].legs!![0].start!!.latLng!!.lat}, ${rc.transitRouteInfo[0].legs!![0].start!!.latLng!!.lng}",
                     fontSize = 18.sp,
                     color = Color.Black
                 )
