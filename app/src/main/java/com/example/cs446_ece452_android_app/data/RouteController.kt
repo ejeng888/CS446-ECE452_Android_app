@@ -16,8 +16,6 @@ class RouteController(private val client: MapsApiClient) : ViewModel() {
 
     var routeInfo: RouteInfo = RouteInfo()
         private set
-    var transitRouteInfo: MutableList<Route> = mutableListOf()
-        private set
     var routeInfoLoaded by mutableStateOf(false)
         private set
 
@@ -106,9 +104,7 @@ class RouteController(private val client: MapsApiClient) : ViewModel() {
                 }
 
                 CompletableFuture.allOf(*routesFuture.toTypedArray()).thenRun {
-                    routesFuture.forEach { route ->
-                        transitRouteInfo.add(route.join())
-                    }
+                    routeInfo.transitRoute = routesFuture.mapTo(arrayListOf()) { it.join() }
                 }
             }
         }.thenRun {

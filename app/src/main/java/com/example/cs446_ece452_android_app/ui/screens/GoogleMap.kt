@@ -87,7 +87,7 @@ fun MapScreen(navController: NavController, rc: RouteController) {
                             )
                         } else {
                             TransitRouteContent(
-                                transitRoutes = rc.transitRouteInfo,
+                                transitRoutes = rc.routeInfo.transitRoute,
                                 start = rc.routeInfo.startDest!!,
                                 end = rc.routeInfo.endDest!!,
                                 stops = rc.routeInfo.stopDests,
@@ -135,13 +135,13 @@ fun CarRouteContent(start: Destination, end: Destination, stops: ArrayList<Desti
 
 @Composable
 @GoogleMapComposable
-fun TransitRouteContent(transitRoutes: List<Route>, start: Destination, end: Destination, stops: ArrayList<Destination>?, order: List<Int>?) {
+fun TransitRouteContent(transitRoutes: List<Route>?, start: Destination, end: Destination, stops: ArrayList<Destination>?, order: List<Int>?) {
     StartEndMarker(destination = start)
     if (start.address != end.address)
         StartEndMarker(end)
     if (stops != null && order != null)
         StopMarkers(stops, order)
-    transitRoutes.forEach { route ->
+    transitRoutes?.forEach { route ->
         route.legs!!.forEach { leg ->
             val decoded = decodePolyline(leg.polyline!!.encodedPolyline)
             Polyline(

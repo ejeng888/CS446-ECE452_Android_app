@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">CS446-ECE452_Android_app</string>
+    <string name="app_name">TrailBlazer</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
