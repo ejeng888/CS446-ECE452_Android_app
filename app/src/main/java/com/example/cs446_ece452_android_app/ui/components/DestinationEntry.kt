@@ -1,9 +1,6 @@
 package com.example.cs446_ece452_android_app.ui.components
 
-
-import android.graphics.Rect
 import android.util.Log
-import android.view.ViewTreeObserver
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -27,7 +24,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,10 +34,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.cs446_ece452_android_app.ui.theme.Blue1
@@ -49,13 +43,13 @@ import com.example.cs446_ece452_android_app.ui.theme.Blue3
 import com.example.cs446_ece452_android_app.ui.theme.Blue4
 import com.example.cs446_ece452_android_app.ui.theme.DarkBlue
 import com.google.accompanist.insets.navigationBarsWithImePadding
-import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
-
+import com.google.android.libraries.places.api.net.PlacesClient
+import kotlinx.coroutines.delay
 
 @Composable
-fun DestinationEntry(timeChanged: (String) -> Unit, destinationChanged: (String) -> Unit, start: Boolean = false, end: Boolean = false) {
+fun DestinationEntry(placesClient: PlacesClient, timeChanged: (String) -> Unit, destinationChanged: (String) -> Unit, start: Boolean = false, end: Boolean = false) {
     var destination by remember { mutableStateOf("") }
     var timeSpent by remember { mutableStateOf("02:00") }
     var icon = Icons.Default.Schedule
@@ -63,10 +57,10 @@ fun DestinationEntry(timeChanged: (String) -> Unit, destinationChanged: (String)
 
     if (start) {
         icon = Icons.Default.LocationOn
-        placeholder = "Enter Starting Location"
+        placeholder = "Enter Starting Location*"
     } else if (end) {
         icon = Icons.Default.Flag
-        placeholder = "Enter Ending Location"
+        placeholder = "Enter Ending Location*"
     }
 
     Row(
@@ -75,7 +69,7 @@ fun DestinationEntry(timeChanged: (String) -> Unit, destinationChanged: (String)
             .fillMaxWidth()
             .padding(start = 16.dp) // Ensure the Row takes the full width
     ) {
-        Column() {
+        Column {
             VerticalLine(dontShow = start)
             Row(
                 modifier = Modifier
@@ -103,6 +97,7 @@ fun DestinationEntry(timeChanged: (String) -> Unit, destinationChanged: (String)
 
         Box(modifier = Modifier.fillMaxWidth()) {
             AutocompleteTextField(
+                placesClient = placesClient,
                 value = destination,
                 onValueChange = {
                     destination = it
@@ -117,14 +112,35 @@ fun DestinationEntry(timeChanged: (String) -> Unit, destinationChanged: (String)
 
 @Composable
 fun AutocompleteTextField(
+    placesClient: PlacesClient,
     value: String,
     onValueChange: (String) -> Unit,
     placeholder: String,
     modifier: Modifier = Modifier
 ) {
-    var suggestions by remember { mutableStateOf(listOf<Place>()) }
-    val context = LocalContext.current
     var hasFocus by remember { mutableStateOf(false) }
+    var query by remember { mutableStateOf("") }
+    var suggestions by remember { mutableStateOf(listOf<Place>()) }
+
+    LaunchedEffect(query) {
+        if (query.isNotEmpty()) {
+            delay(100)
+            val request = FindAutocompletePredictionsRequest.builder()
+                .setQuery(query)
+                .build()
+            placesClient.findAutocompletePredictions(request).addOnSuccessListener { response ->
+                suggestions = response.autocompletePredictions.map {
+                    Place.builder()
+                        .setName(it.getPrimaryText(null).toString())
+                        .build()
+                }
+            }.addOnFailureListener { exception ->
+                Log.e("Autocomplete", "Error getting autocomplete predictions", exception)
+            }
+        } else {
+            suggestions = emptyList()
+        }
+    }
 
     Box(
         modifier = modifier
@@ -160,27 +176,10 @@ fun AutocompleteTextField(
             TextField(
                 value = value,
                 modifier = Modifier.onFocusChanged { focusState -> hasFocus = focusState.isFocused },
-                onValueChange = { query ->
-                    onValueChange(query)
-                    if (query.isNotEmpty()) {
-                        val placesClient = Places.createClient(context)
-                        val request = FindAutocompletePredictionsRequest.builder()
-                            .setQuery(query)
-                            .build()
-                        placesClient.findAutocompletePredictions(request).addOnSuccessListener { response ->
-                            suggestions = response.autocompletePredictions.map {
-                                Place.builder()
-                                    .setName(it.getPrimaryText(null).toString())
-                                    .build()
-                            }
-                        }.addOnFailureListener { exception ->
-                            Log.e("Autocomplete", "Error getting autocomplete predictions", exception)
-                        }
-                    } else {
-                        suggestions = emptyList()
-                    }
+                onValueChange = {
+                    onValueChange(it)
+                    query = it
                 },
-
                 placeholder = { Text(text = placeholder, color = Blue4) },
                 textStyle = TextStyle(color = DarkBlue, fontSize = 20.sp),
                 singleLine = true,
@@ -207,9 +206,11 @@ fun AutocompleteTextField(
 @Composable
 fun VerticalLine(dontShow: Boolean = false) {
     Row {
-        Spacer(modifier = Modifier
-            .width(12.dp)
-            .height(15.dp))
+        Spacer(
+            modifier = Modifier
+                .width(12.dp)
+                .height(15.dp)
+        )
         if (dontShow) return
         Box(
             modifier = Modifier
@@ -220,14 +221,4 @@ fun VerticalLine(dontShow: Boolean = false) {
         )
     }
 
-}
-
-@Preview
-@Composable
-fun DestinationEntryPreview() {
-    Column {
-        DestinationEntry({}, {}, start = true)
-        DestinationEntry({}, {})
-        DestinationEntry({}, {}, end = true)
-    }
 }

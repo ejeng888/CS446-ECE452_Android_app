@@ -15,7 +15,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -23,11 +22,10 @@ import android.widget.Toast
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.ui.platform.LocalContext
-import androidx.navigation.compose.rememberNavController
-import com.example.cs446_ece452_android_app.data.DestinationEntryStruct
-import com.example.cs446_ece452_android_app.data.MapsApiClient
 import com.example.cs446_ece452_android_app.data.RouteController
+import com.example.cs446_ece452_android_app.data.model.DestinationEntryStruct
 import com.example.cs446_ece452_android_app.ui.components.BottomNavigationBar
 import com.example.cs446_ece452_android_app.ui.components.FilledButton
 import com.example.cs446_ece452_android_app.ui.components.InputBox
@@ -37,14 +35,17 @@ import com.example.cs446_ece452_android_app.ui.components.CarSwitch
 import com.example.cs446_ece452_android_app.ui.components.DestinationEntry
 import com.example.cs446_ece452_android_app.ui.components.OutlinedButton
 import com.example.cs446_ece452_android_app.ui.components.toastHelper
+import com.example.cs446_ece452_android_app.ui.theme.Blue2
+import com.example.cs446_ece452_android_app.ui.theme.Blue5
 import com.google.accompanist.insets.ProvideWindowInsets
+import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 @Composable
-fun DestinationInputScreen(navController: NavController, rc: RouteController) {
+fun DestinationInputScreen(navController: NavController, rc: RouteController, placesClient: PlacesClient) {
 
     val context = LocalContext.current
     fun addRoute(
@@ -58,10 +59,10 @@ fun DestinationInputScreen(navController: NavController, rc: RouteController) {
         startDest: DestinationEntryStruct,
         endDest: DestinationEntryStruct,
         destinations: List<DestinationEntryStruct>,
-        creatorEmail : String?,
-        sharedEmails : List<String>,
-        createdDate : String,
-        lastModifiedDate : String
+        creatorEmail: String?,
+        sharedEmails: List<String>,
+        createdDate: String,
+        lastModifiedDate: String
     ) {
         var emptyDestination = false
         for (destinationEntry in destinations) {
@@ -121,7 +122,7 @@ fun DestinationInputScreen(navController: NavController, rc: RouteController) {
             val destinations = remember { mutableStateListOf<DestinationEntryStruct>() }
 
             val creatorEmail = Firebase.auth.currentUser!!.email
-            val sharedEmails : List<String> = emptyList()
+            val sharedEmails: List<String> = emptyList()
             val createdDate = currentDateTime
             val lastModifiedDate = currentDateTime
 
@@ -144,10 +145,10 @@ fun DestinationInputScreen(navController: NavController, rc: RouteController) {
                     }
                     CarSwitch(Switched = { newValue -> accessToCar = newValue })
                 }
-                DateTimeInputField(label = "Start", dateTime = startDate) { selectedDateTime ->
+                DateTimeInputField(label = "Start Date", dateTime = startDate) { selectedDateTime ->
                     startDate = selectedDateTime
                 }
-                DateTimeInputField(label = "End", dateTime = endDate) { selectedDateTime ->
+                DateTimeInputField(label = "End Date ", dateTime = endDate) { selectedDateTime ->
                     endDate = selectedDateTime
                 }
             }
@@ -156,6 +157,7 @@ fun DestinationInputScreen(navController: NavController, rc: RouteController) {
                     modifier = Modifier.padding(start = 10.dp, end = 25.dp, top = 25.dp, bottom = 25.dp)
                 ) {
                     DestinationEntry(
+                        placesClient = placesClient,
                         timeChanged = {},
                         destinationChanged = { newValue ->
                             val updatedEntry = startDest.copy(destination = newValue)
@@ -165,6 +167,7 @@ fun DestinationInputScreen(navController: NavController, rc: RouteController) {
                     )
                     repeat(destinations.size) { index ->
                         DestinationEntry(
+                            placesClient = placesClient,
                             timeChanged = { newValue ->
                                 val updatedEntry = destinations[index].copy(timeSpent = newValue)
                                 destinations[index] = updatedEntry
@@ -176,6 +179,7 @@ fun DestinationInputScreen(navController: NavController, rc: RouteController) {
                         )
                     }
                     DestinationEntry(
+                        placesClient = placesClient,
                         timeChanged = {},
                         destinationChanged = { newValue ->
                             val updatedEntry = endDest.copy(destination = newValue)
@@ -191,22 +195,22 @@ fun DestinationInputScreen(navController: NavController, rc: RouteController) {
                 navController = navController,
                 function = { destinations.add(DestinationEntryStruct()) }
             )
-
+            Spacer(modifier = Modifier.height(10.dp))
+            OutlinedButton(
+                labelVal = "Remove Destination",
+                navController = navController,
+                function = { if (destinations.size > 0) destinations.removeLast() }
+            )
+            Spacer(modifier = Modifier.height(30.dp))
             FilledButton(
                 labelVal = "Calculate Route",
                 navController = navController,
-                destination = "Map",
                 function = {
-                    addRoute(context, routeName, location, maxCost, accessToCar, startDate, endDate, startDest, endDest, destinations, creatorEmail, sharedEmails, createdDate, lastModifiedDate)                }
+                    addRoute(context, routeName, location, maxCost, accessToCar, startDate, endDate, startDest, endDest, destinations, creatorEmail, sharedEmails, createdDate, lastModifiedDate)
+                }
             )
         }
     }
-}
-
-@Preview
-@Composable
-fun DestinationInputScreenPreview() {
-    DestinationInputScreen(rememberNavController(), RouteController(MapsApiClient()))
 }
 
 @Composable
@@ -219,10 +223,12 @@ fun DateTimeInputField(label: String, dateTime: String, onDateTimeSelected: (Str
             .padding(vertical = 8.dp)
     ) {
         Text(
-            text = label
+            text = label,
+            color = Blue5
         )
         Text(
-            text = dateTime
+            text = dateTime,
+            color = DarkBlue
         )
         DateTimePickerButton(label = "Pick") { selectedDateTime ->
             onDateTimeSelected(selectedDateTime)
@@ -261,7 +267,11 @@ fun DateTimePickerButton(label: String, onDateTimeSelected: (String) -> Unit) {
             }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true).show()
 
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show()
-    }) {
-        Text(label)
+    },
+        colors = ButtonDefaults.buttonColors(containerColor = Blue2)
+    ) {
+        Text(
+            text = label,
+            color = Blue5)
     }
 }

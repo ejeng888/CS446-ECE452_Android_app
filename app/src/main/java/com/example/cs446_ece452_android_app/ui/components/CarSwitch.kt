@@ -22,8 +22,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.cs446_ece452_android_app.ui.theme.Blue2
+import com.example.cs446_ece452_android_app.ui.theme.Blue5
 import com.example.cs446_ece452_android_app.ui.theme.DarkBlue
-import com.example.cs446_ece452_android_app.ui.theme.Gray
 
 @Composable
 fun CarSwitch(Switched: (Boolean) -> Unit) {
@@ -38,7 +38,7 @@ fun CarSwitch(Switched: (Boolean) -> Unit) {
     ) {
         Text (
             text = "Access to Car",
-            color = Gray,
+            color = Blue5,
             fontSize = 12.sp
         )
         Switch(

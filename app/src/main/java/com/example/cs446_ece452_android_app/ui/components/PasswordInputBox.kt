@@ -40,7 +40,7 @@ fun PasswordInputBox(labelVal : String, valueChanged : (String) -> Unit = {}) {
             valueChanged(password)
                         },
         textStyle = TextStyle(color = DarkBlue),
-        label = { Text(labelVal, color = DarkBlue) },
+        placeholder = { Text(labelVal, color = DarkBlue) },
         colors = TextFieldDefaults.colors(
             focusedContainerColor = Blue3,
             unfocusedContainerColor = Blue2,

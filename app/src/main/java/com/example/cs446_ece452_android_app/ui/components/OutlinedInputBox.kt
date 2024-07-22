@@ -21,7 +21,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.cs446_ece452_android_app.ui.theme.Gray
 
 @Composable
 fun OutlinedInputBox(labelVal: String, icon: ImageVector, valueChanged : (String) -> Unit = {}) {
@@ -40,10 +39,9 @@ fun OutlinedInputBox(labelVal: String, icon: ImageVector, valueChanged : (String
             valueChanged(textVal)
         },
         placeholder = {
-            Text(text = labelVal, color = Gray)
+            Text(text = labelVal, color = DarkBlue)
         },
         textStyle = TextStyle(color = DarkBlue),
-        label = { Text(labelVal, color = DarkBlue) },
         colors = TextFieldDefaults.colors(
             focusedContainerColor = Blue3,
             unfocusedContainerColor = Blue2,
