@@ -103,6 +103,14 @@ fun MapScreen(navController: NavController, rc: RouteController) {
             ) {
                 Text("Display Destination")
             }
+            Button(
+                onClick = { navController.navigate("EditRoute") },
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(16.dp)
+            ) {
+                Text("Edit Route")
+            }
         }
 
         if (!isMapLoaded) {
