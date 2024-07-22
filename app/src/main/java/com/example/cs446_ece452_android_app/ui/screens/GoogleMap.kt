@@ -76,7 +76,7 @@ fun MapScreen(navController: NavController, rc: RouteController) {
                 googleMapOptionsFactory = { GoogleMapOptions().mapId(mapId) },
                 onMapLoaded = { isMapLoaded = true },
                 content = {
-                    if (rc.routeInfoLoaded) {
+                    if (rc.routeInfoLoaded && rc.routeEntryLoaded) {
                         if (rc.hasCarAccess()) {
                             CarRouteContent(
                                 start = rc.routeInfo.startDest!!,
@@ -87,7 +87,7 @@ fun MapScreen(navController: NavController, rc: RouteController) {
                             )
                         } else {
                             TransitRouteContent(
-                                transitRoutes = rc.transitRouteInfo,
+                                transitRoutes = rc.routeInfo.transitRoute!!,
                                 start = rc.routeInfo.startDest!!,
                                 end = rc.routeInfo.endDest!!,
                                 stops = rc.routeInfo.stopDests,
@@ -141,6 +141,7 @@ fun TransitRouteContent(transitRoutes: List<Route>, start: Destination, end: Des
         StartEndMarker(end)
     if (stops != null && order != null)
         StopMarkers(stops, order)
+
     transitRoutes.forEach { route ->
         route.legs!!.forEach { leg ->
             val decoded = decodePolyline(leg.polyline!!.encodedPolyline)
