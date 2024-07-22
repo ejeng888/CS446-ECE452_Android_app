@@ -66,7 +66,7 @@ fun MapScreen(navController: NavController, rc: RouteController) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues) // Use the provided padding values
+                .padding(paddingValues)
         ) {
             GoogleMap(
                 modifier = Modifier.fillMaxSize(),
@@ -143,7 +143,7 @@ fun TransitRouteContent(transitRoutes: List<Route>, start: Destination, end: Des
             val decoded = decodePolyline(leg.polyline!!.encodedPolyline)
             Polyline(
                 points = decoded,
-                color = Color.Red // or any other color you prefer
+                color = Color.Red
             )
         }
     }

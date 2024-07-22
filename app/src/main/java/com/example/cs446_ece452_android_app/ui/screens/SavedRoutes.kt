@@ -106,8 +106,8 @@ fun SavedRoutes(navController: NavController, rc: RouteController) {
             modifier = Modifier
                 .fillMaxSize()
                 .background(Blue1)
-                .padding(paddingValues) // Use the provided padding values
-                .padding(bottom = 16.dp) // Additional padding if needed
+                .padding(paddingValues)
+                .padding(bottom = 16.dp)
         ) {
             Spacer(modifier = Modifier.size(30.dp))
             Logo()
