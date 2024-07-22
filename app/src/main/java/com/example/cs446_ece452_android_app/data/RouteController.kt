@@ -72,11 +72,10 @@ class RouteController(private val client: MapsApiClient) : ViewModel() {
             routeInfo.endDest = endFuture.join()
             routeInfo.stopDests = destsFuture.mapTo(arrayListOf()) { it.join() }
 
-            if (carAccess) {
-                routeInfo.route = client.getRoute(routeInfo.startDest!!, routeInfo.endDest!!, routeInfo.stopDests, TravelMode.CAR).join()
-            } else {
-                routeInfo.route = client.getRoute(routeInfo.startDest!!, routeInfo.endDest!!, routeInfo.stopDests, TravelMode.CAR).join()
+            routeInfo.route = client.getRoute(routeInfo.startDest!!, routeInfo.endDest!!, routeInfo.stopDests, TravelMode.CAR).join()
 
+            if (!carAccess) {
+                val routesFuture = mutableListOf<CompletableFuture<Route>>()
                 for (leg in routeInfo.route?.legs ?: listOf()) {
                     val startLat = leg.start!!.latLng!!.lat
                     val startLng = leg.start.latLng!!.lng
@@ -103,8 +102,13 @@ class RouteController(private val client: MapsApiClient) : ViewModel() {
                             },
                             "travelMode": "TRANSIT"
                         }"""
-                    val tempRouteInfo = client.getRoute(requestString).join()
-                    transitRouteInfo.add(tempRouteInfo)
+                    routesFuture.add(client.getRoute(requestString))
+                }
+
+                CompletableFuture.allOf(*routesFuture.toTypedArray()).thenRun {
+                    routesFuture.forEach { route ->
+                        transitRouteInfo.add(route.join())
+                    }
                 }
             }
         }.thenRun {
