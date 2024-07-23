@@ -47,6 +47,8 @@ import com.google.firebase.auth.auth
 import com.google.firebase.auth.userProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import com.example.cs446_ece452_android_app.R
+
 
 @Composable
 fun ProfileScreen(
@@ -64,6 +66,7 @@ fun ProfileScreen(
             profileImageUrl = imageUrl
         }
     }
+
     Scaffold(
         bottomBar = {
             BottomNavigationBar(navController = navController)
@@ -97,6 +100,8 @@ fun ProfileScreen(
                         setBackgroundColor(0xFFE0E0E0.toInt()) // Set background color
                         scaleType = ImageView.ScaleType.CENTER_CROP
                         contentDescription = "Image View"
+
+                        setImageResource(R.drawable.profile) // Set default drawable image
 
                         setOnClickListener {
                             pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))

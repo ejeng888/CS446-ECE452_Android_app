@@ -48,8 +48,8 @@ fun LoginScreen(navController: NavController) {
     val auth: FirebaseAuth = Firebase.auth
     val context = LocalContext.current
 
-    var enteredEmail by remember { mutableStateOf("") }
-    var enteredPassword by remember { mutableStateOf("") }
+    var enteredEmail by remember { mutableStateOf("admin@gmail.com") }
+    var enteredPassword by remember { mutableStateOf("Admin@123") }
 
     fun login(context: Context, email: String, password: String, destination: String) {
         // Default Toast Message, will only change if Login works
