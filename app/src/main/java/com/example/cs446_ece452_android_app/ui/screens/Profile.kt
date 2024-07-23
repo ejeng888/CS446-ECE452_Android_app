@@ -16,6 +16,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.compose.foundation.background
 import androidx.compose.runtime.Composable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -40,6 +41,7 @@ import com.example.cs446_ece452_android_app.ui.components.InputBox
 import com.example.cs446_ece452_android_app.ui.components.Logo
 import com.example.cs446_ece452_android_app.ui.components.OutlinedButton
 import com.example.cs446_ece452_android_app.ui.components.toastHelper
+import com.example.cs446_ece452_android_app.ui.theme.Blue1
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.google.firebase.auth.userProfileChangeRequest
@@ -72,6 +74,7 @@ fun ProfileScreen(
             verticalArrangement = Arrangement.spacedBy(20.dp),
             modifier = Modifier
                 .fillMaxSize()
+                .background(Blue1)
                 .padding(paddingValues)
                 .padding(30.dp)
         ) {

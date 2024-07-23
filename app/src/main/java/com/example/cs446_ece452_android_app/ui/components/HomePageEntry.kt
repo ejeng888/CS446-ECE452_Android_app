@@ -63,7 +63,7 @@ fun HomePageEntry(route : RouteInformation, function : () -> Unit = {}, deleteRo
             colors = ButtonDefaults.buttonColors(Blue1),
             shape = RectangleShape,
             modifier = Modifier
-                .height(120.dp)
+                .height(100.dp)
                 .weight(1f)
                 .padding(end = 0.dp) // Adjust height as needed
         ) {
@@ -75,7 +75,7 @@ fun HomePageEntry(route : RouteInformation, function : () -> Unit = {}, deleteRo
                 verticalArrangement = Arrangement.Center,
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(8.dp) // Add padding inside the button
+                    .padding(2.dp) // Add padding inside the button
             ) {
 
                 Text(
@@ -88,12 +88,13 @@ fun HomePageEntry(route : RouteInformation, function : () -> Unit = {}, deleteRo
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Start
+
                 ) {
                     Icon(
                         imageVector = Icons.Rounded.Today,
                         contentDescription = "Calendar",
                         tint = DarkBlue,
-                        modifier = Modifier.size(12.dp)
+                        modifier = Modifier.padding(end = 5.dp).size(12.dp)
                     )
                     Text(
                         text = lastModifiedDate,
@@ -109,7 +110,7 @@ fun HomePageEntry(route : RouteInformation, function : () -> Unit = {}, deleteRo
                         imageVector = Icons.Rounded.Person,
                         contentDescription = "Calendar",
                         tint = DarkBlue,
-                        modifier = Modifier.size(12.dp)
+                        modifier = Modifier.padding(end = 5.dp).size(12.dp)
                     )
                     Text(
                         text = creatorEmail,
