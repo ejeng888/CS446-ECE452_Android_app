@@ -39,20 +39,23 @@ fun TransitScreen(navController: NavController, rc: RouteController) {
         route.legs!!.forEach { leg -> //There should only be 1 leg per route
             leg.steps!!.forEach{ step ->
                 if(step.mode == "TRANSIT"){
-
                     stepDataList.add(
                         StepData(
                             distance = step.distance,
                             instruction = step.navInstruction!!.instruction,
                             lat = step.end!!.latLng!!.lat,
-                            lng = step.end.latLng!!.lng
+                            lng = step.end.latLng!!.lng,
+                            stopCount = step.transitDetails!!.stopCount,
+                            departureStopName = step.transitDetails.stopDetails!!.departureStop!!.name,
+                            arrivalStopName = step.transitDetails.stopDetails.arrivalStop!!.name,
+                            transitLineVehicle = step.transitDetails.transitLine!!.vehicle!!.type
                         )
                     )
-
                 }
             }
         }
         //Reached a stop
+
     }
 
     Scaffold(
@@ -74,7 +77,7 @@ fun TransitScreen(navController: NavController, rc: RouteController) {
                     .padding(16.dp)
             ){
                 Text(
-                    text = "Start here at ${rc.transitRouteInfo[0].legs!![0].start!!.latLng!!.lat}, ${rc.transitRouteInfo[0].legs!![0].start!!.latLng!!.lng}",
+                    text = "Start from ${rc.routeEntry.startDest!!.destination}",
                     fontSize = 18.sp,
                     color = Color.Black
                 )
@@ -86,11 +89,24 @@ fun TransitScreen(navController: NavController, rc: RouteController) {
                         .padding(16.dp)
                 ) {
                     Text(
-                        text = "${stepData.instruction}, for ${stepData.distance} meters until ${stepData.lat}, ${stepData.lng}",
+                        text = "Take the ${stepData.transitLineVehicle} from ${stepData.departureStopName} to ${stepData.arrivalStopName} for ${stepData.stopCount} stops",
+                        //text = "Do nothing",
                         fontSize = 18.sp,
                         color = Color.Black
                     )
                 }
+
+            }
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ){
+                Text(
+                    text = "You have reached ${rc.routeEntry.endDest!!.destination}",
+                    fontSize = 18.sp,
+                    color = Color.Black
+                )
             }
         }
     }
