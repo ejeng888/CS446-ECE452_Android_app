@@ -78,12 +78,12 @@ fun HomePageEntry(route : RouteInformation, function : () -> Unit = {}, deleteRo
                     .padding(8.dp) // Add padding inside the button
             ) {
 
-                Text(
-                    text = routeName,
-                    color = DarkBlue,
-                    fontSize = 20.sp, // Adjust text size as needed
-                    fontWeight = FontWeight.Bold
-                )
+//                Text(
+//                    text = routeName,
+//                    color = DarkBlue,
+//                    fontSize = 20.sp, // Adjust text size as needed
+//                    fontWeight = FontWeight.Bold
+//                )
                 Spacer(modifier = Modifier.height(8.dp))
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
