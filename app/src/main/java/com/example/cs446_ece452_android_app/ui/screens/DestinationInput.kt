@@ -46,8 +46,8 @@ import java.util.Locale
 
 @Composable
 fun DestinationInputScreen(navController: NavController, rc: RouteController, placesClient: PlacesClient) {
-
     val context = LocalContext.current
+
     fun addRoute(
         context: Context,
         routeName: String,
@@ -85,9 +85,32 @@ fun DestinationInputScreen(navController: NavController, rc: RouteController, pl
         } else {
             Log.v("DestinationInput", "Passed Checks")
 
-            rc.getRoute(routeName, location, maxCost, accessToCar, startDate, endDate, startDest, endDest, destinations, creatorEmail, sharedEmails, createdDate, lastModifiedDate)
-            toastHelper(context, "Route Created")
-            navController.navigate("Map")
+            fun onSuccess() {
+                toastHelper(context, "Route Created")
+                navController.navigate("Map")
+            }
+
+            fun onFailure(ex: Exception) {
+                toastHelper(context, ex.toString().substringAfter("MSG: "))
+            }
+
+            rc.getRoute(
+                routeName,
+                location,
+                maxCost,
+                accessToCar,
+                startDate,
+                endDate,
+                startDest,
+                endDest,
+                destinations,
+                creatorEmail,
+                sharedEmails,
+                createdDate,
+                lastModifiedDate,
+                ::onSuccess,
+                ::onFailure
+            )
         }
     }
 
