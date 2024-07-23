@@ -118,7 +118,6 @@ fun DestinationInputScreen(navController: NavController, rc: RouteController, pl
         bottomBar = {
             BottomNavigationBar(navController = navController)
         }
-
     ) { paddingValues ->
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -146,8 +145,6 @@ fun DestinationInputScreen(navController: NavController, rc: RouteController, pl
 
             val creatorEmail = Firebase.auth.currentUser!!.email
             val sharedEmails: List<String> = emptyList()
-            val createdDate = currentDateTime
-            val lastModifiedDate = currentDateTime
 
             Spacer(modifier = Modifier.height(10.dp))
             Text(
@@ -229,7 +226,7 @@ fun DestinationInputScreen(navController: NavController, rc: RouteController, pl
                 labelVal = "Calculate Route",
                 navController = navController,
                 function = {
-                    addRoute(context, routeName, location, maxCost, accessToCar, startDate, endDate, startDest, endDest, destinations, creatorEmail, sharedEmails, createdDate, lastModifiedDate)
+                    addRoute(context, routeName, location, maxCost, accessToCar, startDate, endDate, startDest, endDest, destinations, creatorEmail, sharedEmails, currentDateTime, currentDateTime)
                 }
             )
             Spacer(modifier = Modifier.height(30.dp))

@@ -49,7 +49,7 @@ import com.google.android.libraries.places.api.net.PlacesClient
 import kotlinx.coroutines.delay
 
 @Composable
-fun DestinationEntry(placesClient: PlacesClient, timeChanged: (String) -> Unit, destinationChanged: (String) -> Unit, start: Boolean = false, end: Boolean = false, value: String = "", time: String = "") {
+fun DestinationEntry(placesClient: PlacesClient, timeChanged: (String) -> Unit, destinationChanged: (String) -> Unit, start: Boolean = false, end: Boolean = false, value: String = "", time: String = "02:00") {
     var destination by remember { mutableStateOf(value) }
     var timeSpent by remember { mutableStateOf(time) }
     var icon = Icons.Default.Schedule
