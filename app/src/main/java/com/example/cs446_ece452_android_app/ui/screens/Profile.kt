@@ -78,7 +78,7 @@ fun ProfileScreen(
                 .padding(paddingValues)
                 .padding(30.dp)
         ) {
-            var givenDisplayName by remember { mutableStateOf("") }
+            var givenDisplayName by remember { mutableStateOf(user.displayName ?: "") }
 
             // Logo component
             Logo()
