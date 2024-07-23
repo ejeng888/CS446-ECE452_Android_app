@@ -10,7 +10,7 @@ import com.example.cs446_ece452_android_app.data.model.TravelMode
 import java.util.concurrent.CompletableFuture
 
 class RouteController(private val client: MapsApiClient) : ViewModel() {
-    private lateinit var routeEntry: RouteEntry
+    lateinit var routeEntry: RouteEntry
     var routeEntryLoaded by mutableStateOf(false)
         private set
 
@@ -20,8 +20,9 @@ class RouteController(private val client: MapsApiClient) : ViewModel() {
         private set
     var routeInfoLoaded by mutableStateOf(false)
         private set
-
+    lateinit var currentRoute: String
     fun getRoute(routeId: String) {
+        currentRoute = routeId
         routeEntryLoaded = false
         routeInfoLoaded = false
         getRouteEntryFromDb(routeId) {

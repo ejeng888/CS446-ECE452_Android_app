@@ -41,14 +41,15 @@ import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
+import com.google.firebase.firestore.firestore
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 @Composable
-fun EditRouteScreen(navController: NavController, rc: RouteController, placesClient: PlacesClient) {
-
+fun EditRouteScreen(navController: NavController, rc: RouteController, placesClient: PlacesClient, routeId: String) {
+    val db = Firebase.firestore
     val context = LocalContext.current
-    fun addRoute(
+    fun editRoute(
         context: Context,
         routeName: String,
         location: String,
@@ -85,8 +86,17 @@ fun EditRouteScreen(navController: NavController, rc: RouteController, placesCli
         } else {
             Log.v("DestinationInput", "Passed Checks")
 
-            rc.getRoute(routeName, location, maxCost, accessToCar, startDate, endDate, startDest, endDest, destinations, creatorEmail, sharedEmails, createdDate, lastModifiedDate)
-            toastHelper(context, "Route Created")
+            rc.getRoute(routeId)
+            db.collection("routeEntries").document(routeId).update("routeName", routeName)
+            db.collection("routeEntries").document(routeId).update("location", location)
+            db.collection("routeEntries").document(routeId).update("maxCost", maxCost)
+            db.collection("routeEntries").document(routeId).update("accessToCar", accessToCar)
+            db.collection("routeEntries").document(routeId).update("startDate", startDate)
+            db.collection("routeEntries").document(routeId).update("endDate", endDate)
+            db.collection("routeEntries").document(routeId).update("startDest", startDest)
+            db.collection("routeEntries").document(routeId).update("endDest", endDest)
+            db.collection("routeEntries").document(routeId).update("destinations", destinations)
+            toastHelper(context, "Route Updated")
             navController.navigate("Map")
         }
     }
@@ -124,6 +134,20 @@ fun EditRouteScreen(navController: NavController, rc: RouteController, placesCli
             val sharedEmails: List<String> = emptyList()
             val createdDate = currentDateTime
             val lastModifiedDate = currentDateTime
+
+            LaunchedEffect(routeId) {
+                rc.getRoute(routeId)
+                routeName = rc.routeEntry.routeName
+                location = rc.routeEntry.location
+                maxCost = rc.routeEntry.maxCost
+                accessToCar = rc.routeEntry.accessToCar
+                startDate = rc.routeEntry.startDate
+                endDate = rc.routeEntry.endDate
+                startDest = rc.routeEntry.startDest ?: DestinationEntryStruct()
+                endDest = rc.routeEntry.endDest ?: DestinationEntryStruct()
+                destinations.clear()
+                rc.routeEntry.destinations?.let { destinations.addAll(it) }
+            }
 
             Spacer(modifier = Modifier.height(10.dp))
             Text(
@@ -205,7 +229,7 @@ fun EditRouteScreen(navController: NavController, rc: RouteController, placesCli
                 labelVal = "View Map",
                 navController = navController,
                 function = {
-                    addRoute(context, routeName, location, maxCost, accessToCar, startDate, endDate, startDest, endDest, destinations, creatorEmail, sharedEmails, createdDate, lastModifiedDate)
+                    editRoute(context, routeName, location, maxCost, accessToCar, startDate, endDate, startDest, endDest, destinations, creatorEmail, sharedEmails, createdDate, lastModifiedDate)
                 }
             )
         }
