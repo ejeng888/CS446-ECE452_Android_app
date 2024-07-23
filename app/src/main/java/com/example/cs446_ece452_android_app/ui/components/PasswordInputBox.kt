@@ -26,7 +26,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
-fun PasswordInputBox(labelVal : String, valueChanged : (String) -> Unit = {}) {
+fun PasswordInputBox(labelVal: String, valueChanged: (String) -> Unit = {}) {
     var password by remember {
         mutableStateOf("")
     }
@@ -38,7 +38,7 @@ fun PasswordInputBox(labelVal : String, valueChanged : (String) -> Unit = {}) {
         onValueChange = {
             password = it
             valueChanged(password)
-                        },
+        },
         textStyle = TextStyle(color = DarkBlue),
         placeholder = { Text(labelVal, color = DarkBlue) },
         colors = TextFieldDefaults.colors(
@@ -69,6 +69,7 @@ fun PasswordInputBox(labelVal : String, valueChanged : (String) -> Unit = {}) {
         singleLine = true
     )
 }
+
 @Preview
 @Composable
 fun PasswordOutlineBoxPreview() {

@@ -86,7 +86,8 @@ fun BottomNavigationBar(navController: NavController) {
                         imageVector = icon,
                         contentDescription = item.name,
                         tint = displayColor,
-                        modifier = Modifier.size(38.dp))
+                        modifier = Modifier.size(38.dp)
+                    )
                     Text(
                         text = item.name,
                         fontSize = 9.sp,
@@ -98,8 +99,6 @@ fun BottomNavigationBar(navController: NavController) {
             }
         }
     }
-
-
 }
 
 @Preview

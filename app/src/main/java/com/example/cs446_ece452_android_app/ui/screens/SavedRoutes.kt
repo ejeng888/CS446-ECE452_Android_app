@@ -41,12 +41,10 @@ import com.google.firebase.firestore.DocumentSnapshot
 import androidx.navigation.compose.rememberNavController
 
 data class RouteInformation(
-    val documentID : String,
-    val routeName : String,
-    val lastModifiedDate : String,
-
+    val documentID: String,
+    val routeName: String,
+    val lastModifiedDate: String,
 )
-
 
 @Composable
 fun SavedRoutes(navController: NavController, rc: RouteController) {
@@ -126,7 +124,8 @@ fun SavedRoutes(navController: NavController, rc: RouteController) {
                 items(filteredRoutes) { route ->
                     HomePageEntry(route = route, function = {
                         rc.getRoute(route.documentID)
-                        navController.navigate("Map")}
+                        navController.navigate("Map")
+                    }
                     )
                 }
             }

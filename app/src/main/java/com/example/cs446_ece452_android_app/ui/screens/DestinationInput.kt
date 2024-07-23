@@ -46,8 +46,8 @@ import java.util.Locale
 
 @Composable
 fun DestinationInputScreen(navController: NavController, rc: RouteController, placesClient: PlacesClient) {
-
     val context = LocalContext.current
+
     fun addRoute(
         context: Context,
         routeName: String,
@@ -79,15 +79,38 @@ fun DestinationInputScreen(navController: NavController, rc: RouteController, pl
         } else if (startDest.destination == "") {
             toastHelper(context, "Please enter a Starting Destination")
         } else if (endDest.destination == "") {
-            toastHelper(context, "Please enter a Ending Destination")
+            toastHelper(context, "Please enter an Ending Destination")
         } else if (emptyDestination) {
             toastHelper(context, "Please fill in all the Stops")
         } else {
             Log.v("DestinationInput", "Passed Checks")
 
-            rc.getRoute(routeName, location, maxCost, accessToCar, startDate, endDate, startDest, endDest, destinations, creatorEmail, sharedEmails, createdDate, lastModifiedDate)
-            toastHelper(context, "Route Created")
-            navController.navigate("Map")
+            fun onSuccess() {
+                toastHelper(context, "Route Created")
+                navController.navigate("Map")
+            }
+
+            fun onFailure(ex: Exception) {
+                toastHelper(context, ex.toString().substringAfter("MSG: "))
+            }
+
+            rc.getRoute(
+                routeName,
+                location,
+                maxCost,
+                accessToCar,
+                startDate,
+                endDate,
+                startDest,
+                endDest,
+                destinations,
+                creatorEmail,
+                sharedEmails,
+                createdDate,
+                lastModifiedDate,
+                ::onSuccess,
+                ::onFailure
+            )
         }
     }
 
@@ -209,6 +232,7 @@ fun DestinationInputScreen(navController: NavController, rc: RouteController, pl
                     addRoute(context, routeName, location, maxCost, accessToCar, startDate, endDate, startDest, endDest, destinations, creatorEmail, sharedEmails, createdDate, lastModifiedDate)
                 }
             )
+            Spacer(modifier = Modifier.height(30.dp))
         }
     }
 }
@@ -241,37 +265,39 @@ fun DateTimePickerButton(label: String, onDateTimeSelected: (String) -> Unit) {
     val context = LocalContext.current
     val calendar = Calendar.getInstance()
 
-    Button(onClick = {
-        // Date Picker Dialog
-        DatePickerDialog(context, { _, year, month, dayOfMonth ->
-            calendar.set(Calendar.YEAR, year)
-            calendar.set(Calendar.MONTH, month)
-            calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+    Button(
+        onClick = {
+            // Date Picker Dialog
+            DatePickerDialog(context, { _, year, month, dayOfMonth ->
+                calendar.set(Calendar.YEAR, year)
+                calendar.set(Calendar.MONTH, month)
+                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
 
-            // Time Picker Dialog
-            TimePickerDialog(context, { _, hourOfDay, minute ->
-                calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
-                calendar.set(Calendar.MINUTE, minute)
+                // Time Picker Dialog
+                TimePickerDialog(context, { _, hourOfDay, minute ->
+                    calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
+                    calendar.set(Calendar.MINUTE, minute)
 
-                // Format selected date and time
-                val dateTime = String.format(
-                    Locale.US, "%02d/%02d/%04d %02d:%02d",
-                    calendar.get(Calendar.DAY_OF_MONTH),
-                    calendar.get(Calendar.MONTH) + 1,
-                    calendar.get(Calendar.YEAR),
-                    calendar.get(Calendar.HOUR_OF_DAY),
-                    calendar.get(Calendar.MINUTE)
-                )
-                onDateTimeSelected(dateTime)
-                Toast.makeText(context, "Selected Date and Time: $dateTime", Toast.LENGTH_SHORT).show()
-            }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true).show()
+                    // Format selected date and time
+                    val dateTime = String.format(
+                        Locale.US, "%02d/%02d/%04d %02d:%02d",
+                        calendar.get(Calendar.DAY_OF_MONTH),
+                        calendar.get(Calendar.MONTH) + 1,
+                        calendar.get(Calendar.YEAR),
+                        calendar.get(Calendar.HOUR_OF_DAY),
+                        calendar.get(Calendar.MINUTE)
+                    )
+                    onDateTimeSelected(dateTime)
+                    Toast.makeText(context, "Selected Date and Time: $dateTime", Toast.LENGTH_SHORT).show()
+                }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true).show()
 
-        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show()
-    },
+            }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show()
+        },
         colors = ButtonDefaults.buttonColors(containerColor = Blue2)
     ) {
         Text(
             text = label,
-            color = Blue5)
+            color = Blue5
+        )
     }
 }

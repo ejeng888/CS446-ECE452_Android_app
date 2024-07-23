@@ -41,7 +41,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
 
 @Composable
-fun HomePageEntry(route : RouteInformation, function : () -> Unit = {}) {
+fun HomePageEntry(route: RouteInformation, function: () -> Unit = {}) {
     val routeName = route.routeName
     val lastModifiedDate = route.lastModifiedDate
     // val documentId = route.documentID

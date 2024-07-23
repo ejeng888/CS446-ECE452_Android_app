@@ -34,11 +34,11 @@ fun SearchBar(searchQuery: MutableState<String>, valueChanged: (MutableState<Str
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
 
-    ) {
+        ) {
         OutlinedTextField(
             value = searchQuery.value,
-            onValueChange = {
-                    newValue -> searchQuery.value = newValue
+            onValueChange = { newValue ->
+                searchQuery.value = newValue
                 valueChanged(searchQuery)
             },
             placeholder = { Text("Search...", color = Gray) },
@@ -55,7 +55,6 @@ fun SearchBar(searchQuery: MutableState<String>, valueChanged: (MutableState<Str
                 )
             },
             singleLine = true,
-
         )
 
         Icon(
@@ -64,12 +63,11 @@ fun SearchBar(searchQuery: MutableState<String>, valueChanged: (MutableState<Str
             modifier = Modifier.size(25.dp)
         )
     }
-
 }
 
 @Preview
 @Composable
 fun SearchBarPreview() {
     val searchQuery = remember { mutableStateOf("") }
-    SearchBar(searchQuery =  searchQuery)
+    SearchBar(searchQuery = searchQuery)
 }

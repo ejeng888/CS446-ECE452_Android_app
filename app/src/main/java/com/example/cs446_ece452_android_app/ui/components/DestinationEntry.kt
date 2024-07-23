@@ -202,7 +202,6 @@ fun AutocompleteTextField(
     }
 }
 
-
 @Composable
 fun VerticalLine(dontShow: Boolean = false) {
     Row {
