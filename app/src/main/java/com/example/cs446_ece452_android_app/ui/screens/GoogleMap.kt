@@ -77,12 +77,11 @@ fun MapScreen(navController: NavController, rc: RouteController) {
                 onMapLoaded = { isMapLoaded = true },
                 content = {
                     if (rc.routeInfoLoaded && rc.routeEntryLoaded) {
-                        if (rc.hasCarAccess()) {
+                        if (rc.routeEntry.accessToCar) {
                             CarRouteContent(
                                 start = rc.routeInfo.startDest!!,
                                 end = rc.routeInfo.endDest!!,
                                 stops = rc.routeInfo.stopDests,
-                                order = rc.routeInfo.route!!.order,
                                 poly = rc.routeInfo.route!!.polyline!!.encodedPolyline
                             )
                         } else {
@@ -90,8 +89,7 @@ fun MapScreen(navController: NavController, rc: RouteController) {
                                 transitRoutes = rc.routeInfo.transitRoute!!,
                                 start = rc.routeInfo.startDest!!,
                                 end = rc.routeInfo.endDest!!,
-                                stops = rc.routeInfo.stopDests,
-                                order = rc.routeInfo.route!!.order
+                                stops = rc.routeInfo.stopDests
                             )
                         }
                     }
@@ -132,23 +130,23 @@ fun MapScreen(navController: NavController, rc: RouteController) {
 
 @Composable
 @GoogleMapComposable
-fun CarRouteContent(start: Destination, end: Destination, stops: ArrayList<Destination>?, order: List<Int>?, poly: String) {
+fun CarRouteContent(start: Destination, end: Destination, stops: List<Destination>?, poly: String) {
     StartEndMarker(start)
     if (start.address != end.address)
         StartEndMarker(end)
-    if (stops != null && order != null)
-        StopMarkers(stops, order)
+    if (stops != null)
+        StopMarkers(stops)
     Route(poly)
 }
 
 @Composable
 @GoogleMapComposable
-fun TransitRouteContent(transitRoutes: List<Route>, start: Destination, end: Destination, stops: ArrayList<Destination>?, order: List<Int>?) {
+fun TransitRouteContent(transitRoutes: List<Route>, start: Destination, end: Destination, stops: List<Destination>?) {
     StartEndMarker(destination = start)
     if (start.address != end.address)
         StartEndMarker(end)
-    if (stops != null && order != null)
-        StopMarkers(stops, order)
+    if (stops != null)
+        StopMarkers(stops)
 
     transitRoutes.forEach { route ->
         route.legs!!.forEach { leg ->
@@ -172,12 +170,12 @@ fun StartEndMarker(destination: Destination) {
 
 @Composable
 @GoogleMapComposable
-fun StopMarkers(stops: ArrayList<Destination>, order: List<Int>) {
+fun StopMarkers(stops: List<Destination>) {
     stops.forEachIndexed { i, stop ->
         AdvancedMarker(
             state = rememberMarkerState(position = LatLng(stop.lat, stop.lng)),
             title = stop.name,
-            pinConfig = configPin((if (order.size == 1) 1 else order.indexOf(i) + 1).toString())
+            pinConfig = configPin((i + 1).toString())
         )
     }
 }

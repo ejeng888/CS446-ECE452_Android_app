@@ -26,10 +26,8 @@ import com.example.cs446_ece452_android_app.ui.theme.Blue5
 import com.example.cs446_ece452_android_app.ui.theme.DarkBlue
 
 @Composable
-fun CarSwitch(Switched: (Boolean) -> Unit) {
-    var accessToCar by remember {
-        mutableStateOf(false)
-    }
+fun CarSwitch(value: Boolean = false, onSwitch: (Boolean) -> Unit) {
+    var accessToCar by remember { mutableStateOf(value) }
 
     Column(
         verticalArrangement = Arrangement.Center,
@@ -46,7 +44,7 @@ fun CarSwitch(Switched: (Boolean) -> Unit) {
             checked = accessToCar,
             onCheckedChange = {
                 accessToCar = it
-                Switched(accessToCar)
+                onSwitch(accessToCar)
             },
             colors = SwitchDefaults.colors(
                 checkedTrackColor = DarkBlue,
@@ -70,5 +68,5 @@ fun CarSwitch(Switched: (Boolean) -> Unit) {
 @Preview
 @Composable
 fun CarSwitchPreview() {
-    CarSwitch({})
+    CarSwitch(false, {})
 }

@@ -1,7 +1,5 @@
 package com.example.cs446_ece452_android_app.ui.screens
 
-import android.app.DatePickerDialog
-import android.app.TimePickerDialog
 import android.content.Context
 import android.icu.util.Calendar
 import android.util.Log
@@ -18,11 +16,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import android.widget.Toast
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.ui.platform.LocalContext
 import com.example.cs446_ece452_android_app.data.RouteController
 import com.example.cs446_ece452_android_app.data.model.DestinationEntryStruct
@@ -35,20 +30,15 @@ import com.example.cs446_ece452_android_app.ui.components.CarSwitch
 import com.example.cs446_ece452_android_app.ui.components.DestinationEntry
 import com.example.cs446_ece452_android_app.ui.components.OutlinedButton
 import com.example.cs446_ece452_android_app.ui.components.toastHelper
-import com.example.cs446_ece452_android_app.ui.theme.Blue2
-import com.example.cs446_ece452_android_app.ui.theme.Blue5
 import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.android.libraries.places.api.net.PlacesClient
-import com.google.firebase.Firebase
-import com.google.firebase.auth.auth
-import com.google.firebase.firestore.firestore
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 @Composable
-fun EditRouteScreen(navController: NavController, rc: RouteController, placesClient: PlacesClient, routeId: String) {
-    val db = Firebase.firestore
+fun EditRouteScreen(navController: NavController, rc: RouteController, placesClient: PlacesClient) {
     val context = LocalContext.current
+
     fun editRoute(
         context: Context,
         routeName: String,
@@ -60,9 +50,6 @@ fun EditRouteScreen(navController: NavController, rc: RouteController, placesCli
         startDest: DestinationEntryStruct,
         endDest: DestinationEntryStruct,
         destinations: List<DestinationEntryStruct>,
-        creatorEmail: String?,
-        sharedEmails: List<String>,
-        createdDate: String,
         lastModifiedDate: String
     ) {
         var emptyDestination = false
@@ -73,33 +60,43 @@ fun EditRouteScreen(navController: NavController, rc: RouteController, placesCli
             }
         }
 
-        if (creatorEmail == null) {
-            toastHelper(context, "User not logged in")
-        } else if (routeName == "") {
+        if (routeName == "") {
             toastHelper(context, "Please enter a Route Name")
         } else if (startDest.destination == "") {
             toastHelper(context, "Please enter a Starting Destination")
         } else if (endDest.destination == "") {
-            toastHelper(context, "Please enter a Ending Destination")
+            toastHelper(context, "Please enter an Ending Destination")
         } else if (emptyDestination) {
             toastHelper(context, "Please fill in all the Stops")
         } else {
             Log.v("DestinationInput", "Passed Checks")
 
-            rc.getRoute(routeId)
-            db.collection("routeEntries").document(routeId).update("routeName", routeName)
-            db.collection("routeEntries").document(routeId).update("location", location)
-            db.collection("routeEntries").document(routeId).update("maxCost", maxCost)
-            db.collection("routeEntries").document(routeId).update("accessToCar", accessToCar)
-            db.collection("routeEntries").document(routeId).update("startDate", startDate)
-            db.collection("routeEntries").document(routeId).update("endDate", endDate)
-            db.collection("routeEntries").document(routeId).update("startDest", startDest)
-            db.collection("routeEntries").document(routeId).update("endDest", endDest)
-            db.collection("routeEntries").document(routeId).update("destinations", destinations)
-            toastHelper(context, "Route Updated")
-            navController.navigate("Map")
+            fun onSuccess() {
+                toastHelper(context, "Route Updated")
+                navController.navigate("Map")
+            }
+
+            fun onFailure(ex: Exception) {
+                toastHelper(context, ex.toString().substringAfter("MSG: "))
+            }
+
+            rc.updateRoute(
+                routeName,
+                location,
+                maxCost,
+                accessToCar,
+                startDate,
+                endDate,
+                startDest,
+                endDest,
+                destinations,
+                lastModifiedDate,
+                ::onSuccess,
+                ::onFailure
+            )
         }
     }
+
     Scaffold(
         bottomBar = {
             BottomNavigationBar(navController = navController)
@@ -120,31 +117,17 @@ fun EditRouteScreen(navController: NavController, rc: RouteController, placesCli
                 sdf.format(calendar.time)
             }
 
-            var routeName by remember { mutableStateOf("") }
-            var location by remember { mutableStateOf("") }
-            var maxCost by remember { mutableStateOf("") }
-            var accessToCar by remember { mutableStateOf(false) }
-            var startDate by remember { mutableStateOf(currentDateTime) }
-            var endDate by remember { mutableStateOf(currentDateTime) }
-            var startDest by remember { mutableStateOf(DestinationEntryStruct()) }
-            var endDest by remember { mutableStateOf(DestinationEntryStruct()) }
+            var routeName by remember { mutableStateOf(rc.routeEntry.routeName) }
+            var location by remember { mutableStateOf(rc.routeEntry.location) }
+            var maxCost by remember { mutableStateOf(rc.routeEntry.maxCost) }
+            var accessToCar by remember { mutableStateOf(rc.routeEntry.accessToCar) }
+            var startDate by remember { mutableStateOf(rc.routeEntry.startDate) }
+            var endDate by remember { mutableStateOf(rc.routeEntry.endDate) }
+            var startDest by remember { mutableStateOf(rc.routeEntry.startDest?.destination ?: "") }
+            var endDest by remember { mutableStateOf(rc.routeEntry.endDest?.destination ?: "") }
             val destinations = remember { mutableStateListOf<DestinationEntryStruct>() }
 
-            val creatorEmail = Firebase.auth.currentUser!!.email
-            val sharedEmails: List<String> = emptyList()
-            val createdDate = currentDateTime
-            val lastModifiedDate = currentDateTime
-
-            LaunchedEffect(routeId) {
-                rc.getRoute(routeId)
-                routeName = rc.routeEntry.routeName
-                location = rc.routeEntry.location
-                maxCost = rc.routeEntry.maxCost
-                accessToCar = rc.routeEntry.accessToCar
-                startDate = rc.routeEntry.startDate
-                endDate = rc.routeEntry.endDate
-                startDest = rc.routeEntry.startDest ?: DestinationEntryStruct()
-                endDest = rc.routeEntry.endDest ?: DestinationEntryStruct()
+            LaunchedEffect(rc.routeEntryLoaded) {
                 destinations.clear()
                 rc.routeEntry.destinations?.let { destinations.addAll(it) }
             }
@@ -160,20 +143,16 @@ fun EditRouteScreen(navController: NavController, rc: RouteController, placesCli
                 verticalArrangement = Arrangement.spacedBy(10.dp),
                 modifier = Modifier.padding(horizontal = 25.dp)
             ) {
-                InputBox(labelVal = "Route Name*", placeHolder = "NY Grad Trip", routeName, valueChanged = { newValue -> routeName = newValue })
-                InputBox(labelVal = "Location", placeHolder = "New York City, NY, US", location, valueChanged = { newValue -> location = newValue })
+                InputBox(labelVal = "Route Name*", placeHolder = "NY Grad Trip", value = routeName, valueChanged = { newValue -> routeName = newValue })
+                InputBox(labelVal = "Location", placeHolder = "New York City, NY, US", value = location, valueChanged = { newValue -> location = newValue })
                 Row {
                     Box(modifier = Modifier.fillMaxWidth(0.5f)) {
-                        InputBox(labelVal = "Max Cost", placeHolder = "$0.00", maxCost, valueChanged = { newValue -> maxCost = newValue })
+                        InputBox(labelVal = "Max Cost", placeHolder = "$0.00", value = maxCost, valueChanged = { newValue -> maxCost = newValue })
                     }
-                    CarSwitch(Switched = { newValue -> accessToCar = newValue })
+                    CarSwitch(value = accessToCar, onSwitch = { newValue -> accessToCar = newValue })
                 }
-                DateTimeInputField(label = "Start Date", dateTime = startDate) { selectedDateTime ->
-                    startDate = selectedDateTime
-                }
-                DateTimeInputField(label = "End Date ", dateTime = endDate) { selectedDateTime ->
-                    endDate = selectedDateTime
-                }
+                DateTimeInputField(label = "Start Date", dateTime = startDate) { selectedDateTime -> startDate = selectedDateTime }
+                DateTimeInputField(label = "End Date ", dateTime = endDate) { selectedDateTime -> endDate = selectedDateTime }
             }
             ProvideWindowInsets {
                 Column(
@@ -183,10 +162,10 @@ fun EditRouteScreen(navController: NavController, rc: RouteController, placesCli
                         placesClient = placesClient,
                         timeChanged = {},
                         destinationChanged = { newValue ->
-                            val updatedEntry = startDest.copy(destination = newValue)
-                            startDest = updatedEntry
+                            startDest = newValue
                         },
-                        start = true
+                        start = true,
+                        value = startDest
                     )
                     repeat(destinations.size) { index ->
                         DestinationEntry(
@@ -198,17 +177,19 @@ fun EditRouteScreen(navController: NavController, rc: RouteController, placesCli
                             destinationChanged = { newValue ->
                                 val updatedEntry = destinations[index].copy(destination = newValue)
                                 destinations[index] = updatedEntry
-                            }
+                            },
+                            value = destinations[index].destination,
+                            time = destinations[index].timeSpent
                         )
                     }
                     DestinationEntry(
                         placesClient = placesClient,
                         timeChanged = {},
                         destinationChanged = { newValue ->
-                            val updatedEntry = endDest.copy(destination = newValue)
-                            endDest = updatedEntry
+                            endDest = newValue
                         },
-                        end = true
+                        end = true,
+                        value = endDest
                     )
                 }
             }
@@ -228,10 +209,29 @@ fun EditRouteScreen(navController: NavController, rc: RouteController, placesCli
             FilledButton(
                 labelVal = "View Map",
                 navController = navController,
+                destination = "Map"
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+            FilledButton(
+                labelVal = "Update Route",
+                navController = navController,
                 function = {
-                    editRoute(context, routeName, location, maxCost, accessToCar, startDate, endDate, startDest, endDest, destinations, creatorEmail, sharedEmails, createdDate, lastModifiedDate)
+                    editRoute(
+                        context,
+                        routeName,
+                        location,
+                        maxCost,
+                        accessToCar,
+                        startDate,
+                        endDate,
+                        DestinationEntryStruct(destination = startDest),
+                        DestinationEntryStruct(destination = endDest),
+                        destinations,
+                        currentDateTime
+                    )
                 }
             )
+            Spacer(modifier = Modifier.height(30.dp))
         }
     }
 }

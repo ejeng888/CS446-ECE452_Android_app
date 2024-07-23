@@ -166,7 +166,7 @@ fun DestinationInputScreen(navController: NavController, rc: RouteController, pl
                     Box(modifier = Modifier.fillMaxWidth(0.5f)) {
                         InputBox(labelVal = "Max Cost", placeHolder = "$0.00", maxCost, valueChanged = { newValue -> maxCost = newValue })
                     }
-                    CarSwitch(Switched = { newValue -> accessToCar = newValue })
+                    CarSwitch(onSwitch = { newValue -> accessToCar = newValue })
                 }
                 DateTimeInputField(label = "Start Date", dateTime = startDate) { selectedDateTime ->
                     startDate = selectedDateTime

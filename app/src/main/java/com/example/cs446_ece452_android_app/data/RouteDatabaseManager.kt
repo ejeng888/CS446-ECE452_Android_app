@@ -13,7 +13,12 @@ fun addRouteEntryToDb(dbEntry: RouteEntry, callback: (id: String) -> Unit) {
         }
 }
 
-fun addRouteToDb(documentId: String, route: RouteInfo) {
+fun writeRouteEntryToDb(documentId: String, dbEntry: RouteEntry) {
+    val db = Firebase.firestore
+    db.collection("routeEntries").document(documentId).set(dbEntry)
+}
+
+fun writeRouteToDb(documentId: String, route: RouteInfo) {
     val db = Firebase.firestore
     db.collection("googleMapsRoutes").document(documentId).set(route)
 }

@@ -10,7 +10,8 @@ import com.example.cs446_ece452_android_app.data.model.TravelMode
 import java.util.concurrent.CompletableFuture
 
 class RouteController(private val client: MapsApiClient) : ViewModel() {
-    lateinit var routeEntry: RouteEntry
+    var routeEntry: RouteEntry = RouteEntry()
+        private set
     var routeEntryLoaded by mutableStateOf(false)
         private set
 
@@ -18,7 +19,10 @@ class RouteController(private val client: MapsApiClient) : ViewModel() {
         private set
     var routeInfoLoaded by mutableStateOf(false)
         private set
-    lateinit var currentRoute: String
+
+    var currentRoute: String = ""
+        private set
+
     fun getRoute(routeId: String) {
         currentRoute = routeId
         routeEntryLoaded = false
@@ -52,21 +56,70 @@ class RouteController(private val client: MapsApiClient) : ViewModel() {
     ) {
         routeEntryLoaded = false
         routeInfoLoaded = false
+
         routeEntry = RouteEntry(routeName, location, maxCost, accessToCar, startDate, endDate, startDest, endDest, destinations, creatorEmail, sharedEmails, createdDate, lastModifiedDate)
         routeEntryLoaded = true
+
         try {
             calculateRoute()
+            routeInfoLoaded = true
+
             addRouteEntryToDb(routeEntry) { id ->
-                addRouteToDb(id, routeInfo)
+                currentRoute = id
+                writeRouteToDb(id, routeInfo)
             }
+
             onSuccess()
         } catch (e: Exception) {
             onFailure(e)
         }
     }
 
-    fun hasCarAccess(): Boolean {
-        return routeEntry.accessToCar
+    fun updateRoute(
+        routeName: String,
+        location: String,
+        maxCost: String,
+        accessToCar: Boolean,
+        startDate: String,
+        endDate: String,
+        startDest: DestinationEntryStruct,
+        endDest: DestinationEntryStruct,
+        destinations: List<DestinationEntryStruct>,
+        lastModifiedDate: String,
+        onSuccess: () -> Unit = {},
+        onFailure: (Exception) -> Unit = {}
+    ) {
+        routeEntryLoaded = false
+        routeInfoLoaded = false
+
+        routeEntry = RouteEntry(
+            routeName,
+            location,
+            maxCost,
+            accessToCar,
+            startDate,
+            endDate,
+            startDest,
+            endDest,
+            destinations,
+            routeEntry.creatorEmail,
+            routeEntry.sharedEmails,
+            routeEntry.createdDate,
+            lastModifiedDate
+        )
+        routeEntryLoaded = true
+
+        try {
+            calculateRoute()
+            routeInfoLoaded = true
+
+            writeRouteEntryToDb(currentRoute, routeEntry)
+            writeRouteToDb(currentRoute, routeInfo)
+
+            onSuccess()
+        } catch (e: Exception) {
+            onFailure(e)
+        }
     }
 
     private fun calculateRoute() {
@@ -83,6 +136,12 @@ class RouteController(private val client: MapsApiClient) : ViewModel() {
 
             client.getRoute(routeInfo.startDest!!, routeInfo.endDest!!, routeInfo.stopDests, TravelMode.CAR).thenCompose { route ->
                 routeInfo.route = route
+
+                if (route.order != null && route.order.size > 1)
+                {
+                    routeInfo.stopDests = route.order.map { routeInfo.stopDests!![it] }
+                    routeEntry.destinations = route.order.map { routeEntry.destinations!![it] }
+                }
 
                 if (!carAccess) {
                     val routesFuture = mutableListOf<CompletableFuture<Route>>()
@@ -123,8 +182,6 @@ class RouteController(private val client: MapsApiClient) : ViewModel() {
                 } else {
                     CompletableFuture.completedFuture(null)
                 }
-            }.thenRun {
-                routeInfoLoaded = true
             }.exceptionally {
                 throw it
             }

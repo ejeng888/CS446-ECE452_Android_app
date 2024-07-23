@@ -54,7 +54,7 @@ class MapsApiClient(private val key: String) {
         }
     }
 
-    fun getRoute(start: Destination, end: Destination, stops: ArrayList<Destination>?, travelMode: String): CompletableFuture<Route> {
+    fun getRoute(start: Destination, end: Destination, stops: List<Destination>?, travelMode: String): CompletableFuture<Route> {
         var stopsFormatted = ""
         if (stops != null) {
             for (dest in stops) {
