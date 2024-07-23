@@ -5,7 +5,8 @@ data class RouteInfo (
     var endDest: Destination? = null,
     var stopDests: ArrayList<Destination>? = null,
 
-    var route: Route? = null
+    var route: Route? = null,
+    var transitRoute: ArrayList<Route>? = null
 )
 
 data class Destination(

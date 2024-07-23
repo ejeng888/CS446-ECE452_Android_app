@@ -73,7 +73,7 @@ class MainActivity : ComponentActivity() {
                         SavedRoutes(navController = navController, rc = rc)
                     }
                     composable(route = "EditRoute") {
-                        EditRouteScreen(navController = navController, rc = rc, placesClient = placesClient)
+                        EditRouteScreen(navController = navController, rc = rc, placesClient = placesClient, routeId = rc.currentRoute)
                     }
                     composable(route = "Profile") {
                         ProfileScreen(navController, pickMedia, imageUriState)

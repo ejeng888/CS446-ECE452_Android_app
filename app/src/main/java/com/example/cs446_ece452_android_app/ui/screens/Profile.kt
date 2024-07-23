@@ -17,7 +17,6 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.compose.runtime.Composable
-
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.unit.dp
@@ -63,7 +62,6 @@ fun ProfileScreen(
             profileImageUrl = imageUrl
         }
     }
-
     Scaffold(
         bottomBar = {
             BottomNavigationBar(navController = navController)

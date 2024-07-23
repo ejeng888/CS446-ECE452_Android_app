@@ -14,12 +14,12 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 
 @Composable
-fun OutlinedButton(labelVal: String, navController: NavController, destination : String = "", function : () -> Unit = {}) {
+fun OutlinedButton(labelVal: String, navController: NavController, destination: String = "", function: () -> Unit = {}) {
     OutlinedButton(
         onClick = {
             function()
             if (destination != "") navController.navigate(destination)
-                  },
+        },
         colors = ButtonDefaults.buttonColors(
             containerColor = Blue1,
             contentColor = DarkBlue
@@ -38,6 +38,6 @@ fun OutlinedButton(labelVal: String, navController: NavController, destination :
 @Preview
 @Composable
 fun OutlinedButtonPreview() {
-        OutlinedButton(labelVal = "Click me please!", rememberNavController())
+    OutlinedButton(labelVal = "Click me please!", rememberNavController())
 }
 

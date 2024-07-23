@@ -43,14 +43,13 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 
 @Composable
-fun SignupScreen(navController : NavHostController) {
+fun SignupScreen(navController: NavHostController) {
     val auth: FirebaseAuth = Firebase.auth
     val context = LocalContext.current
 
     var enteredEmail by remember { mutableStateOf("") }
     var enteredPassword by remember { mutableStateOf("") }
     var enteredPassword2 by remember { mutableStateOf("") }
-
 
     fun createAccount(context: Context, email: String, password1: String, password2: String, destination: String) {
         var toastMessage = "Successfully Made Account"
@@ -69,8 +68,7 @@ fun SignupScreen(navController : NavHostController) {
             toastMessage = "No Digits"
         } else if (password1.firstOrNull { !it.isLetterOrDigit() } == null) {
             toastMessage = "No Special Characters"
-        }
-        else if (password1 != password2) {
+        } else if (password1 != password2) {
             toastMessage = "Passwords are not the same"
         }
 
@@ -105,16 +103,15 @@ fun SignupScreen(navController : NavHostController) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
             Spacer(modifier = Modifier.height(20.dp))
             Logo()
             Spacer(modifier = Modifier.height(30.dp))
 
-            OutlinedInputBox(labelVal = "Email", Icons.Default.Email, valueChanged = {newValue -> enteredEmail = newValue})
+            OutlinedInputBox(labelVal = "Email", Icons.Default.Email, valueChanged = { newValue -> enteredEmail = newValue })
             Spacer(modifier = Modifier.height(10.dp))
-            PasswordInputBox(labelVal = "Password", valueChanged = {newValue -> enteredPassword = newValue})
+            PasswordInputBox(labelVal = "Password", valueChanged = { newValue -> enteredPassword = newValue })
             Spacer(modifier = Modifier.height(10.dp))
-            PasswordInputBox(labelVal = "Reenter Password", valueChanged = {newValue -> enteredPassword2 = newValue})
+            PasswordInputBox(labelVal = "Reenter Password", valueChanged = { newValue -> enteredPassword2 = newValue })
 
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -127,10 +124,9 @@ fun SignupScreen(navController : NavHostController) {
                 PasswordRequirement(text = "1 Special Character", fulfilled = (enteredPassword.firstOrNull { !it.isLetterOrDigit() } != null))
             }
 
-
             Spacer(modifier = Modifier.height(30.dp))
             FilledButton(labelVal = "Signup", navController = navController, function = {
-                createAccount(context = context, email = enteredEmail, password1 = enteredPassword, password2= enteredPassword2, destination = "routes") // New screen
+                createAccount(context = context, email = enteredEmail, password1 = enteredPassword, password2 = enteredPassword2, destination = "routes") // New screen
             })
             Spacer(modifier = Modifier.height(10.dp))
             OutlinedButton(labelVal = "Back to Login", navController = navController, destination = "Login")

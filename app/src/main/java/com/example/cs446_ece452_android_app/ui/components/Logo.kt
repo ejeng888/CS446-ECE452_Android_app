@@ -32,7 +32,7 @@ fun Logo() {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
-        Icon( modifier = Modifier.size(60.dp), imageVector = Icons.Rounded.LocationOn, contentDescription = "Password Requirement", tint = DarkBlue, )
+        Icon(modifier = Modifier.size(60.dp), imageVector = Icons.Rounded.LocationOn, contentDescription = "Password Requirement", tint = DarkBlue)
         Text(
             text = "TrailBlazer",
             modifier = Modifier.padding(2.dp),

@@ -35,6 +35,8 @@ import androidx.compose.material3.Text
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.material3.CircularProgressIndicator
 import com.example.cs446_ece452_android_app.data.model.Route
 
@@ -74,7 +76,7 @@ fun MapScreen(navController: NavController, rc: RouteController) {
                 googleMapOptionsFactory = { GoogleMapOptions().mapId(mapId) },
                 onMapLoaded = { isMapLoaded = true },
                 content = {
-                    if (rc.routeInfoLoaded) {
+                    if (rc.routeInfoLoaded && rc.routeEntryLoaded) {
                         if (rc.hasCarAccess()) {
                             CarRouteContent(
                                 start = rc.routeInfo.startDest!!,
@@ -85,7 +87,7 @@ fun MapScreen(navController: NavController, rc: RouteController) {
                             )
                         } else {
                             TransitRouteContent(
-                                transitRoutes = rc.transitRouteInfo,
+                                transitRoutes = rc.routeInfo.transitRoute!!,
                                 start = rc.routeInfo.startDest!!,
                                 end = rc.routeInfo.endDest!!,
                                 stops = rc.routeInfo.stopDests,
@@ -118,8 +120,9 @@ fun MapScreen(navController: NavController, rc: RouteController) {
                 contentAlignment = Alignment.Center,
                 modifier = Modifier.fillMaxSize()
             ) {
-                Column {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     CircularProgressIndicator()
+                    Spacer(modifier = Modifier.height(10.dp))
                     Text(text = "Loading Map")
                 }
             }
@@ -146,6 +149,7 @@ fun TransitRouteContent(transitRoutes: List<Route>, start: Destination, end: Des
         StartEndMarker(end)
     if (stops != null && order != null)
         StopMarkers(stops, order)
+
     transitRoutes.forEach { route ->
         route.legs!!.forEach { leg ->
             val decoded = decodePolyline(leg.polyline!!.encodedPolyline)

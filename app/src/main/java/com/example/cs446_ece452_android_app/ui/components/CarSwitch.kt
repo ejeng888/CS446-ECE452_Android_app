@@ -31,12 +31,12 @@ fun CarSwitch(Switched: (Boolean) -> Unit) {
         mutableStateOf(false)
     }
 
-    Column (
+    Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.padding(0.dp)
     ) {
-        Text (
+        Text(
             text = "Access to Car",
             color = Blue5,
             fontSize = 12.sp
@@ -65,7 +65,6 @@ fun CarSwitch(Switched: (Boolean) -> Unit) {
             }
         )
     }
-
 }
 
 @Preview

@@ -44,7 +44,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 
 @Composable
-fun LoginScreen(navController : NavController) {
+fun LoginScreen(navController: NavController) {
     val auth: FirebaseAuth = Firebase.auth
     val context = LocalContext.current
 
@@ -67,7 +67,7 @@ fun LoginScreen(navController : NavController) {
         if (toastMessage == "Username or Password is Incorrect") {
             Log.v("EmailPassword", "Passes Frontend Checks")
             auth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener() { task ->
+                .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         // Sign in success, update UI with the signed-in user's information
                         toastMessage = "Successfully Logged In"
@@ -84,7 +84,7 @@ fun LoginScreen(navController : NavController) {
         }
 
     }
-        Surface(
+    Surface(
         modifier = Modifier.fillMaxSize(),
         color = Blue1
     ) {
@@ -105,15 +105,17 @@ fun LoginScreen(navController : NavController) {
             Logo()
             Spacer(modifier = Modifier.height(30.dp))
 
-            OutlinedInputBox(labelVal = "Email", Icons.Default.Email, valueChanged = {newValue -> enteredEmail = newValue})
+            OutlinedInputBox(labelVal = "Email", Icons.Default.Email, valueChanged = { newValue -> enteredEmail = newValue })
             Spacer(modifier = Modifier.height(10.dp))
-            PasswordInputBox(labelVal = "Password", valueChanged = {newValue -> enteredPassword = newValue})
+            PasswordInputBox(labelVal = "Password", valueChanged = { newValue -> enteredPassword = newValue })
 
             TextButton(
-                modifier = Modifier.align(Alignment.End).padding(end = 50.dp),
+                modifier = Modifier
+                    .align(Alignment.End)
+                    .padding(end = 50.dp),
                 onClick = { navController.navigate("Resetpassword") }
             ) {
-                Text(text = "Forgot Password?", color = DarkBlue, fontSize = 14.sp,)
+                Text(text = "Forgot Password?", color = DarkBlue, fontSize = 14.sp)
             }
 
             Spacer(modifier = Modifier.height(30.dp))
@@ -123,12 +125,8 @@ fun LoginScreen(navController : NavController) {
                 // navController.navigate("routes")
             })
             Spacer(modifier = Modifier.height(10.dp))
+            // TextDivider(text = "or")
             OutlinedButton(labelVal = "Create Account", navController = navController, destination = "Signup")
-
-
-
-            // TextDivider(text="or")
-
         }
     }
 }
