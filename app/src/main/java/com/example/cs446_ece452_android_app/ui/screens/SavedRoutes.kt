@@ -30,18 +30,19 @@ import com.google.firebase.auth.FirebaseAuth
 import com.example.cs446_ece452_android_app.ui.components.HomePageEntry
 import com.example.cs446_ece452_android_app.ui.components.SearchBar
 import com.example.cs446_ece452_android_app.ui.theme.Blue1
+import com.google.android.libraries.places.api.net.PlacesClient
 
 data class RouteInformation(
     val documentID : String,
     val routeName : String,
     val lastModifiedDate : String,
     val creatorEmail : String,
-    val endDest : String
+    val endDestID : String
 )
 
 
 @Composable
-fun SavedRoutes(navController: NavController, rc: RouteController) {
+fun SavedRoutes(navController: NavController, rc: RouteController, placesClient: PlacesClient) {
 
     var searchQuery = remember { mutableStateOf("") }
     val routes = remember { mutableStateListOf<RouteInformation>() }
@@ -59,9 +60,12 @@ fun SavedRoutes(navController: NavController, rc: RouteController) {
                     val routeName = document.getString("routeName") ?: ""
                     val lastModifiedDate = document.getString("lastModifiedDate") ?: ""
                     val creatorEmail = document.getString("creatorEmail") ?: ""
-                    val endDest = document.getString("endDest.destination") ?: ""
 
-                    routes.add(RouteInformation(documentId, routeName, lastModifiedDate, creatorEmail, endDest))
+                    db.collection("googleMapsRoutes")
+                        .document(documentId).get().addOnSuccessListener { googleMapDocument ->
+                            val endDestID = googleMapDocument.getString("endDest.placeId") ?: ""
+                            routes.add(RouteInformation(documentId, routeName, lastModifiedDate, creatorEmail, endDestID))
+                    }
                 }
             }
             .addOnFailureListener { exception ->
@@ -78,9 +82,11 @@ fun SavedRoutes(navController: NavController, rc: RouteController) {
                     val routeName = document.getString("routeName") ?: ""
                     val lastModifiedDate = document.getString("lastModifiedDate") ?: ""
                     val creatorEmail = document.getString("creatorEmail") ?: ""
-                    val endDest = document.getString("endDest.destination") ?: ""
-
-                    routes.add(RouteInformation(documentId, routeName, lastModifiedDate, creatorEmail, endDest))
+                    db.collection("googleMapsRoutes")
+                        .document(documentId).get().addOnSuccessListener { googleMapDocument ->
+                            val endDestID = googleMapDocument.getString("endDest.placeId") ?: ""
+                            routes.add(RouteInformation(documentId, routeName, lastModifiedDate, creatorEmail, endDestID))
+                        }
                 }
             }
             .addOnFailureListener { exception ->
@@ -123,7 +129,8 @@ fun SavedRoutes(navController: NavController, rc: RouteController) {
                         function = {
                         rc.getRoute(route.documentID)
                         navController.navigate("Map")},
-                        deleteRoute = { routes.removeIf { it.documentID == route.documentID } }
+                        deleteRoute = { routes.removeIf { it.documentID == route.documentID } },
+                        placesClient = placesClient
                     )
                 }
             }

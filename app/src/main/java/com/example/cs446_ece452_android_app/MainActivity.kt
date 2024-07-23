@@ -71,7 +71,7 @@ class MainActivity : ComponentActivity() {
                         SignupScreen(navController)
                     }
                     composable(route = "routes") {
-                        SavedRoutes(navController = navController, rc = rc)
+                        SavedRoutes(navController = navController, rc = rc, placesClient = placesClient)
                     }
                     composable(route = "EditRoute") {
                         EditRouteScreen(navController = navController, rc = rc, placesClient = placesClient)
