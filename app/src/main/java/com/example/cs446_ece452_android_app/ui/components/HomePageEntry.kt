@@ -30,6 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -43,7 +44,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
 
 @Composable
-fun HomePageEntry(route : RouteInformation, function : () -> Unit = {}) {
+fun HomePageEntry(route : RouteInformation, function : () -> Unit = {}, deleteRoute: () -> Unit = {}) {
 
     val routeName = route.routeName
     val lastModifiedDate = route.lastModifiedDate
@@ -64,11 +65,13 @@ fun HomePageEntry(route : RouteInformation, function : () -> Unit = {}) {
             modifier = Modifier
                 .height(120.dp)
                 .weight(1f)
-                .padding(end = 10.dp)// Adjust height as needed
+                .padding(end = 0.dp) // Adjust height as needed
         ) {
 
+            Text(endDest)
+
             Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
+                horizontalAlignment = Alignment.Start,
                 verticalArrangement = Arrangement.Center,
                 modifier = Modifier
                     .fillMaxSize()
@@ -90,12 +93,12 @@ fun HomePageEntry(route : RouteInformation, function : () -> Unit = {}) {
                         imageVector = Icons.Rounded.Today,
                         contentDescription = "Calendar",
                         tint = DarkBlue,
-                        modifier = Modifier.size(20.dp)
+                        modifier = Modifier.size(12.dp)
                     )
                     Text(
                         text = lastModifiedDate,
                         color = DarkBlue,
-                        fontSize = 14.sp
+                        fontSize = 12.sp
                     )
                 }
                 Row(
@@ -106,20 +109,20 @@ fun HomePageEntry(route : RouteInformation, function : () -> Unit = {}) {
                         imageVector = Icons.Rounded.Person,
                         contentDescription = "Calendar",
                         tint = DarkBlue,
-                        modifier = Modifier.size(20.dp)
+                        modifier = Modifier.size(12.dp)
                     )
                     Text(
                         text = creatorEmail,
                         color = DarkBlue,
-                        fontSize = 14.sp
+                        fontSize = 12.sp
                     )
                 }
 
             }
         }
         ShareIconButton(documentID)
-        Spacer(modifier = Modifier.size(10.dp))
-        DeleteIconButton(documentID)
+
+        DeleteIconButton(documentId = documentID, deleteRoute = {deleteRoute()})
 
     }
 
@@ -196,9 +199,10 @@ fun ShareIconButton(documentId: String) {
 }
 
 @Composable
-fun DeleteIconButton(documentId: String) {
+fun DeleteIconButton(documentId: String, deleteRoute : () -> Unit = {}) {
     val db = Firebase.firestore
     var showDialog by remember { mutableStateOf(false) }
+    val context = LocalContext.current
 
     IconButton(
         onClick = { showDialog = true },
@@ -228,6 +232,8 @@ fun DeleteIconButton(documentId: String) {
                             .delete()
                             .addOnSuccessListener {
                                 showDialog = false
+                                deleteRoute()
+                                toastHelper(context, "Deleted Route")
                             }
                             .addOnFailureListener { e ->
                                 Log.e("Firestore", "Error deleting document", e)

@@ -14,11 +14,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -50,6 +48,7 @@ fun SavedRoutes(navController: NavController, rc: RouteController) {
     val db = Firebase.firestore
     val auth = FirebaseAuth.getInstance()
     val currUser = auth.currentUser?.email
+
     LaunchedEffect(Unit) {
         db.collection("routeEntries")
             .whereEqualTo("creatorEmail", currUser)
@@ -60,7 +59,7 @@ fun SavedRoutes(navController: NavController, rc: RouteController) {
                     val routeName = document.getString("routeName") ?: ""
                     val lastModifiedDate = document.getString("lastModifiedDate") ?: ""
                     val creatorEmail = document.getString("creatorEmail") ?: ""
-                    val endDest = document.getString("endDest") ?: ""
+                    val endDest = document.getString("endDest.destination") ?: ""
 
                     routes.add(RouteInformation(documentId, routeName, lastModifiedDate, creatorEmail, endDest))
                 }
@@ -79,7 +78,7 @@ fun SavedRoutes(navController: NavController, rc: RouteController) {
                     val routeName = document.getString("routeName") ?: ""
                     val lastModifiedDate = document.getString("lastModifiedDate") ?: ""
                     val creatorEmail = document.getString("creatorEmail") ?: ""
-                    val endDest = document.getString("endDest") ?: ""
+                    val endDest = document.getString("endDest.destination") ?: ""
 
                     routes.add(RouteInformation(documentId, routeName, lastModifiedDate, creatorEmail, endDest))
                 }
@@ -119,9 +118,12 @@ fun SavedRoutes(navController: NavController, rc: RouteController) {
                 verticalArrangement = Arrangement.spacedBy(10.dp),
             ) {
                 items(filteredRoutes) { route ->
-                    HomePageEntry(route = route, function = {
+                    HomePageEntry(
+                        route = route,
+                        function = {
                         rc.getRoute(route.documentID)
-                        navController.navigate("Map")}
+                        navController.navigate("Map")},
+                        deleteRoute = { routes.removeIf { it.documentID == route.documentID } }
                     )
                 }
             }
