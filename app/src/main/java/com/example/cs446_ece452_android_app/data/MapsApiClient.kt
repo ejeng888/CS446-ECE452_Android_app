@@ -17,18 +17,24 @@ class MapsApiClient(private val key: String) {
     private val client: OkHttpClient = OkHttpClient()
     private val gson = Gson()
 
-    private fun <T> getResponse(request: Request, callback: (String?) -> T): CompletableFuture<T> {
+    private fun <T> getResponse(request: Request, exStr: String, callback: (String?) -> T): CompletableFuture<T> {
         val result: CompletableFuture<T> = CompletableFuture()
         client.newCall(request).enqueue(object : okhttp3.Callback {
             override fun onResponse(call: Call, response: okhttp3.Response) {
                 if (response.isSuccessful) {
                     val responseData = response.body?.string()
-                    result.complete(callback(responseData))
+                    try {
+                        result.complete(callback(responseData))
+                    } catch (e: Exception) {
+                        result.completeExceptionally(Throwable(exStr))
+                    }
+                } else {
+                    result.completeExceptionally(Throwable(exStr))
                 }
             }
 
             override fun onFailure(call: Call, e: IOException) {
-                e.printStackTrace()
+                result.completeExceptionally(Throwable(exStr))
             }
         })
 
@@ -41,14 +47,14 @@ class MapsApiClient(private val key: String) {
             .url(url)
             .build()
 
-        return getResponse(request) { response ->
+        return getResponse(request, "MSG: Unable to resolve destination: $searchString") { response ->
             val parsed = gson.fromJson(response, LatLngResponse::class.java)
             val result = parsed.results!![0]
             Destination(name = searchString, lat = result.geometry!!.location!!.lat, lng = result.geometry.location!!.lng, address = result.address, placeId = result.placeId)
         }
     }
 
-    fun getRoute(start: Destination, end: Destination, stops: ArrayList<Destination>?, travelMode: String): CompletableFuture<Route> {
+    fun getRoute(start: Destination, end: Destination, stops: List<Destination>?, travelMode: String): CompletableFuture<Route> {
         var stopsFormatted = ""
         if (stops != null) {
             for (dest in stops) {
@@ -105,7 +111,7 @@ class MapsApiClient(private val key: String) {
             .header("X-Goog-FieldMask", "routes.legs,routes.distanceMeters,routes.staticDuration,routes.polyline.encodedPolyline,routes.viewport,routes.optimizedIntermediateWaypointIndex")
             .build()
 
-        return getResponse(request) { response ->
+        return getResponse(request, "MSG: Unable to calculate route") { response ->
             val parsed = gson.fromJson(response, RouteResponse::class.java)
             parsed.routes!![0]
         }

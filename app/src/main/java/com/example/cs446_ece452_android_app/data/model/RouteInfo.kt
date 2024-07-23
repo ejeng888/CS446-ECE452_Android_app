@@ -3,9 +3,10 @@ package com.example.cs446_ece452_android_app.data.model
 data class RouteInfo (
     var startDest: Destination? = null,
     var endDest: Destination? = null,
-    var stopDests: ArrayList<Destination>? = null,
+    var stopDests: List<Destination>? = null,
 
-    var route: Route? = null
+    var route: Route? = null,
+    var transitRoute: List<Route>? = null
 )
 
 data class Destination(

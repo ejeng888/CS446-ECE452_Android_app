@@ -58,7 +58,7 @@ class MainActivity : ComponentActivity() {
                         SavedRoutes(navController = navController, rc = rc)
                     }
                     composable(route = "EditRoute") {
-                        EditRouteScreen(navController = navController, rc = rc, placesClient = placesClient, routeId = rc.currentRoute)
+                        EditRouteScreen(navController = navController, rc = rc, placesClient = placesClient)
                     }
                     composable(route = "Profile") {
                         ProfileScreen(navController = navController)

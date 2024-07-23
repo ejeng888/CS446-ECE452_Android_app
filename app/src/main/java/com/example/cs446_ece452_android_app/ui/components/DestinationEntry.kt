@@ -49,9 +49,9 @@ import com.google.android.libraries.places.api.net.PlacesClient
 import kotlinx.coroutines.delay
 
 @Composable
-fun DestinationEntry(placesClient: PlacesClient, timeChanged: (String) -> Unit, destinationChanged: (String) -> Unit, start: Boolean = false, end: Boolean = false) {
-    var destination by remember { mutableStateOf("") }
-    var timeSpent by remember { mutableStateOf("02:00") }
+fun DestinationEntry(placesClient: PlacesClient, timeChanged: (String) -> Unit, destinationChanged: (String) -> Unit, start: Boolean = false, end: Boolean = false, value: String = "", time: String = "") {
+    var destination by remember { mutableStateOf(value) }
+    var timeSpent by remember { mutableStateOf(time) }
     var icon = Icons.Default.Schedule
     var placeholder = "Add Stop"
 
@@ -201,7 +201,6 @@ fun AutocompleteTextField(
         }
     }
 }
-
 
 @Composable
 fun VerticalLine(dontShow: Boolean = false) {

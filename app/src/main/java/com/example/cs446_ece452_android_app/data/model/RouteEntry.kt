@@ -1,22 +1,22 @@
 package com.example.cs446_ece452_android_app.data.model
 
 data class RouteEntry(
-    val routeName: String = "",
-    val location: String = "",
-    val maxCost: String = "",
-    val accessToCar: Boolean = false,
-    val startDate: String = "",
-    val endDate: String = "",
-    val startDest: DestinationEntryStruct? = null,
-    val endDest: DestinationEntryStruct? = null,
-    val destinations: List<DestinationEntryStruct>? = null,
-    val creatorEmail: String = "",
-    val sharedEmails: List<String>? = null,
-    val createdDate: String = "",
-    val lastModifiedDate: String = ""
+    var routeName: String = "",
+    var location: String = "",
+    var maxCost: String = "",
+    var accessToCar: Boolean = false,
+    var startDate: String = "",
+    var endDate: String = "",
+    var startDest: DestinationEntryStruct? = null,
+    var endDest: DestinationEntryStruct? = null,
+    var destinations: List<DestinationEntryStruct>? = null,
+    var creatorEmail: String = "",
+    var sharedEmails: List<String>? = null,
+    var createdDate: String = "",
+    var lastModifiedDate: String = ""
 )
 
 data class DestinationEntryStruct(
-    val destination: String = "",
-    val timeSpent: String = "02:00"
+    var destination: String = "",
+    var timeSpent: String = "02:00"
 )

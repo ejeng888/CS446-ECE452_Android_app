@@ -35,6 +35,8 @@ import androidx.compose.material3.Text
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.material3.CircularProgressIndicator
 import com.example.cs446_ece452_android_app.data.model.Route
 
@@ -74,22 +76,20 @@ fun MapScreen(navController: NavController, rc: RouteController) {
                 googleMapOptionsFactory = { GoogleMapOptions().mapId(mapId) },
                 onMapLoaded = { isMapLoaded = true },
                 content = {
-                    if (rc.routeInfoLoaded) {
-                        if (rc.hasCarAccess()) {
+                    if (rc.routeInfoLoaded && rc.routeEntryLoaded) {
+                        if (rc.routeEntry.accessToCar) {
                             CarRouteContent(
                                 start = rc.routeInfo.startDest!!,
                                 end = rc.routeInfo.endDest!!,
                                 stops = rc.routeInfo.stopDests,
-                                order = rc.routeInfo.route!!.order,
                                 poly = rc.routeInfo.route!!.polyline!!.encodedPolyline
                             )
                         } else {
                             TransitRouteContent(
-                                transitRoutes = rc.transitRouteInfo,
+                                transitRoutes = rc.routeInfo.transitRoute!!,
                                 start = rc.routeInfo.startDest!!,
                                 end = rc.routeInfo.endDest!!,
-                                stops = rc.routeInfo.stopDests,
-                                order = rc.routeInfo.route!!.order
+                                stops = rc.routeInfo.stopDests
                             )
                         }
                     }
@@ -118,8 +118,9 @@ fun MapScreen(navController: NavController, rc: RouteController) {
                 contentAlignment = Alignment.Center,
                 modifier = Modifier.fillMaxSize()
             ) {
-                Column {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     CircularProgressIndicator()
+                    Spacer(modifier = Modifier.height(10.dp))
                     Text(text = "Loading Map")
                 }
             }
@@ -129,23 +130,24 @@ fun MapScreen(navController: NavController, rc: RouteController) {
 
 @Composable
 @GoogleMapComposable
-fun CarRouteContent(start: Destination, end: Destination, stops: ArrayList<Destination>?, order: List<Int>?, poly: String) {
+fun CarRouteContent(start: Destination, end: Destination, stops: List<Destination>?, poly: String) {
     StartEndMarker(start)
     if (start.address != end.address)
         StartEndMarker(end)
-    if (stops != null && order != null)
-        StopMarkers(stops, order)
+    if (stops != null)
+        StopMarkers(stops)
     Route(poly)
 }
 
 @Composable
 @GoogleMapComposable
-fun TransitRouteContent(transitRoutes: List<Route>, start: Destination, end: Destination, stops: ArrayList<Destination>?, order: List<Int>?) {
+fun TransitRouteContent(transitRoutes: List<Route>, start: Destination, end: Destination, stops: List<Destination>?) {
     StartEndMarker(destination = start)
     if (start.address != end.address)
         StartEndMarker(end)
-    if (stops != null && order != null)
-        StopMarkers(stops, order)
+    if (stops != null)
+        StopMarkers(stops)
+
     transitRoutes.forEach { route ->
         route.legs!!.forEach { leg ->
             val decoded = decodePolyline(leg.polyline!!.encodedPolyline)
@@ -168,12 +170,12 @@ fun StartEndMarker(destination: Destination) {
 
 @Composable
 @GoogleMapComposable
-fun StopMarkers(stops: ArrayList<Destination>, order: List<Int>) {
+fun StopMarkers(stops: List<Destination>) {
     stops.forEachIndexed { i, stop ->
         AdvancedMarker(
             state = rememberMarkerState(position = LatLng(stop.lat, stop.lng)),
             title = stop.name,
-            pinConfig = configPin((if (order.size == 1) 1 else order.indexOf(i) + 1).toString())
+            pinConfig = configPin((i + 1).toString())
         )
     }
 }

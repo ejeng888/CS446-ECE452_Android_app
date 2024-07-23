@@ -37,7 +37,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 
 @Composable
-fun ResetPassword(navController : NavController) {
+fun ResetPassword(navController: NavController) {
     val context = LocalContext.current
 
     var enteredEmail by remember { mutableStateOf("") }
@@ -64,7 +64,7 @@ fun ResetPassword(navController : NavController) {
                 }
         }
     }
-        Surface(
+    Surface(
         modifier = Modifier.fillMaxSize(),
         color = Blue1
     ) {
@@ -84,8 +84,7 @@ fun ResetPassword(navController : NavController) {
             Logo()
             Spacer(modifier = Modifier.height(30.dp))
 
-            OutlinedInputBox(labelVal = "Email", Icons.Default.Email, valueChanged = {newValue -> enteredEmail = newValue})
-
+            OutlinedInputBox(labelVal = "Email", Icons.Default.Email, valueChanged = { newValue -> enteredEmail = newValue })
 
             Spacer(modifier = Modifier.height(30.dp))
             FilledButton(labelVal = "Reset Password", navController = navController, function = {
@@ -93,8 +92,6 @@ fun ResetPassword(navController : NavController) {
             })
             Spacer(modifier = Modifier.height(10.dp))
             OutlinedButton(labelVal = "Go Back", navController = navController, destination = "Login")
-
-
         }
     }
 }
