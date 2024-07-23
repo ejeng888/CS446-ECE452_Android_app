@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Delete
+import androidx.compose.material.icons.rounded.Person
+import androidx.compose.material.icons.rounded.Today
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -42,9 +44,13 @@ import com.google.firebase.firestore.firestore
 
 @Composable
 fun HomePageEntry(route : RouteInformation, function : () -> Unit = {}) {
+
     val routeName = route.routeName
     val lastModifiedDate = route.lastModifiedDate
-    // val documentId = route.documentID
+    val documentID = route.documentID
+    val creatorEmail = route.creatorEmail
+    val endDest = route.endDest
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.padding(start = 10.dp, end = 20.dp)
@@ -60,12 +66,7 @@ fun HomePageEntry(route : RouteInformation, function : () -> Unit = {}) {
                 .weight(1f)
                 .padding(end = 10.dp)// Adjust height as needed
         ) {
-            Text(
-                text = "[Insert Map]",
-                color = DarkBlue,
-                fontSize = 16.sp, // Adjust text size as needed
-                fontWeight = FontWeight.Bold
-            )
+
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
@@ -73,40 +74,55 @@ fun HomePageEntry(route : RouteInformation, function : () -> Unit = {}) {
                     .fillMaxSize()
                     .padding(8.dp) // Add padding inside the button
             ) {
+
                 Text(
                     text = routeName,
                     color = DarkBlue,
                     fontSize = 20.sp, // Adjust text size as needed
                     fontWeight = FontWeight.Bold
                 )
-                Spacer(modifier = Modifier.height(8.dp)) // Space between texts
-                Text(
-                    text = lastModifiedDate,
-                    color = DarkBlue,
-                    fontSize = 14.sp // Adjust text size as needed
-                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Start
+                ) {
+                    Icon(
+                        imageVector = Icons.Rounded.Today,
+                        contentDescription = "Calendar",
+                        tint = DarkBlue,
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Text(
+                        text = lastModifiedDate,
+                        color = DarkBlue,
+                        fontSize = 14.sp
+                    )
+                }
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Start
+                ) {
+                    Icon(
+                        imageVector = Icons.Rounded.Person,
+                        contentDescription = "Calendar",
+                        tint = DarkBlue,
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Text(
+                        text = creatorEmail,
+                        color = DarkBlue,
+                        fontSize = 14.sp
+                    )
+                }
+
             }
         }
-        ShareIconButton(route.documentID)
+        ShareIconButton(documentID)
         Spacer(modifier = Modifier.size(10.dp))
-        IconButton(
-            onClick = {
-//                                routeToDelete = documentId
-//                                routeNameDelete = "$routeName - $date - $documentId"
-//                                routeNameId = routeName
-//                                showDialog = true
-            },
-            modifier = Modifier.size(width = 40.dp, height = 40.dp)
-        ) {
-            Icon(
-                imageVector = Icons.Rounded.Delete,
-                contentDescription = "Delete",
-                tint = Color.Red,
-                modifier = Modifier.size(40.dp)
-            )
-        }
+        DeleteIconButton(documentID)
 
     }
+
 }
 
 @Composable
@@ -122,7 +138,7 @@ fun ShareIconButton(documentId: String) {
         Icon(
             painter = painterResource(id = R.drawable.share_icon), // replace with your share icon
             contentDescription = "Share",
-            tint = Color.Black
+            tint = Color.Gray
         )
     }
 
@@ -179,8 +195,64 @@ fun ShareIconButton(documentId: String) {
     }
 }
 
+@Composable
+fun DeleteIconButton(documentId: String) {
+    val db = Firebase.firestore
+    var showDialog by remember { mutableStateOf(false) }
+
+    IconButton(
+        onClick = { showDialog = true },
+        modifier = Modifier.size(width = 40.dp, height = 40.dp)
+    ) {
+        Icon(
+            imageVector = Icons.Rounded.Delete,
+            contentDescription = "Delete",
+            tint = Color.Red,
+            modifier = Modifier.size(40.dp)
+        )
+    }
+
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = { showDialog = false },
+            title = {
+                Text(text = "Delete Route")
+            },
+            text = {
+                Text("Are you sure you want to delete Route?")
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        db.collection("routeEntries").document(documentId)
+                            .delete()
+                            .addOnSuccessListener {
+                                showDialog = false
+                            }
+                            .addOnFailureListener { e ->
+                                Log.e("Firestore", "Error deleting document", e)
+                                // Optionally handle the failure case
+                            }
+                    },
+                ) {
+                    Text("Delete")
+                }
+            },
+            dismissButton = {
+                Button(
+                    onClick = {
+                        showDialog = false
+                    }
+                ) {
+                    Text("Dismiss")
+                }
+            }
+        )
+    }
+}
+
 @Preview
 @Composable
 fun HomePageEntryPreview() {
-    HomePageEntry(RouteInformation("documentId", "RouteName", "lastModifiedDate"))
+    HomePageEntry(RouteInformation("documentId", "RouteName", "lastModifiedDate", "creatorEmail", "endDest"))
 }
