@@ -21,6 +21,7 @@ import com.example.cs446_ece452_android_app.ui.screens.ResetPassword
 import com.example.cs446_ece452_android_app.ui.screens.EditRouteScreen
 import com.example.cs446_ece452_android_app.ui.screens.SavedRoutes
 import com.example.cs446_ece452_android_app.ui.screens.SignupScreen
+import com.example.cs446_ece452_android_app.ui.screens.TransitScreen
 import com.example.cs446_ece452_android_app.ui.theme.CS446ECE452_Android_appTheme
 import com.google.android.libraries.places.api.Places
 
@@ -83,6 +84,9 @@ class MainActivity : ComponentActivity() {
                     }
                     composable(route = "Map") {
                         MapScreen(navController = navController, rc = rc)
+                    }
+                    composable(route = "Directions"){
+                        TransitScreen(navController = navController, rc = rc)
                     }
                 }
             }
