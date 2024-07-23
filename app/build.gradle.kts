@@ -83,6 +83,8 @@ dependencies {
     implementation(libs.androidx.ui.viewbinding)
     implementation(libs.firebase.common.ktx)
     implementation(libs.firebase.auth.ktx)
+    implementation(libs.firebase.storage.ktx)
+    implementation(libs.play.services.cast.framework)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -102,4 +104,5 @@ dependencies {
     implementation("com.google.accompanist:accompanist-insets:0.23.1")
     implementation("com.squareup.okhttp3:okhttp:4.9.3")
     implementation("com.google.code.gson:gson:2.8.8")
+    implementation("com.github.bumptech.glide:glide:4.16.0")
 }
