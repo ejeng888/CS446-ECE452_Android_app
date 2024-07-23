@@ -127,7 +127,7 @@ fun TransitScreen(navController: NavController, rc: RouteController) {
                     }
                 }
             }
-            Box(
+            /*Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp)
@@ -137,7 +137,7 @@ fun TransitScreen(navController: NavController, rc: RouteController) {
                     fontSize = 18.sp,
                     color = Color.Black
                 )
-            }
+            }*/
         }
     }
 }
