@@ -35,7 +35,7 @@ import com.example.cs446_ece452_android_app.data.model.StepData
 @Composable
 fun TransitScreen(navController: NavController, rc: RouteController) {
     val stepDataList = mutableListOf<StepData>()
-    rc.transitRouteInfo.forEach { route ->
+    rc.routeInfo.transitRoute!!.forEach { route ->
         route.legs!!.forEach { leg -> //There should only be 1 leg per route
             leg.steps!!.forEach{ step ->
                 if(step.mode == "TRANSIT"){

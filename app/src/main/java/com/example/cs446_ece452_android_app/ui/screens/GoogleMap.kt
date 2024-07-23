@@ -95,7 +95,7 @@ fun MapScreen(navController: NavController, rc: RouteController) {
                     }
                 }
             )
-            if(rc.hasCarAccess() == false){
+            if(rc.routeEntry.accessToCar == false){
                 Button(
                     //Need to pass in rc.transitRouteInfo
                     onClick = { navController.navigate("Directions") },
