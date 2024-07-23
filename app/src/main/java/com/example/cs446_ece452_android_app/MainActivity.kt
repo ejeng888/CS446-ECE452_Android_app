@@ -1,9 +1,13 @@
 package com.example.cs446_ece452_android_app
 
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.runtime.mutableStateOf
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -33,6 +37,17 @@ class MainActivity : ComponentActivity() {
         val mapsClient = MapsApiClient(apiKey)
         val rc = RouteController(mapsClient)
 
+        val imageUriState = mutableStateOf<Uri?>(null)
+        val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+            if (uri != null) {
+                Log.d("PhotoPicker", "Selected URI: $uri")
+                imageUriState.value = uri
+            } else {
+                Log.d("PhotoPicker", "No media selected")
+            }
+        }
+
+
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
 
         setContent {
@@ -61,7 +76,7 @@ class MainActivity : ComponentActivity() {
                         EditRouteScreen(navController = navController, rc = rc, placesClient = placesClient)
                     }
                     composable(route = "Profile") {
-                        ProfileScreen(navController = navController)
+                        ProfileScreen(navController, pickMedia, imageUriState)
                     }
                     composable(route = "DestinationInput") {
                         DestinationInputScreen(navController = navController, rc = rc, placesClient = placesClient)
