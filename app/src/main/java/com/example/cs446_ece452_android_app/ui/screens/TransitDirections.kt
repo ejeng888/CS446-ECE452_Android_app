@@ -48,14 +48,27 @@ fun TransitScreen(navController: NavController, rc: RouteController) {
                             stopCount = step.transitDetails!!.stopCount,
                             departureStopName = step.transitDetails.stopDetails!!.departureStop!!.name,
                             arrivalStopName = step.transitDetails.stopDetails.arrivalStop!!.name,
-                            transitLineVehicle = step.transitDetails.transitLine!!.vehicle!!.type
+                            transitLineVehicle = step.transitDetails.transitLine!!.vehicle!!.type,
+                            intermediateStop = false
                         )
                     )
                 }
             }
         }
         //Reached a stop
-
+        stepDataList.add(
+            StepData(
+                distance = 0,
+                instruction = "Temp instruction",
+                lat = 10.0,
+                lng = 10.0,
+                stopCount = 0,
+                departureStopName = "Temp name",
+                arrivalStopName = "Temp name",
+                transitLineVehicle = "Bus",
+                intermediateStop = true
+            )
+        )
     }
 
     Scaffold(
@@ -82,20 +95,37 @@ fun TransitScreen(navController: NavController, rc: RouteController) {
                     color = Color.Black
                 )
             }
+            var counter = 0
             stepDataList.forEach { stepData ->
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
-                ) {
-                    Text(
-                        text = "Take the ${stepData.transitLineVehicle} from ${stepData.departureStopName} to ${stepData.arrivalStopName} for ${stepData.stopCount} stops",
-                        //text = "Do nothing",
-                        fontSize = 18.sp,
-                        color = Color.Black
-                    )
+                if(stepData.intermediateStop == false) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp)
+                    ) {
+                        Text(
+                            text = "Take the ${stepData.transitLineVehicle} from ${stepData.departureStopName} to ${stepData.arrivalStopName} for ${stepData.stopCount} stops",
+                            //text = "Do nothing",
+                            fontSize = 18.sp,
+                            color = Color.Black
+                        )
+                    }
                 }
-
+                else{
+                    counter += 1
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp)
+                    ) {
+                        Text(
+                            text = "You have arrived at stop $counter",
+                            //text = "Do nothing",
+                            fontSize = 18.sp,
+                            color = Color.Black
+                        )
+                    }
+                }
             }
             Box(
                 modifier = Modifier

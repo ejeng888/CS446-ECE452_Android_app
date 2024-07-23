@@ -8,5 +8,6 @@ data class StepData(
     val stopCount: Int,
     val departureStopName: String,
     val arrivalStopName: String,
-    val transitLineVehicle: String
+    val transitLineVehicle: String,
+    val intermediateStop: Boolean
 )
