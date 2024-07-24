@@ -36,6 +36,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.cs446_ece452_android_app.ui.components.FilledButton
 import com.example.cs446_ece452_android_app.ui.components.OutlinedButton
+import com.example.cs446_ece452_android_app.ui.components.TOS
 import com.example.cs446_ece452_android_app.ui.theme.DarkBlue
 import com.example.cs446_ece452_android_app.ui.theme.Gray
 import com.google.firebase.Firebase
@@ -50,6 +51,7 @@ fun SignupScreen(navController: NavHostController) {
     var enteredEmail by remember { mutableStateOf("") }
     var enteredPassword by remember { mutableStateOf("") }
     var enteredPassword2 by remember { mutableStateOf("") }
+    var checked by remember {mutableStateOf(false)}
 
     fun createAccount(context: Context, email: String, password1: String, password2: String, destination: String) {
         var toastMessage = "Successfully Made Account"
@@ -57,6 +59,8 @@ fun SignupScreen(navController: NavHostController) {
         if (!emailRegex.toRegex().matches(email)) {
             // Not a valid email
             toastMessage = "Please Enter a Valid Email"
+        } else if (!checked) {
+            toastMessage = "Please accept Google Map's Terms of Service"
         } else if (password1.length < 8) {
             // Password length too short
             toastMessage = "Password Length is Too Short"
@@ -123,6 +127,8 @@ fun SignupScreen(navController: NavHostController) {
                 PasswordRequirement(text = "1 Numerical", fulfilled = (enteredPassword.firstOrNull { it.isDigit() } != null))
                 PasswordRequirement(text = "1 Special Character", fulfilled = (enteredPassword.firstOrNull { !it.isLetterOrDigit() } != null))
             }
+
+            TOS(checkedChanged = { newValue -> checked = newValue })
 
             Spacer(modifier = Modifier.height(30.dp))
             FilledButton(labelVal = "Signup", navController = navController, function = {
