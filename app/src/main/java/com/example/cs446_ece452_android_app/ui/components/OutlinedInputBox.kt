@@ -23,9 +23,9 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
-fun OutlinedInputBox(labelVal: String, icon: ImageVector, valueChanged: (String) -> Unit = {}) {
+fun OutlinedInputBox(labelVal: String, icon: ImageVector, textboxVal: String = "", valueChanged: (String) -> Unit = {}) {
     var textVal by remember {
-        mutableStateOf("")
+        mutableStateOf(textboxVal)
     }
     val typeOfKeyboard: KeyboardType = when (labelVal) {
         "email ID" -> KeyboardType.Email

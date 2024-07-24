@@ -48,8 +48,8 @@ fun LoginScreen(navController: NavController) {
     val auth: FirebaseAuth = Firebase.auth
     val context = LocalContext.current
 
-    var enteredEmail by remember { mutableStateOf("admin@gmail.com") }
-    var enteredPassword by remember { mutableStateOf("Admin@123") }
+    var enteredEmail by remember { mutableStateOf("") }
+    var enteredPassword by remember { mutableStateOf("") }
 
     fun login(context: Context, email: String, password: String, destination: String) {
         // Default Toast Message, will only change if Login works
@@ -105,9 +105,9 @@ fun LoginScreen(navController: NavController) {
             Logo()
             Spacer(modifier = Modifier.height(30.dp))
 
-            OutlinedInputBox(labelVal = "Email", Icons.Default.Email, valueChanged = { newValue -> enteredEmail = newValue })
+            OutlinedInputBox(labelVal = "Email", Icons.Default.Email, textboxVal = enteredEmail, valueChanged = { newValue -> enteredEmail = newValue })
             Spacer(modifier = Modifier.height(10.dp))
-            PasswordInputBox(labelVal = "Password", valueChanged = { newValue -> enteredPassword = newValue })
+            PasswordInputBox(labelVal = "Password", textboxVal = enteredPassword, valueChanged = { newValue -> enteredPassword = newValue })
 
             TextButton(
                 modifier = Modifier

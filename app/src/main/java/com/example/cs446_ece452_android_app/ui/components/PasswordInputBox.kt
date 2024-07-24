@@ -26,9 +26,9 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
-fun PasswordInputBox(labelVal: String, valueChanged: (String) -> Unit = {}) {
+fun PasswordInputBox(labelVal: String, textboxVal : String = "", valueChanged: (String) -> Unit = {}) {
     var password by remember {
-        mutableStateOf("")
+        mutableStateOf(textboxVal)
     }
     var isShowPassword by remember {
         mutableStateOf(false)
