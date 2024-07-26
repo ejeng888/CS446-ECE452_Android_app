@@ -20,18 +20,18 @@ class RouteController(private val client: MapsApiClient) : ViewModel() {
     var routeInfoLoaded by mutableStateOf(false)
         private set
 
-    var currentRoute: String = ""
+    var routeId: String = ""
         private set
 
-    fun getRoute(routeId: String) {
-        currentRoute = routeId
+    fun getRoute(id: String) {
+        routeId = id
         routeEntryLoaded = false
         routeInfoLoaded = false
-        getRouteEntryFromDb(routeId) {
+        getRouteEntryFromDb(id) {
             routeEntry = it
             routeEntryLoaded = true
         }
-        getRouteFromDb(routeId) {
+        getRouteFromDb(id) {
             routeInfo = it
             routeInfoLoaded = true
         }
@@ -65,7 +65,7 @@ class RouteController(private val client: MapsApiClient) : ViewModel() {
             routeInfoLoaded = true
 
             addRouteEntryToDb(routeEntry) { id ->
-                currentRoute = id
+                routeId = id
                 writeRouteToDb(id, routeInfo)
             }
 
@@ -113,8 +113,8 @@ class RouteController(private val client: MapsApiClient) : ViewModel() {
             calculateRoute()
             routeInfoLoaded = true
 
-            writeRouteEntryToDb(currentRoute, routeEntry)
-            writeRouteToDb(currentRoute, routeInfo)
+            writeRouteEntryToDb(routeId, routeEntry)
+            writeRouteToDb(routeId, routeInfo)
 
             onSuccess()
         } catch (e: Exception) {
