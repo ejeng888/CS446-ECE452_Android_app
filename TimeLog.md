@@ -3,7 +3,7 @@
 | 05/22/24 | brainstorming                                                     | 2.0   | 2.0    | 2.0   | 2.0     | 2.0  |
 | 05/25/24 | work on Figma design mockups                                      |       | 15.0   |       |         |      |
 | 05/28/24 | Figma feedback + version 2                                        |       | 8.0    |       |         |      |
-| 05/29/24 | D1                                                                | 2.0   |        | 2.0   |         | 2.0  |
+| 05/29/24 | D1                                                                | 2.0   |        | 2.0   | 2.0     | 2.0  |
 | 05/31/24 | group meeting                                                     | 1.0   | 1.0    | 1.0   | 1.0     | 1.0  |
 | 06/03/24 | Initial Project Setup on Git                                      |       |        |       |         | 2.0  |
 | 06/13/24 | D2                                                                | 1.0   | 1.0    | 2.0   |         | 2.0  |
